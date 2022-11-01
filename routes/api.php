@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarangSatuanController;
+use App\Http\Controllers\BarangSatuanJadiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PositionController;
@@ -71,6 +73,23 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [PositionController::class, 'edit']);
             Route::post('{uuid}/update', [PositionController::class, 'update']);
             Route::delete('{uuid}/destroy', [PositionController::class, 'destroy']);
+        });
+        Route::prefix('barangsatuan')->group(function () {
+            Route::get('get', [BarangSatuanController::class, 'get']);
+            Route::post('paginate', [BarangSatuanController::class, 'paginate']);
+            Route::post('store', [BarangSatuanController::class, 'store']);
+            Route::get('{uuid}/edit', [BarangSatuanController::class, 'edit']);
+            Route::post('{uuid}/update', [BarangSatuanController::class, 'update']);
+            Route::delete('{uuid}/destroy', [BarangSatuanController::class, 'destroy']);
+        });
+
+        Route::prefix('barangsatuanjadi')->group(function () {
+            Route::get('get', [BarangSatuanJadiController::class, 'get']);
+            Route::post('paginate', [BarangSatuanJadiController::class, 'paginate']);
+            Route::post('store', [BarangSatuanJadiController::class, 'store']);
+            Route::get('{uuid}/edit', [BarangSatuanJadiController::class, 'edit']);
+            Route::post('{uuid}/update', [BarangSatuanJadiController::class, 'update']);
+            Route::delete('{uuid}/destroy', [BarangSatuanJadiController::class, 'destroy']);
         });
     });
 });
