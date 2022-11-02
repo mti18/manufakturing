@@ -1,10 +1,10 @@
 <template>
   <section>
-    <Form v-if="openForm" :selected="selected" ref="" />
+    <Form v-if="openForm" :selected="selected" />
     <div class="card">
       <div class="card-header">
         <div class="card-title w-100">
-          <h1>Satuan</h1>
+          <h1>Barang Mentah</h1>
           <button
             v-if="!openForm"
             type="button"
@@ -12,14 +12,14 @@
             @click="openForm = true"
           >
             <i class="las la-plus"></i>
-            Satuan
+            Barang Mentah Baru
           </button>
         </div>
       </div>
       <div class="card-body">
         <mti-paginate
-          id="table-barangsatuan"
-          url="/barangsatuan/paginate"
+          id="table-barangmentah"
+          url="/barangmentah/paginate"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -45,9 +45,9 @@ export default {
     const selected = ref();
     const openForm = ref(false);
 
-    const { delete: deleteBarangSatuan } = useDelete({
+    const { delete: deleteBarangMentah } = useDelete({
       onSuccess: () => {
-        queryClient.invalidateQueries(["/barangsatuan/paginate"]);
+        queryClient.invalidateQueries(["/barangmentah/paginate"]);
       },
     });
 
@@ -59,8 +59,12 @@ export default {
         },
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_satuan", {
-        header: "Nama Satuan",
+      columnHelper.accessor("nm_barangmentah", {
+        header: "Nama Barang Mentah",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("stok", {
+        header: "Stok Barang",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("uuid", {
@@ -86,8 +90,8 @@ export default {
                   {
                     class: "btn btn-sm btn-icon btn-danger",
                     onClick: () => {
-                      deleteBarangSatuan(
-                        `/barangsatuan/${cell.getValue()}/destroy`
+                      deleteBarangMentah(
+                        `/barangmentah/${cell.getValue()}/destroy`
                       );
                     },
                   },

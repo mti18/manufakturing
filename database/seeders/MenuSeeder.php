@@ -32,6 +32,12 @@ class MenuSeeder extends Seeder
                     ['name' => 'Setting', 'route' => 'dashboard.master.setting', 'icon' => 'las fa-cog fs-2', 'children' => [
                         ['name' => 'Website', 'url' => '/master/setting/website', 'route' => 'dashboard.master.setting.website', 'icon' => 'las la-laptop fs-2', 'component' => 'master/user/Index'],
                     ]],
+                    ['name' => 'Barang', 'route' => 'dashboard.master.barang', 'icon' => 'fas fa-box-open', 'children' => [
+                        ['name' => 'Satuan', 'url' => '/master/barang/barangsatuan', 'route' => 'dashboard.master.barang.barangsatuan', 'icon' => 'asdasd', 'component' => 'master/barang/barangsatuan/Index'],
+                        ['name' => 'Satuan Jadi', 'url' => '/master/barang/barangsatuanjadi', 'route' => 'dashboard.master.barang.barangsatuanjadi', 'icon' => 'dasdsad', 'component' => 'master/barang/barangsatuanjadi/Index'],
+                        ['name' => 'Barang Kategori', 'url' => '/master/barang/barangkategori', 'route' => 'dashboard.master.barang.barangkategori', 'icon' => 'das', 'component' => 'master/barang/barangkategori/Index'],
+                        ['name' => 'Barang Mentah', 'url' => '/master/barang/barangmentah', 'route' => 'dashboard.master.barang.barangmentah', 'icon' => 'cvbn', 'component' => 'master/barang/barangmentah/Index'],
+                    ]
                 ]],
             ]]
         ];
