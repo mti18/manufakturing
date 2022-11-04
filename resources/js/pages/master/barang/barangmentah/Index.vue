@@ -67,6 +67,10 @@ export default {
         header: "Stok Barang",
         cell: (cell) => cell.getValue(),
       }),
+      columnHelper.accessor("kategoribadges", {
+        header: "Kategori Barang",
+        cell: (cell) => cell.getValue(),
+      }),
       columnHelper.accessor("uuid", {
         header: "Aksi",
         cell: (cell) =>

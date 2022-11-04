@@ -14,9 +14,17 @@ class BarangMentah extends Model
 
     protected $fillable = ['uuid', 'nm_barangmentah', 'stok', 'barangsatuan_id' ];
 
+    protected $with = ['kategoris'];
+
+    
     public function barangsatuan()
     {
         return $this->belongsTo(BarangSatuan::class, 'barangsatuan_id', 'id');
+    }
+
+    public function kategoris()
+    {
+        return $this->belongsToMany(Kategori::class, 'barang_kategori', 'barang_mentah_id', 'kategori_id');
     }
 }
 

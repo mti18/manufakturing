@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\BarangKategori;
 
-class BarangKategoriController extends Controller
+class KategoriController extends Controller
 {
     public function paginate(Request $request) {
         if (request()->wantsJson()) {
@@ -14,7 +14,7 @@ class BarangKategoriController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = BarangKategori::where(function ($q) use ($request) {
+            $courses = Kategori::where(function ($q) use ($request) {
                 $q->where('nm_kategori', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
@@ -29,7 +29,7 @@ class BarangKategoriController extends Controller
             $data = $request->validate([
                 'nm_kategori' => 'required|string',
             ]);
-            BarangKategori::create($data);
+            Kategori::create($data);
 
             return response()->json(['message' => 'Kategori berhasil diperbarui']);
         } else {
@@ -39,7 +39,7 @@ class BarangKategoriController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = BarangKategori::all();
+            $data = Kategori::all();
             return response()->json($data);
         } else {
             return abort(404);
@@ -48,7 +48,7 @@ class BarangKategoriController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = BarangKategori::where('uuid', $uuid)->first();
+            $data = Kategori::where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);
@@ -60,7 +60,7 @@ class BarangKategoriController extends Controller
             $data = $request->validate([
                 'nm_kategori' => 'required|string',
             ]);
-            BarangKategori::where('uuid', $uuid)->update($data);
+            Kategori::where('uuid', $uuid)->update($data);
 
             return response()->json(['message' => 'Kategori berhasil diperbarui']);
         } else {
@@ -70,7 +70,7 @@ class BarangKategoriController extends Controller
 
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            BarangKategori::where('uuid', $uuid)->delete();
+            Kategori::where('uuid', $uuid)->delete();
             return response()->json(['message' => 'Kategori berhasil dihapus']);
         } else {
             return abort(404);

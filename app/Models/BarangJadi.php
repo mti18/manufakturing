@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BarangKategori extends Model
+class BarangJadi extends Model
 {
     use HasFactory;
+    use Uuid;
 
-    protected $table = 'barang_kategori';
-    
-    protected $fillable = ['barang_mentah_id', 'kategori_id'];
+    protected $fillable = ['uuid', 'nm_barang_jadi', 'stok'];
 }

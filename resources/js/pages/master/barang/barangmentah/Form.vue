@@ -38,6 +38,7 @@
             />
           </div>
         </div>
+
         <div class="col-6">
           <div class="mb-8">
             <label for="name" class="form-label required"> Stok : </label>
@@ -53,6 +54,7 @@
             />
           </div>
         </div>
+
         <div class="col-6">
           <div class="mb-8">
             <label for="nm_satuan" class="form-label required">
@@ -60,39 +62,78 @@
             </label>
             <select2
               class="form-control"
-              name="nm_satuan"
+              name="barangsatuan_id"
               placeholder="Pilih Nama Satuan"
-              id="nm_satuan"
-              v-model="form.nm_satuan"
+              id="barangsatuan_id"
+              @change="getChild()"
+              v-model="form.barangsatuan_id"
               required
             >
-              <option v-if="user?.uuid"></option>
+              <option value="" disabled>Pilih Satuan</option>
               <option
-                v-for="group in userGroups"
-                :value="group.uuid"
-                :key="group.uuid"
+                v-for="item in barangsatuan"
+                :value="item.id"
+                :key="item.id"
               >
-                {{ group.name }}
+                {{ item.nm_satuan }}
               </option>
             </select2>
           </div>
         </div>
+
         <div class="col-6">
           <div class="mb-8">
-            <label for="name" class="form-label required"> Satuan : </label>
-            <input
-              type="text"
-              name="satuan"
-              id="name"
-              placeholder="Satuan"
+            <label for="nm_satuan_child" class="form-label required">
+              Satuan :
+            </label>
+            <select2
               class="form-control"
+              name="satuan"
+              placeholder="Pilih Satuan"
+              id="satuan"
+              v-model="form.satuan"
+              :disabled="
+                form.barangsatuan_id == undefined || form.barangsatuan_id == ''
+              "
               required
-              autoComplete="off"
-              v-model="form.stok"
-              disabled
-            />
+            >
+              <option value="" disabled>Pilih Satuan</option>
+              <option
+                v-for="item in satuan_child"
+                :value="item.id"
+                :key="item.id"
+              >
+                {{ item.nm_satuan_children }}
+              </option>
+            </select2>
           </div>
         </div>
+
+        <div class="col-md-12 form-group">
+          <label class="required form-label">Kategori</label>
+          <div
+            class="form-check mb-2 form-check-custom form-check-solid form-check-sm"
+            v-for="item in kategoris"
+            :value="item.id"
+          >
+            <input
+              class="form-check-input"
+              type="checkbox"
+              :value="item.id"
+              id="flexRadioLg"
+              @change="addkategori(item)"
+              :checked="
+                form.kategoris?.findIndex((cat) => cat.id == item.id) != -1
+                  ? true
+                  : false
+              "
+            />
+            <label class="form-check-label" for="flexRadioLg">
+              {{ item.nm_kategori }}
+            </label>
+          </div>
+        </div>
+
         <div class="col-12">
           <button
             type="submit"
@@ -120,9 +161,28 @@ export default {
       default: null,
     },
   },
+  data() {
+    return {
+      satuan_child: [],
+    };
+  },
   setup({ selected }) {
     const queryClient = useQueryClient();
-    const form = ref({});
+    const form = ref({
+      kategoris: [],
+    });
+
+    const { data: barangsatuan } = useQuery(
+      ["barang_satuans"],
+      () => axios.get("/barangsatuan/get").then((res) => res.data),
+      {
+        placeholderData: [],
+      }
+    );
+
+    const { data: kategoris = [] } = useQuery(["kategoris"], () =>
+      axios.get("/kategori/get").then((res) => res.data)
+    );
 
     const { data: barangmentah } = useQuery(
       ["barangmentah", selected, "edit"],
@@ -165,18 +225,55 @@ export default {
 
     return {
       barangmentah,
+      barangsatuan,
+      kategoris,
       submit,
       form,
       queryClient,
     };
   },
   methods: {
+    getChild() {
+      setTimeout(() => {
+        var app = this;
+        var id = app.form.barangsatuan_id;
+        axios
+          .get(`barangsatuan/${id}/child`)
+          .then((res) => {
+            app.satuan_child = res.data.data;
+
+            if (app.form.satuan_id != "" && app.form.satuan_id != undefined) {
+              app.form.satuan = app.form.satuan_id;
+            }
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
+    },
+
+    addkategori(item) {
+      var app = this;
+
+      // console.log(app.form.kategoris);
+      // return;
+
+      var index = app.form.kategoris.findIndex((cat) => cat.id == item.id);
+
+      if (index == -1) {
+        app.form.kategoris.push(item);
+      } else {
+        app.form.kategoris.splice(index, 1);
+      }
+    },
+
     onUpdateFiles(files) {
       this.file = files;
     },
     onSubmit() {
       const vm = this;
-      const data = new FormData(document.getElementById("form-barangmentah"));
+      var data = vm.form;
+
       this.submit(data, {
         onSuccess: (data) => {
           toastr.success(data.message);

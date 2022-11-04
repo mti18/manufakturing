@@ -18,8 +18,8 @@
       </div>
       <div class="card-body">
         <mti-paginate
-          id="table-barangkategori"
-          url="/barangkategori/paginate"
+          id="table-kategori"
+          url="/kategori/paginate"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -47,7 +47,7 @@ export default {
 
     const { delete: deleteKategori } = useDelete({
       onSuccess: () => {
-        queryClient.invalidateQueries(["/barangkategori/paginate"]);
+        queryClient.invalidateQueries(["/kategori/paginate"]);
       },
     });
 
@@ -86,9 +86,7 @@ export default {
                   {
                     class: "btn btn-sm btn-icon btn-danger",
                     onClick: () => {
-                      deleteKategori(
-                        `/barangkategori/${cell.getValue()}/destroy`
-                      );
+                      deleteKategori(`/kategori/${cell.getValue()}/destroy`);
                     },
                   },
                   h("i", { class: "la la-trash fs-2" })

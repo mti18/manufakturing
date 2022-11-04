@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\RestApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\SatuanChild;
@@ -23,6 +24,12 @@ class BarangSatuanController extends Controller
         } else {
             return abort(404);
         }
+    }
+
+    public function child($id)
+    {
+        $data = SatuanChild::where('barangsatuan_id', $id)->get();
+        return RestApi::success($data);
     }
 
     public function store(Request $request) {

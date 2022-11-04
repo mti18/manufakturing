@@ -8,6 +8,7 @@ use App\Http\Controllers\BarangSatuanJadiController;
 use App\Http\Controllers\BarangKategoriController;
 use App\Http\Controllers\BarangMentahController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\UserController;
@@ -81,6 +82,7 @@ Route::prefix('v1')->group(function () {
             Route::post('paginate', [BarangSatuanController::class, 'paginate']);
             Route::post('store', [BarangSatuanController::class, 'store']);
             Route::get('{uuid}/edit', [BarangSatuanController::class, 'edit']);
+            Route::get('{id}/child', [BarangSatuanController::class, 'child']);
             Route::post('{uuid}/update', [BarangSatuanController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangSatuanController::class, 'destroy']);
         });
@@ -94,13 +96,13 @@ Route::prefix('v1')->group(function () {
             Route::delete('{uuid}/destroy', [BarangSatuanJadiController::class, 'destroy']);
         });
 
-        Route::prefix('barangkategori')->group(function () {
-            Route::get('get', [BarangKategoriController::class, 'get']);
-            Route::post('paginate', [BarangKategoriController::class, 'paginate']);
-            Route::post('store', [BarangKategoriController::class, 'store']);
-            Route::get('{uuid}/edit', [BarangKategoriController::class, 'edit']);
-            Route::post('{uuid}/update', [BarangKategoriController::class, 'update']);
-            Route::delete('{uuid}/destroy', [BarangKategoriController::class, 'destroy']);
+        Route::prefix('kategori')->group(function () {
+            Route::get('get', [KategoriController::class, 'get']);
+            Route::post('paginate', [KategoriController::class, 'paginate']);
+            Route::post('store', [KategoriController::class, 'store']);
+            Route::get('{uuid}/edit', [KategoriController::class, 'edit']);
+            Route::post('{uuid}/update', [KategoriController::class, 'update']);
+            Route::delete('{uuid}/destroy', [KategoriController::class, 'destroy']);
         });
 
         Route::prefix('barangmentah')->group(function () {
@@ -108,6 +110,7 @@ Route::prefix('v1')->group(function () {
             Route::post('paginate', [BarangMentahController::class, 'paginate']);
             Route::post('store', [BarangMentahController::class, 'store']);
             Route::get('{uuid}/edit', [BarangMentahController::class, 'edit']);
+            Route::get('{id}/child', [BarangMentahController::class, 'child']);
             Route::post('{uuid}/update', [BarangMentahController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangMentahController::class, 'destroy']);
         });

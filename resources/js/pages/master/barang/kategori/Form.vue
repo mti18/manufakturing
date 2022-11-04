@@ -1,12 +1,12 @@
 <template>
-  <form class="card mb-12" id="form-barangkategori" @submit.prevent="onSubmit">
+  <form class="card mb-12" id="form-kategori" @submit.prevent="onSubmit">
     <div class="card-header">
       <div class="card-title w-100">
         <h3>
           {{
-            barangkategori?.uuid
-              ? `Edit Satuan Jadi : ${barangkategori.nm_kategori}`
-              : "Tambah Satuan Jadi"
+            kategori?.uuid
+              ? `Edit Kategori : ${kategori.nm_kategori}`
+              : "Tambah Kategori"
           }}
         </h3>
         <button
@@ -69,19 +69,17 @@ export default {
     const queryClient = useQueryClient();
     const form = ref({});
 
-    const { data: barangkategori } = useQuery(
-      ["barangkategori", selected, "edit"],
+    const { data: kategori } = useQuery(
+      ["kategori", selected, "edit"],
       () => {
-        setTimeout(() => KTApp.block("#form-barangkategori"), 100);
-        return axios
-          .get(`/barangkategori/${selected}/edit`)
-          .then((res) => res.data);
+        setTimeout(() => KTApp.block("#form-kategori"), 100);
+        return axios.get(`/kategori/${selected}/edit`).then((res) => res.data);
       },
       {
         enabled: !!selected,
         cacheTime: 0,
         onSuccess: (data) => (form.value = data),
-        onSettled: () => KTApp.unblock("#form-barangkategori"),
+        onSettled: () => KTApp.unblock("#form-kategori"),
       }
     );
 
@@ -89,27 +87,25 @@ export default {
       (data) =>
         axios
           .post(
-            selected
-              ? `/barangkategori/${selected}/update`
-              : "/barangkategori/store",
+            selected ? `/kategori/${selected}/update` : "/kategori/store",
             data
           )
           .then((res) => res.data),
       {
         onMutate: () => {
-          KTApp.block("#form-barangkategori");
+          KTApp.block("#form-kategori");
         },
         onError: (error) => {
           toastr.error(error.response.data.message);
         },
         onSettled: () => {
-          KTApp.unblock("#form-barangkategori");
+          KTApp.unblock("#form-kategori");
         },
       }
     );
 
     return {
-      barangkategori,
+      kategori,
       submit,
       form,
       queryClient,
@@ -121,13 +117,13 @@ export default {
     },
     onSubmit() {
       const vm = this;
-      const data = new FormData(document.getElementById("form-barangkategori"));
+      const data = new FormData(document.getElementById("form-kategori"));
       this.submit(data, {
         onSuccess: (data) => {
           toastr.success(data.message);
           vm.$parent.openForm = false;
           vm.$parent.selected = undefined;
-          vm.queryClient.invalidateQueries(["/barangkategori/paginate"], {
+          vm.queryClient.invalidateQueries(["/kategori/paginate"], {
             exact: true,
           });
         },
