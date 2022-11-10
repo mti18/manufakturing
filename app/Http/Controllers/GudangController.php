@@ -61,7 +61,6 @@ class GudangController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'nm_gudang' => 'required|string',
-                'kode' => 'required|string',
             ]);
             Gudang::where('uuid', $uuid)->update($data);
 

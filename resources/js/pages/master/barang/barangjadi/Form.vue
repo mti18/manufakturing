@@ -23,6 +23,22 @@
       <div class="row">
         <div class="col-6">
           <div class="mb-8">
+            <label for="name" class="form-label"> Kode : </label>
+            <input
+              readonly
+              type="text codes"
+              name="kd_barang_jadi"
+              id="name"
+              placeholder="Kode (digenerate oleh system)"
+              class="form-control"
+              autoComplete="off"
+              v-model="form.kd_barang_jadi"
+            />
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="mb-8">
             <label for="name" class="form-label required">
               Barang Jadi :
             </label>
@@ -30,9 +46,10 @@
               type="text"
               name="nm_barang_jadi"
               id="name"
-              placeholder="Barang Jadi"
+              placeholder="Nama Barang Jadi"
               class="form-control"
               required
+              @input.prevent="kd"
               autoComplete="off"
               v-model="form.nm_barang_jadi"
             />
@@ -138,10 +155,10 @@
               <input
                 type="text"
                 class="form-control"
-                required
                 name="harga"
                 placeholder="Harga Barang"
               />
+              <!-- required -->
               <!-- oninput="this.value = this.value.rupiah(true)" -->
               <!-- v-model="formData.harga" -->
             </div>
@@ -174,6 +191,11 @@ export default {
       type: String,
       default: null,
     },
+  },
+  data() {
+    return {
+      code: null,
+    };
   },
   setup({ selected }) {
     const queryClient = useQueryClient();
@@ -258,6 +280,53 @@ export default {
       }
     },
 
+    kd() {
+      var vm = this;
+      var myString = this.form.nm_barang_jadi;
+      var splits = myString.split(" ");
+      var codes = "";
+      for (var i = 0; i < splits.length; i++) {
+        if (splits[i][0]) {
+          codes = codes + splits[i][0];
+        }
+      }
+      if (this.type == "store") {
+        if (codes != "") {
+          vm.kd_barang_jadi =
+            codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
+          vm.form.kd_barang_jadi = vm.kd_barang_jadi;
+          $(".codes").val(vm.kd_barang_jadi);
+        } else {
+          vm.kd_barang_jadi = "";
+          vm.form.kd_barang_jadi = vm.kd_barang_jadi;
+          $(".codes").val(vm.kd_barang_jadi);
+        }
+      } else {
+        if (codes != "") {
+          vm.kd_barang_jadi =
+            codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
+          vm.form.kd_barang_jadi = vm.kd_barang_jadi;
+          $(".codes").val(vm.kd_barang_jadi);
+        } else {
+          vm.kd_barang_jadi = "";
+          vm.form.kd_barang_jadi = vm.kd_barang_jadi;
+          $(".codes").val(vm.kd_barang_jadi);
+        }
+      }
+    },
+
+    getcode() {
+      this.$http
+        .get("barangjadi/getcode")
+        .then((res) => {
+          console.log(res.data);
+          this.code = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     onUpdateFiles(files) {
       this.file = files;
     },
@@ -275,6 +344,9 @@ export default {
         },
       });
     },
+  },
+  mounted() {
+    this.getcode();
   },
 };
 </script>

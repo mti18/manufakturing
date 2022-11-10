@@ -11,7 +11,7 @@ class BarangJadi extends Model
     use HasFactory;
     use Uuid;
 
-    protected $fillable = ['uuid', 'nm_barang_jadi', 'stok', 'barangsatuanjadi_id', 'gudang_id'];
+    protected $fillable = ['uuid', 'nm_barang_jadi', 'stok', 'barangsatuanjadi_id', 'gudang_id', 'kd_barang_jadi'];
     protected $with = ['barangjadikategoris'];
 
     public function barangsatuanjadi()

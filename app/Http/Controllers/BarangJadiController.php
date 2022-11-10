@@ -20,6 +20,7 @@ class BarangJadiController extends Controller
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = BarangJadi::with(['barangjadigudangs', 'barangsatuanjadi'])->where(function ($q) use ($request) {
                 $q->where('nm_barang_jadi', 'LIKE', '%' . $request->search . '%');
+                $q->orwhere('kd_barang_jadi', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
 
@@ -58,6 +59,7 @@ class BarangJadiController extends Controller
                 'barangsatuanjadi_id' => 'required',
                 'gudang_id' => 'required',
                 'barangjadikategoris' => 'required|array',
+                'kd_barang_jadi' => 'required|string',
             ]);
 
             
@@ -142,5 +144,24 @@ class BarangJadiController extends Controller
         } else {
             return abort(404);
         }
+    }
+
+    public function getcode()
+    {
+        $a = BarangJadi::pluck('kd_barang_jadi')->toArray();
+        
+        if(count($a) > 0){
+            sort($a);
+            $start = 1;
+            for ($i=0; $i < count($a); $i++) { 
+                if((int)$a[$i] != $start){
+                    return str_pad($start,4,"0",STR_PAD_LEFT);
+                }
+                $start++;
+            }
+            return str_pad($start,4,"0",STR_PAD_LEFT);
+            
+        }
+        return str_pad('1',4,"0",STR_PAD_LEFT);
     }
 }

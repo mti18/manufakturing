@@ -20,6 +20,7 @@ class BarangMentahController extends Controller
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = BarangMentah::with(['barangmentahgudangs', 'barangsatuan'])->where(function ($q) use ($request) {
                 $q->where('nm_barangmentah', 'LIKE', '%' . $request->search . '%');
+                $q->orwhere('kd_barang_mentah', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
             
@@ -69,7 +70,9 @@ class BarangMentahController extends Controller
                 'satuan' => 'required',
                 'barangsatuan_id' => 'required',
                 'gudang_id' => 'required',
-                'barangmentahkategoris' => 'required|array',      
+                'barangmentahkategoris' => 'required|array',    
+                'kd_barang_mentah' => 'required|string',    
+                // 'harga' => 'required|decimal',    
             ]); 
 
             $child = SatuanChild::find($data['satuan']);
@@ -132,7 +135,7 @@ class BarangMentahController extends Controller
                 'barangsatuan_id' => 'required',
                 'gudang_id' => 'required',
                 'barangmentahkategoris' => 'required|array',
-
+                'kd_barang_mentah' => 'required|string',    
             ]);
 
             $child = SatuanChild::find($data['satuan']);
@@ -151,7 +154,7 @@ class BarangMentahController extends Controller
             $data =  BarangMentah::where('uuid', $uuid)->first();
 
             // return RestApi::error('', 404, $data);
-            if ($data->update($request->only(['stok', 'barangsatuan_id', 'nm_barangmentah', 'gudang_id']))) {
+            if ($data->update($request->only(['stok', 'barangsatuan_id', 'nm_barangmentah', 'gudang_id', 'kd_barang_mentah']))) {
 
                 BarangMentahKategori::where('barang_mentah_id', $data->id)->delete();
 
@@ -179,4 +182,38 @@ class BarangMentahController extends Controller
             return abort(404);
         }
     }
+
+    public function getcodebyid($id)
+    {
+        $data = BarangMentah::findByUuid($id)->kd_barang_mentah;
+        $exp = explode("-",$data);
+        return $exp[1];
+    }
+
+    public function getcode()
+    {
+        $data = BarangMentah::pluck('kd_barang_mentah')->toArray();
+        $a = [];
+
+        foreach($data as $item){
+              $exp = explode("-", $item);
+              $a[] = $exp[1];
+        }
+
+        
+        if(count($a) > 0){
+            sort($a);
+            $start = 1;
+            for ($i=0; $i < count($a); $i++) { 
+                if((int)$a[$i] != $start){
+                    return str_pad($start,4,"0",STR_PAD_LEFT);
+                }
+                $start++;
+            }
+            return str_pad($start,4,"0",STR_PAD_LEFT);
+            
+        }
+        return str_pad('1',4,"0",STR_PAD_LEFT);
+    }
 }
+

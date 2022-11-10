@@ -19,8 +19,25 @@
         </button>
       </div>
     </div>
+
     <div class="card-body">
       <div class="row">
+        <div class="col-6">
+          <div class="mb-8">
+            <label for="name" class="form-label required"> Kode : </label>
+            <input
+              readonly
+              type="text codes"
+              name="kd_barang_mentah"
+              id="name"
+              placeholder="Kode (digenerate oleh system)"
+              class="form-control"
+              autoComplete="off"
+              v-model="form.kd_barang_mentah"
+            />
+          </div>
+        </div>
+
         <div class="col-6">
           <div class="mb-8">
             <label for="name" class="form-label required">
@@ -33,6 +50,7 @@
               placeholder="Nama Barang Mentah"
               class="form-control"
               required
+              @input.prevent="kd"
               autoComplete="off"
               v-model="form.nm_barangmentah"
             />
@@ -55,7 +73,7 @@
           </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-3">
           <div class="mb-8">
             <label for="nm_satuan" class="form-label required">
               Nama Satuan :
@@ -81,7 +99,7 @@
           </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-3">
           <div class="mb-8">
             <label for="nm_satuan_child" class="form-label required">
               Satuan :
@@ -130,7 +148,7 @@
           </div>
         </div>
 
-        <div class="col-6">
+        <!-- <div class="col-6">
           <div class="mt-2 mb-8">
             <label>Harga Barang</label>
             <div class="input-group">
@@ -140,15 +158,16 @@
               <input
                 type="text"
                 class="form-control"
-                required
                 name="harga"
                 placeholder="Harga Barang"
-              />
-              <!-- oninput="this.value = this.value.rupiah(true)" -->
-              <!-- v-model="formData.harga" -->
-            </div>
+                v-model="formData.harga"
+              /> -->
+        <!-- required -->
+        <!-- oninput="this.value = this.value.rupiah(true)" -->
+        <!-- v-model="formData.harga" -->
+        <!-- </div>
           </div>
-        </div>
+        </div> -->
 
         <div class="col-md-6 form-group">
           <label class="required form-label">Kategori</label>
@@ -207,6 +226,7 @@ export default {
   data() {
     return {
       satuan_child: [],
+      code: null,
     };
   },
   setup({ selected }) {
@@ -313,6 +333,65 @@ export default {
       }
     },
 
+    kd() {
+      var vm = this;
+      var myString = this.form.nm_barangmentah;
+      var splits = myString.split(" ");
+      var codes = "";
+      for (var i = 0; i < splits.length; i++) {
+        if (splits[i][0]) {
+          codes = codes + splits[i][0];
+        }
+      }
+      if (this.type == "store") {
+        if (codes != "") {
+          vm.kd_barang_mentah =
+            codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
+          vm.form.kd_barang_mentah = vm.kd_barang_mentah;
+          $(".codes").val(vm.kd_barang_mentah);
+        } else {
+          vm.kd_barang_mentah = "";
+          vm.form.kd_barang_mentah = vm.kd_barang_mentah;
+          $(".codes").val(vm.kd_barang_mentah);
+        }
+      } else {
+        if (codes != "") {
+          vm.kd_barang_mentah =
+            codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
+          vm.form.kd_barang_mentah = vm.kd_barang_mentah;
+          $(".codes").val(vm.kd_barang_mentah);
+        } else {
+          vm.kd_barang_mentah = "";
+          vm.form.kd_barang_mentah = vm.kd_barang_mentah;
+          $(".codes").val(vm.kd_barang_mentah);
+        }
+      }
+    },
+
+    getcode() {
+      this.$http
+        .get("barangmentah/getcode")
+        .then((res) => {
+          console.log(res.data);
+          this.code = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    editGetcode() {
+      this.$http
+        .get("barangmentah/" + this.selected + "/getcode")
+        .then((res) => {
+          console.log(res.data);
+          this.code = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     onUpdateFiles(files) {
       this.file = files;
     },
@@ -331,6 +410,13 @@ export default {
         },
       });
     },
+  },
+  mounted() {
+    if (!this.selected) {
+      this.getcode();
+      return;
+    }
+    this.editGetcode();
   },
 };
 </script>

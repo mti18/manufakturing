@@ -63,6 +63,10 @@ export default {
         header: "Nama Barang Mentah",
         cell: (cell) => cell.getValue(),
       }),
+      columnHelper.accessor("kd_barang_mentah", {
+        header: "Kode",
+        cell: (cell) => cell.getValue(),
+      }),
       columnHelper.accessor("stok", {
         header: "Stok Barang",
         cell: (cell) => cell.getValue(),
