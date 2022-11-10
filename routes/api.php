@@ -15,6 +15,13 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProvinsiController;
+use App\Http\Controllers\KotaController;
+use App\Http\Controllers\KecamatanController;
+use App\Http\Controllers\KelurahanController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,7 +104,66 @@ Route::prefix('v1')->group(function () {
             Route::post('{uuid}/update', [BarangSatuanJadiController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangSatuanJadiController::class, 'destroy']);
         });
+        Route::prefix('supplier')->group(function () {
+            Route::get('get', [SupplierController::class, 'get']);
+            Route::post('paginate', [SupplierController::class, 'paginate']);
+            Route::post('store', [SupplierController::class, 'store']);
+            Route::get('{uuid}/edit', [SupplierController::class, 'edit']);
+            Route::post('{uuid}/update', [SupplierController::class, 'update']);
+            Route::delete('{uuid}/destroy', [SupplierController::class, 'destroy']);
+            Route::get('getcode', [SupplierController::class, 'getcode']);
+        });  
+        Route::prefix('customer')->group(function () {
+            Route::get('get', [CustomerController::class, 'get']);
+            Route::post('paginate', [CustomerController::class, 'paginate']);
+            Route::post('store', [CustomerController::class, 'store']);
+            Route::get('{uuid}/edit', [CustomerController::class, 'edit']);
+            Route::post('{uuid}/update', [CustomerController::class, 'update']);
+            Route::delete('{uuid}/destroy', [CustomerController::class, 'destroy']);
+        });
 
+        Route::prefix('provinsi')->group(function () {
+            Route::get('get', [ProvinsiController::class, 'get']);
+            Route::post('paginate', [ProvinsiController::class, 'paginate']);
+            Route::post('store', [ProvinsiController::class, 'store']);
+            Route::get('{uuid}/edit', [ProvinsiController::class, 'edit']);
+            Route::post('{uuid}/update', [ProvinsiController::class, 'update']);
+            Route::delete('{uuid}/destroy', [ProvinsiController::class, 'destroy']);
+        });
+        Route::prefix('kota')->group(function () {
+            Route::get('get', [KotaController::class, 'get']);
+            Route::post('paginate', [KotaController::class, 'paginate']);
+            Route::post('store', [KotaController::class, 'store']);
+            Route::get('{uuid}/edit', [KotaController::class, 'edit']);
+            Route::post('{uuid}/update', [KotaController::class, 'update']);
+            Route::delete('{uuid}/destroy', [KotaController::class, 'destroy']);
+        });
+        Route::prefix('kecamatan')->group(function () {
+            Route::get('get', [KecamatanController::class, 'get']);
+            Route::post('paginate', [KecamatanController::class, 'paginate']);
+            Route::post('store', [KecamatanController::class, 'store']);
+            Route::get('{uuid}/edit', [KecamatanController::class, 'edit']);
+            Route::post('{uuid}/update', [KecamatanController::class, 'update']);
+            Route::delete('{uuid}/destroy', [KecamatanController::class, 'destroy']);
+        });
+        Route::prefix('kelurahan')->group(function () {
+            Route::get('get', [KelurahanController::class, 'get']);
+            Route::post('paginate', [KelurahanController::class, 'paginate']);
+            Route::post('store', [KelurahanController::class, 'store']);
+            Route::get('{uuid}/edit', [KelurahanController::class, 'edit']);
+            Route::post('{uuid}/update', [KelurahanController::class, 'update']);
+            Route::delete('{uuid}/destroy', [KelurahanController::class, 'destroy']);
+        });
+
+        Route::prefix('profile')->group(function () {
+            Route::get('get', [ProfileController::class, 'get']);
+            Route::post('paginate', [ProfileController::class, 'paginate']);
+            Route::post('store', [ProfileController::class, 'store']);
+            Route::get('{uuid}/edit', [ProfileController::class, 'edit']);
+            Route::post('{uuid}/update', [ProfileController::class, 'update']);
+            Route::delete('{uuid}/destroy', [ProfileController::class, 'destroy']);
+        });
+            
         Route::prefix('kategori')->group(function () {
             Route::get('get', [KategoriController::class, 'get']);
             Route::post('paginate', [KategoriController::class, 'paginate']);
