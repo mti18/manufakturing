@@ -1,16 +1,10 @@
 <template>
-  <form
-    class="card mb-12"
-    id="form-barangsatuanjadi"
-    @submit.prevent="onSubmit"
-  >
+  <form class="card mb-12" id="form-gudang" @submit.prevent="onSubmit">
     <div class="card-header">
       <div class="card-title w-100">
         <h3>
           {{
-            barangsatuanjadi?.uuid
-              ? `Edit Satuan Jadi : ${barangsatuanjadi.nm_satuan_jadi}`
-              : "Tambah Satuan Jadi"
+            gudang?.uuid ? `Edit Gudang : ${gudang.nm_gudang}` : "Tambah Gudang"
           }}
         </h3>
         <button
@@ -23,25 +17,44 @@
         </button>
       </div>
     </div>
+
     <div class="card-body">
       <div class="row">
         <div class="col-6">
           <div class="mb-8">
             <label for="name" class="form-label required">
-              Satuan Jadi :
+              Nama Gudang :
             </label>
             <input
               type="text"
-              name="nm_satuan_jadi"
+              name="nm_gudang"
               id="name"
-              placeholder="Satuan Jadi"
+              placeholder="Nama Gudang"
               class="form-control"
               required
+              @input.prevent="getcode()"
               autoComplete="off"
-              v-model="form.nm_satuan_jadi"
+              v-model="form.nm_gudang"
             />
           </div>
         </div>
+
+        <div class="col-6">
+          <div class="mb-8">
+            <label for="name" class="form-label required"> Kode : </label>
+            <input
+              readonly
+              type="text codes"
+              name="kode"
+              id="name"
+              placeholder="Kode (otomatis)"
+              class="form-control"
+              autoComplete="off"
+              v-model="form.kode"
+            />
+          </div>
+        </div>
+
         <div class="col-12">
           <button
             type="submit"
@@ -69,71 +82,78 @@ export default {
       default: null,
     },
   },
+  data() {
+    return {
+      code: null,
+    };
+  },
   setup({ selected }) {
     const queryClient = useQueryClient();
     const form = ref({});
 
-    const { data: barangsatuanjadi } = useQuery(
-      ["barangsatuanjadi", selected, "edit"],
+    const { data: gudang } = useQuery(
+      ["gudang", selected, "edit"],
       () => {
-        setTimeout(() => KTApp.block("#form-barangsatuanjadi"), 100);
-        return axios
-          .get(`/barangsatuanjadi/${selected}/edit`)
-          .then((res) => res.data);
+        setTimeout(() => KTApp.block("#form-gudang"), 100);
+        return axios.get(`/gudang/${selected}/edit`).then((res) => res.data);
       },
       {
         enabled: !!selected,
         cacheTime: 0,
         onSuccess: (data) => (form.value = data),
-        onSettled: () => KTApp.unblock("#form-barangsatuanjadi"),
+        onSettled: () => KTApp.unblock("#form-gudang"),
       }
     );
 
     const { mutate: submit } = useMutation(
       (data) =>
         axios
-          .post(
-            selected
-              ? `/barangsatuanjadi/${selected}/update`
-              : "/barangsatuanjadi/store",
-            data
-          )
+          .post(selected ? `/gudang/${selected}/update` : "/gudang/store", data)
           .then((res) => res.data),
       {
         onMutate: () => {
-          KTApp.block("#form-barangsatuanjadi");
+          KTApp.block("#form-gudang");
         },
         onError: (error) => {
           toastr.error(error.response.data.message);
         },
         onSettled: () => {
-          KTApp.unblock("#form-barangsatuanjadi");
+          KTApp.unblock("#form-gudang");
         },
       }
     );
 
     return {
-      barangsatuanjadi,
+      gudang,
       submit,
       form,
       queryClient,
     };
   },
   methods: {
+    getcode() {
+      this.$http
+        .get("gudang/getcode")
+        .then((res) => {
+          this.form.kode = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     onUpdateFiles(files) {
       this.file = files;
     },
     onSubmit() {
       const vm = this;
-      const data = new FormData(
-        document.getElementById("form-barangsatuanjadi")
-      );
+      const data = new FormData(document.getElementById("form-gudang"));
       this.submit(data, {
         onSuccess: (data) => {
           toastr.success(data.message);
           vm.$parent.openForm = false;
           vm.$parent.selected = undefined;
-          vm.queryClient.invalidateQueries(["/barangsatuanjadi/paginate"], {
+          vm.queryClient.invalidateQueries(["/gudang/paginate"], {
             exact: true,
           });
         },

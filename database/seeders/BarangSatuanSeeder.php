@@ -16,17 +16,17 @@ class BarangSatuanSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('positions')->delete();
+        DB::table('barang_satuans')->delete();
 
-        $data = [
+        $barang_satuans = [
             ['id' => 1, 'nm_satuan' => 'Meter', 'satuan' => 'm'],
             ['id' => 2, 'nm_satuan' => 'Liter', 'satuan' => 'l'],
             ['id' => 3, 'nm_satuan' => 'Gram', 'satuan' => 'g'],
 
         ];
 
-        foreach ($data as $value) {
-            BarangSatuan::create($value);
+        foreach ($barang_satuans as $barang_satuan) {
+            BarangSatuan::create($barang_satuan);
         }
     }
 }

@@ -11,5 +11,10 @@ class BarangSatuanJadi extends Model
     use HasFactory;
     use Uuid;
 
-    protected $fillable = ['uuid', 'satuanjadi'];
+    protected $fillable = ['uuid', 'nm_satuan_jadi'];
+
+    public function barangjadi()
+    {
+        return $this->hasMany(BarangJadi::class, 'barangsatuanjadi_id', 'id');
+    }    
 }

@@ -4,7 +4,7 @@
     <div class="card">
       <div class="card-header">
         <div class="card-title w-100">
-          <h1>Barang Mentah</h1>
+          <h1>Barang Jadi</h1>
           <button
             v-if="!openForm"
             type="button"
@@ -12,14 +12,14 @@
             @click="openForm = true"
           >
             <i class="las la-plus"></i>
-            Barang Mentah Baru
+            Barang Jadi Baru
           </button>
         </div>
       </div>
       <div class="card-body">
         <mti-paginate
-          id="table-barangmentah"
-          url="/barangmentah/paginate"
+          id="table-barangjadi"
+          url="/barangjadi/paginate"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -45,9 +45,9 @@ export default {
     const selected = ref();
     const openForm = ref(false);
 
-    const { delete: deleteBarangMentah } = useDelete({
+    const { delete: deleteBarangJadi } = useDelete({
       onSuccess: () => {
-        queryClient.invalidateQueries(["/barangmentah/paginate"]);
+        queryClient.invalidateQueries(["/barangjadi/paginate"]);
       },
     });
 
@@ -59,12 +59,12 @@ export default {
         },
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_barangmentah", {
-        header: "Nama Barang Mentah",
+      columnHelper.accessor("nm_barang_jadi", {
+        header: "Barang Jadi",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("stok", {
-        header: "Stok Barang",
+      columnHelper.accessor("stokbarang", {
+        header: "Stok",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("nm_gudang", {
@@ -72,7 +72,7 @@ export default {
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("kategoribadges", {
-        header: "Kategori Barang",
+        header: "Kategori",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("uuid", {
@@ -98,8 +98,8 @@ export default {
                   {
                     class: "btn btn-sm btn-icon btn-danger",
                     onClick: () => {
-                      deleteBarangMentah(
-                        `/barangmentah/${cell.getValue()}/destroy`
+                      deleteBarangJadi(
+                        `/barangjadi/${cell.getValue()}/destroy`
                       );
                     },
                   },

@@ -15,6 +15,13 @@ return new class extends Migration
     {
         Schema::create('barang_jadis', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid');
+            $table->string('nm_barang_jadi');
+            $table->bigInteger('stok')->default(0);
+
+            $table->BigInteger('barangsatuanjadi_id')->unsigned()->nullable();
+            $table->foreign('barangsatuanjadi_id')->references('id')->on('barang_satuan_jadis')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

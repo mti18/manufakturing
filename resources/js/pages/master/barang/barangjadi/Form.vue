@@ -1,12 +1,12 @@
 <template>
-  <form class="card mb-12" id="form-barangmentah" @submit.prevent="onSubmit">
+  <form class="card mb-12" id="form-barangjadi" @submit.prevent="onSubmit">
     <div class="card-header">
       <div class="card-title w-100">
         <h3>
           {{
-            barangmentah?.uuid
-              ? `Edit Barang Mentah : ${barangmentah.nm_barangmentah}`
-              : "Tambah Barang Mentah   "
+            barangjadi?.uuid
+              ? `Edit Barang Jadi : ${barangjadi.nm_barang_jadi}`
+              : "Tambah Barang Jadi"
           }}
         </h3>
         <button
@@ -24,17 +24,17 @@
         <div class="col-6">
           <div class="mb-8">
             <label for="name" class="form-label required">
-              Barang Mentah :
+              Barang Jadi :
             </label>
             <input
               type="text"
-              name="nm_barangmentah"
+              name="nm_barang_jadi"
               id="name"
-              placeholder="Nama Barang Mentah"
+              placeholder="Barang Jadi"
               class="form-control"
               required
               autoComplete="off"
-              v-model="form.nm_barangmentah"
+              v-model="form.nm_barang_jadi"
             />
           </div>
         </div>
@@ -57,53 +57,24 @@
 
         <div class="col-6">
           <div class="mb-8">
-            <label for="nm_satuan" class="form-label required">
-              Nama Satuan :
+            <label for="nm_satuan_jadi" class="form-label required">
+              Satuan Jadi :
             </label>
             <select2
               class="form-control"
-              name="barangsatuan_id"
-              placeholder="Pilih Nama Satuan"
-              id="barangsatuan_id"
-              @change="getChild()"
-              v-model="form.barangsatuan_id"
+              name="barangsatuanjadi_id"
+              placeholder="Pilih Nama Satuan Jadi"
+              id="barangsatuanjadi_id"
+              v-model="form.barangsatuanjadi_id"
               required
             >
               <option value="" disabled>Pilih Satuan</option>
               <option
-                v-for="item in barangsatuan"
+                v-for="item in barangsatuanjadi"
                 :value="item.id"
                 :key="item.id"
               >
-                {{ item.nm_satuan }}
-              </option>
-            </select2>
-          </div>
-        </div>
-
-        <div class="col-6">
-          <div class="mb-8">
-            <label for="nm_satuan_child" class="form-label required">
-              Satuan :
-            </label>
-            <select2
-              class="form-control"
-              name="satuan"
-              placeholder="Pilih Satuan"
-              id="satuan"
-              v-model="form.satuan"
-              :disabled="
-                form.barangsatuan_id == undefined || form.barangsatuan_id == ''
-              "
-              required
-            >
-              <option value="" disabled>Pilih Satuan</option>
-              <option
-                v-for="item in satuan_child"
-                :value="item.id"
-                :key="item.id"
-              >
-                {{ item.nm_satuan_children }}
+                {{ item.nm_satuan_jadi }}
               </option>
             </select2>
           </div>
@@ -130,8 +101,35 @@
           </div>
         </div>
 
+        <div class="col-md-6 form-group">
+          <label class="required form-label">Kategori</label>
+          <div
+            class="form-check mb-2 form-check-custom form-check-solid form-check-sm"
+            v-for="item in kategoris"
+            :value="item.id"
+          >
+            <input
+              class="form-check-input"
+              type="checkbox"
+              :value="item.id"
+              id="flexRadioLg"
+              @change="addkategori(item)"
+              :checked="
+                form.barangjadikategoris?.findIndex(
+                  (cat) => cat.id == item.id
+                ) != -1
+                  ? true
+                  : false
+              "
+            />
+            <label class="form-check-label" for="flexRadioLg">
+              {{ item.nm_kategori }}
+            </label>
+          </div>
+        </div>
+
         <div class="col-6">
-          <div class="mt-2 mb-8">
+          <div class="mb-8">
             <label>Harga Barang</label>
             <div class="input-group">
               <div class="input-group-prepend">
@@ -147,33 +145,6 @@
               <!-- oninput="this.value = this.value.rupiah(true)" -->
               <!-- v-model="formData.harga" -->
             </div>
-          </div>
-        </div>
-
-        <div class="col-md-6 form-group">
-          <label class="required form-label">Kategori</label>
-          <div
-            class="form-check mb-2 form-check-custom form-check-solid form-check-sm"
-            v-for="item in kategoris"
-            :value="item.id"
-          >
-            <input
-              class="form-check-input"
-              type="checkbox"
-              :value="item.id"
-              id="flexRadioLg"
-              @change="addkategori(item)"
-              :checked="
-                form.barangmentahkategoris?.findIndex(
-                  (cat) => cat.id == item.id
-                ) != -1
-                  ? true
-                  : false
-              "
-            />
-            <label class="form-check-label" for="flexRadioLg">
-              {{ item.nm_kategori }}
-            </label>
           </div>
         </div>
 
@@ -204,42 +175,37 @@ export default {
       default: null,
     },
   },
-  data() {
-    return {
-      satuan_child: [],
-    };
-  },
   setup({ selected }) {
     const queryClient = useQueryClient();
     const form = ref({
-      barangmentahkategoris: [],
+      barangjadikategoris: [],
     });
 
-    const { data: barangsatuan } = useQuery(["barang_satuans"], () =>
-      axios.get("/barangsatuan/get").then((res) => res.data)
-    );
-
-    const { data: kategoris = [] } = useQuery(["kategoris"], () =>
-      axios.get("/kategori/get").then((res) => res.data)
+    const { data: barangsatuanjadi } = useQuery(["barang_satuan_jadis"], () =>
+      axios.get("/barangsatuanjadi/get").then((res) => res.data)
     );
 
     const { data: gudang } = useQuery(["gudangs"], () =>
       axios.get("/gudang/get").then((res) => res.data)
     );
 
-    const { data: barangmentah } = useQuery(
-      ["barangmentah", selected, "edit"],
+    const { data: kategoris = [] } = useQuery(["kategoris"], () =>
+      axios.get("/kategori/get").then((res) => res.data)
+    );
+
+    const { data: barangjadi } = useQuery(
+      ["barangjadi", selected, "edit"],
       () => {
-        setTimeout(() => KTApp.block("#form-barangmentah"), 100);
+        setTimeout(() => KTApp.block("#form-barangjadi"), 100);
         return axios
-          .get(`/barangmentah/${selected}/edit`)
+          .get(`/barangjadi/${selected}/edit`)
           .then((res) => res.data);
       },
       {
         enabled: !!selected,
         cacheTime: 0,
         onSuccess: (data) => (form.value = data),
-        onSettled: () => KTApp.unblock("#form-barangmentah"),
+        onSettled: () => KTApp.unblock("#form-barangjadi"),
       }
     );
 
@@ -247,28 +213,26 @@ export default {
       (data) =>
         axios
           .post(
-            selected
-              ? `/barangmentah/${selected}/update`
-              : "/barangmentah/store",
-            data
+            selected ? `/barangjadi/${selected}/update` : "/barangjadi/store",
+            form._value
           )
           .then((res) => res.data),
       {
         onMutate: () => {
-          KTApp.block("#form-barangmentah");
+          KTApp.block("#form-barangjadi");
         },
         onError: (error) => {
           toastr.error(error.response.data.message);
         },
         onSettled: () => {
-          KTApp.unblock("#form-barangmentah");
+          KTApp.unblock("#form-barangjadi");
         },
       }
     );
 
     return {
-      barangmentah,
-      barangsatuan,
+      barangjadi,
+      barangsatuanjadi,
       kategoris,
       gudang,
       submit,
@@ -277,39 +241,20 @@ export default {
     };
   },
   methods: {
-    getChild() {
-      setTimeout(() => {
-        var app = this;
-        var id = app.form.barangsatuan_id;
-        axios
-          .get(`barangsatuan/${id}/child`)
-          .then((res) => {
-            app.satuan_child = res.data.data;
-
-            if (app.form.satuan_id != "" && app.form.satuan_id != undefined) {
-              app.form.satuan = app.form.satuan_id;
-            }
-          })
-          .catch((err) => {
-            toastr.error("sesuatu error terjadi", "gagal");
-          });
-      }, 500);
-    },
-
     addkategori(item) {
       var app = this;
 
       // console.log(app.form.kategoris);
       // return;
 
-      var index = app.form.barangmentahkategoris.findIndex(
+      var index = app.form.barangjadikategoris.findIndex(
         (cat) => cat.id == item.id
       );
 
       if (index == -1) {
-        app.form.barangmentahkategoris.push(item);
+        app.form.barangjadikategoris.push(item);
       } else {
-        app.form.barangmentahkategoris.splice(index, 1);
+        app.form.barangjadikategoris.splice(index, 1);
       }
     },
 
@@ -318,14 +263,13 @@ export default {
     },
     onSubmit() {
       const vm = this;
-      var data = vm.form;
-
+      const data = new FormData(document.getElementById("form-barangjadi"));
       this.submit(data, {
         onSuccess: (data) => {
           toastr.success(data.message);
           vm.$parent.openForm = false;
           vm.$parent.selected = undefined;
-          vm.queryClient.invalidateQueries(["/barangmentah/paginate"], {
+          vm.queryClient.invalidateQueries(["/barangjadi/paginate"], {
             exact: true,
           });
         },

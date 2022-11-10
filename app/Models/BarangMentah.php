@@ -12,9 +12,8 @@ class BarangMentah extends Model
     use HasFactory;
     use Uuid;
 
-    protected $fillable = ['uuid', 'nm_barangmentah', 'stok', 'barangsatuan_id' ];
-
-    protected $with = ['kategoris'];
+    protected $fillable = ['uuid', 'nm_barangmentah', 'stok', 'barangsatuan_id', 'gudang_id' ];
+    protected $with = ['barangmentahkategoris'];
 
     
     public function barangsatuan()
@@ -22,9 +21,14 @@ class BarangMentah extends Model
         return $this->belongsTo(BarangSatuan::class, 'barangsatuan_id', 'id');
     }
 
-    public function kategoris()
+    public function barangmentahkategoris()
     {
-        return $this->belongsToMany(Kategori::class, 'barang_kategori', 'barang_mentah_id', 'kategori_id');
+        return $this->belongsToMany(Kategori::class, 'barang_mentah_kategori', 'barang_mentah_id', 'kategori_id');
+    }
+
+    public function barangmentahgudangs()
+    {
+        return $this->belongsTo(Gudang::class, 'gudang_id', 'id');
     }
 }
 

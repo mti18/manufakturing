@@ -37,6 +37,8 @@ class MenuSeeder extends Seeder
                         ['name' => 'Satuan Jadi', 'url' => '/master/barang/barangsatuanjadi', 'route' => 'dashboard.master.barang.barangsatuanjadi', 'icon' => 'dasdsad', 'component' => 'master/barang/barangsatuanjadi/Index'],
                         ['name' => 'Barang Mentah', 'url' => '/master/barang/barangmentah', 'route' => 'dashboard.master.barang.barangmentah', 'icon' => 'cvbn', 'component' => 'master/barang/barangmentah/Index'],
                         ['name' => 'Kategori', 'url' => '/master/barang/kategori', 'route' => 'dashboard.master.barang.kategori', 'icon' => 'aeaf', 'component' => 'master/barang/kategori/Index'],
+                        ['name' => 'Barang Jadi', 'url' => '/master/barang/barangjadi', 'route' => 'dashboard.master.barang.barangjadi', 'icon' => 'poiu', 'component' => 'master/barang/barangjadi/Index'],
+                        ['name' => 'Gudang', 'url' => '/master/barang/gudang', 'route' => 'dashboard.master.barang.gudang', 'icon' => 'pojh', 'component' => 'master/barang/gudang/Index'],
                     ]],
                 ]],
             ]]

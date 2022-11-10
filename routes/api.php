@@ -3,11 +3,13 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarangJadiController;
 use App\Http\Controllers\BarangSatuanController;
 use App\Http\Controllers\BarangSatuanJadiController;
 use App\Http\Controllers\BarangKategoriController;
 use App\Http\Controllers\BarangMentahController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GudangController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PositionController;
@@ -113,6 +115,25 @@ Route::prefix('v1')->group(function () {
             Route::get('{id}/child', [BarangMentahController::class, 'child']);
             Route::post('{uuid}/update', [BarangMentahController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangMentahController::class, 'destroy']);
+        });
+
+        Route::prefix('barangjadi')->group(function () {
+            Route::get('get', [BarangJadiController::class, 'get']);
+            Route::post('paginate', [BarangJadiController::class, 'paginate']);
+            Route::post('store', [BarangJadiController::class, 'store']);
+            Route::get('{uuid}/edit', [BarangJadiController::class, 'edit']);
+            Route::post('{uuid}/update', [BarangJadiController::class, 'update']);
+            Route::delete('{uuid}/destroy', [BarangJadiController::class, 'destroy']);
+        });
+
+        Route::prefix('gudang')->group(function () {
+            Route::get('get', [GudangController::class, 'get']);
+            Route::post('paginate', [GudangController::class, 'paginate']);
+            Route::post('store', [GudangController::class, 'store']);
+            Route::get('getcode', [GudangController::class, 'getcode']);
+            Route::get('{uuid}/edit', [GudangController::class, 'edit']);
+            Route::post('{uuid}/update', [GudangController::class, 'update']);
+            Route::delete('{uuid}/destroy', [GudangController::class, 'destroy']);
         });
     });
 });

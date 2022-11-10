@@ -13,8 +13,13 @@ class Kategori extends Model
 
     protected $fillable = ['uuid', 'nm_kategori'];
 
-    public function kategoris()
+    public function barangmentahkategoris()
     {
-        return $this->belongsToMany(Kategori::class,'barang_kategori');
+        return $this->belongsToMany(BarangMentah::class,'barang_mentah_kategori', 'kategori_id');
+    }
+
+    public function barangjadikategoris()
+    {
+        return $this->belongsToMany(Kategori::class,'barang_jadi_kategori', 'kategori_id');
     }
 }

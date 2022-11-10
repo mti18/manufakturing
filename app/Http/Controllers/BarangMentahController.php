@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\RestApi;
-use App\Models\BarangKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\BarangMentah;
+use App\Models\BarangMentahKategori;
+use App\Models\Gudang;
 use App\Models\SatuanChild;
 
 class BarangMentahController extends Controller
@@ -17,17 +18,30 @@ class BarangMentahController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = BarangMentah::where(function ($q) use ($request) {
+            $courses = BarangMentah::with(['barangmentahgudangs', 'barangsatuan'])->where(function ($q) use ($request) {
                 $q->where('nm_barangmentah', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
-        
+            
             $courses->map(function ($a)
             {
                 $a->kategoribadges="";
-                foreach($a->kategoris as $item){
+                foreach($a->barangmentahkategoris as $item){
                     $a->kategoribadges .= $item->nm_kategori . ', ';
                 }
+
+                // $a->stok = $a->barangsatuan->array_map('map',$child)->
+
+                if(!empty($a->barangmentahgudangs)){
+                    $a->nm_gudang = $a->barangmentahgudangs->nm_gudang;
+                } else {
+                    $a->nm_gudang = "Belum ada gudang";
+                }
+
+                // $a->gudangbadges="";
+                // foreach($a->gudang as $item){
+                //     $a->gudangbadges .= $item->nm_gudang;
+                // }
             });
 
             return response()->json($courses);
@@ -35,7 +49,7 @@ class BarangMentahController extends Controller
             return abort(404);
         }
     }
-
+    
     public function child($id)
     {
         $data = SatuanChild::where('barangsatuan_id', $id)->get();
@@ -54,9 +68,8 @@ class BarangMentahController extends Controller
                 'stok' => 'required|numeric',
                 'satuan' => 'required',
                 'barangsatuan_id' => 'required',
-                'kategoris' => 'required|array',
-
-                
+                'gudang_id' => 'required',
+                'barangmentahkategoris' => 'required|array',      
             ]); 
 
             $child = SatuanChild::find($data['satuan']);
@@ -70,12 +83,14 @@ class BarangMentahController extends Controller
             // return RestApi::error('error', 404, $data);
             unset($data['satuan']);
 
+            $data['gudang'] = Gudang::where('id', $request->gudang_id)->first()->id;
+
             $data = BarangMentah::create($data);
             
             // return RestApi::error('ooi',404,count($request->kategoris));
             
-            foreach($request->kategoris as $item){
-                BarangKategori::create([
+            foreach($request->barangmentahkategoris as $item){
+                BarangMentahKategori::create([
                     'kategori_id' => $item['id'],
                     'barang_mentah_id' => $data->id
                 ]);
@@ -115,6 +130,9 @@ class BarangMentahController extends Controller
                 'stok' => 'required|numeric',
                 'satuan' => 'required',
                 'barangsatuan_id' => 'required',
+                'gudang_id' => 'required',
+                'barangmentahkategoris' => 'required|array',
+
             ]);
 
             $child = SatuanChild::find($data['satuan']);
@@ -128,16 +146,17 @@ class BarangMentahController extends Controller
             unset($request->satuan_id);
             unset($request->satuan);
 
+            $data['gudang'] = Gudang::where('id', $request->gudang_id)->first()->id;
            
             $data =  BarangMentah::where('uuid', $uuid)->first();
 
             // return RestApi::error('', 404, $data);
-            if ($data->update($request->only(['stok', 'barangsatuan_id', 'nm_barangmentah']))) {
+            if ($data->update($request->only(['stok', 'barangsatuan_id', 'nm_barangmentah', 'gudang_id']))) {
 
-                BarangKategori::where('barang_mentah_id', $data->id)->delete();
+                BarangMentahKategori::where('barang_mentah_id', $data->id)->delete();
 
-                foreach($request->kategoris as $item){
-                    BarangKategori::create([
+                foreach($request->barangmentahkategoris as $item){
+                    BarangMentahKategori::create([
                         'kategori_id' => $item['id'],
                         'barang_mentah_id' => $data->id
                     ]);
