@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\BarangSatuanJadi;
 
-class BarangSatuanJadiController extends Controller
+class KategoriController extends Controller
 {
     public function paginate(Request $request) {
         if (request()->wantsJson()) {
@@ -14,8 +14,8 @@ class BarangSatuanJadiController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = BarangSatuanJadi::where(function ($q) use ($request) {
-                $q->where('nm_satuan_jadi', 'LIKE', '%' . $request->search . '%');
+            $courses = Kategori::where(function ($q) use ($request) {
+                $q->where('nm_kategori', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
             return response()->json($courses);
@@ -27,11 +27,11 @@ class BarangSatuanJadiController extends Controller
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
-                'nm_satuan_jadi' => 'required|string',
+                'nm_kategori' => 'required|string',
             ]);
-            BarangSatuanJadi::create($data);
+            Kategori::create($data);
 
-            return response()->json(['message' => 'Satuan berhasil diperbarui']);
+            return response()->json(['message' => 'Kategori berhasil diperbarui']);
         } else {
             return abort(404);
         }
@@ -39,7 +39,7 @@ class BarangSatuanJadiController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = BarangSatuanJadi::all();
+            $data = Kategori::all();
             return response()->json($data);
         } else {
             return abort(404);
@@ -48,7 +48,7 @@ class BarangSatuanJadiController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = BarangSatuanJadi::where('uuid', $uuid)->first();
+            $data = Kategori::where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);
@@ -58,11 +58,11 @@ class BarangSatuanJadiController extends Controller
     public function update(Request $request, $uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
-                'nm_satuan_jadi' => 'required|string',
+                'nm_kategori' => 'required|string',
             ]);
-            BarangSatuanJadi::where('uuid', $uuid)->update($data);
+            Kategori::where('uuid', $uuid)->update($data);
 
-            return response()->json(['message' => 'Satuan berhasil diperbarui']);
+            return response()->json(['message' => 'Kategori berhasil diperbarui']);
         } else {
             return abort(404);
         }
@@ -70,8 +70,8 @@ class BarangSatuanJadiController extends Controller
 
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            BarangSatuanJadi::where('uuid', $uuid)->delete();
-            return response()->json(['message' => 'Satuan berhasil dihapus']);
+            Kategori::where('uuid', $uuid)->delete();
+            return response()->json(['message' => 'Kategori berhasil dihapus']);
         } else {
             return abort(404);
         }

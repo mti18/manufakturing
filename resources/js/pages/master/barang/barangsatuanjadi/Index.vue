@@ -59,7 +59,7 @@ export default {
         },
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("satuanjadi", {
+      columnHelper.accessor("nm_satuan_jadi", {
         header: "Satuan Jadi",
         cell: (cell) => cell.getValue(),
       }),

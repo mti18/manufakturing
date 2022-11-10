@@ -1,16 +1,12 @@
 <template>
-  <form
-    class="card mb-12"
-    id="form-barangsatuanjadi"
-    @submit.prevent="onSubmit"
-  >
+  <form class="card mb-12" id="form-kategori" @submit.prevent="onSubmit">
     <div class="card-header">
       <div class="card-title w-100">
         <h3>
           {{
-            barangsatuanjadi?.uuid
-              ? `Edit Satuan Jadi : ${barangsatuanjadi.nm_satuan_jadi}`
-              : "Tambah Satuan Jadi"
+            kategori?.uuid
+              ? `Edit Kategori : ${kategori.nm_kategori}`
+              : "Tambah Kategori"
           }}
         </h3>
         <button
@@ -28,17 +24,17 @@
         <div class="col-6">
           <div class="mb-8">
             <label for="name" class="form-label required">
-              Satuan Jadi :
+              Nama Kategori :
             </label>
             <input
               type="text"
-              name="nm_satuan_jadi"
+              name="nm_kategori"
               id="name"
-              placeholder="Satuan Jadi"
+              placeholder="Nama Kategori"
               class="form-control"
               required
               autoComplete="off"
-              v-model="form.nm_satuan_jadi"
+              v-model="form.nm_kategori"
             />
           </div>
         </div>
@@ -73,19 +69,17 @@ export default {
     const queryClient = useQueryClient();
     const form = ref({});
 
-    const { data: barangsatuanjadi } = useQuery(
-      ["barangsatuanjadi", selected, "edit"],
+    const { data: kategori } = useQuery(
+      ["kategori", selected, "edit"],
       () => {
-        setTimeout(() => KTApp.block("#form-barangsatuanjadi"), 100);
-        return axios
-          .get(`/barangsatuanjadi/${selected}/edit`)
-          .then((res) => res.data);
+        setTimeout(() => KTApp.block("#form-kategori"), 100);
+        return axios.get(`/kategori/${selected}/edit`).then((res) => res.data);
       },
       {
         enabled: !!selected,
         cacheTime: 0,
         onSuccess: (data) => (form.value = data),
-        onSettled: () => KTApp.unblock("#form-barangsatuanjadi"),
+        onSettled: () => KTApp.unblock("#form-kategori"),
       }
     );
 
@@ -93,27 +87,25 @@ export default {
       (data) =>
         axios
           .post(
-            selected
-              ? `/barangsatuanjadi/${selected}/update`
-              : "/barangsatuanjadi/store",
+            selected ? `/kategori/${selected}/update` : "/kategori/store",
             data
           )
           .then((res) => res.data),
       {
         onMutate: () => {
-          KTApp.block("#form-barangsatuanjadi");
+          KTApp.block("#form-kategori");
         },
         onError: (error) => {
           toastr.error(error.response.data.message);
         },
         onSettled: () => {
-          KTApp.unblock("#form-barangsatuanjadi");
+          KTApp.unblock("#form-kategori");
         },
       }
     );
 
     return {
-      barangsatuanjadi,
+      kategori,
       submit,
       form,
       queryClient,
@@ -125,15 +117,13 @@ export default {
     },
     onSubmit() {
       const vm = this;
-      const data = new FormData(
-        document.getElementById("form-barangsatuanjadi")
-      );
+      const data = new FormData(document.getElementById("form-kategori"));
       this.submit(data, {
         onSuccess: (data) => {
           toastr.success(data.message);
           vm.$parent.openForm = false;
           vm.$parent.selected = undefined;
-          vm.queryClient.invalidateQueries(["/barangsatuanjadi/paginate"], {
+          vm.queryClient.invalidateQueries(["/kategori/paginate"], {
             exact: true,
           });
         },
