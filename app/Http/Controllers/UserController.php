@@ -90,7 +90,6 @@ class UserController extends Controller
                 'level' => 'required',
                 'status' => 'required',
             ]);
-
             $data['password'] = bcrypt($data['password']);
             $data['avatar'] = 'storage/' . $request->avatar->store('user', 'public');
 

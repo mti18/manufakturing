@@ -4,15 +4,15 @@
     <div class="card">
       <div class="card-header">
         <div class="card-title w-100">
-          <h1>Satuan Barang</h1>
+          <h1>Satuan</h1>
           <button
             v-if="!openForm"
             type="button"
             class="btn btn-primary btn-sm ms-auto"
-            @click="openForm = true "
+            @click="openForm = true"
           >
             <i class="las la-plus"></i>
-            Satuan Barang
+            Satuan
           </button>
         </div>
       </div>

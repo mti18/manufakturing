@@ -9,7 +9,7 @@
         <h3>
           {{
             barangsatuanjadi?.uuid
-              ? `Edit Satuan Jadi : ${barangsatuanjadi.satuanjadi}`
+              ? `Edit Satuan Jadi : ${barangsatuanjadi.nm_satuan_jadi}`
               : "Tambah Satuan Jadi"
           }}
         </h3>
@@ -32,13 +32,13 @@
             </label>
             <input
               type="text"
-              name="satuanjadi"
+              name="nm_satuan_jadi"
               id="name"
               placeholder="Satuan Jadi"
               class="form-control"
               required
               autoComplete="off"
-              v-model="form.satuanjadi"
+              v-model="form.nm_satuan_jadi"
             />
           </div>
         </div>

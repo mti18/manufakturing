@@ -19,5 +19,10 @@ class BarangSatuan extends Model
         return $this->hasMany(SatuanChild::class, 'barangsatuan_id', 'id');
     }
 
+    public function barangmentah()
+    {
+        return $this->hasMany(BarangMentah::class, 'barangsatuan_id', 'id');
+    }    
+
 
 }

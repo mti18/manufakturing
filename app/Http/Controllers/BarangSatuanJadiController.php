@@ -15,7 +15,7 @@ class BarangSatuanJadiController extends Controller
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = BarangSatuanJadi::where(function ($q) use ($request) {
-                $q->where('satuanjadi', 'LIKE', '%' . $request->search . '%');
+                $q->where('nm_satuan_jadi', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
             return response()->json($courses);
@@ -27,7 +27,7 @@ class BarangSatuanJadiController extends Controller
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
-                'satuanjadi' => 'required|string',
+                'nm_satuan_jadi' => 'required|string',
             ]);
             BarangSatuanJadi::create($data);
 
@@ -58,7 +58,7 @@ class BarangSatuanJadiController extends Controller
     public function update(Request $request, $uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
-                'satuanjadi' => 'required|string',
+                'nm_satuan_jadi' => 'required|string',
             ]);
             BarangSatuanJadi::where('uuid', $uuid)->update($data);
 

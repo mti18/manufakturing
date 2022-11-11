@@ -3,15 +3,27 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BarangJadiController;
 use App\Http\Controllers\BarangSatuanController;
 use App\Http\Controllers\BarangSatuanJadiController;
+use App\Http\Controllers\BarangKategoriController;
+use App\Http\Controllers\BarangMentahController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GudangController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\AccountController;
 
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProvinsiController;
+use App\Http\Controllers\KotaController;
+use App\Http\Controllers\KecamatanController;
+use App\Http\Controllers\KelurahanController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,6 +117,7 @@ Route::prefix('v1')->group(function () {
             Route::post('paginate', [BarangSatuanController::class, 'paginate']);
             Route::post('store', [BarangSatuanController::class, 'store']);
             Route::get('{uuid}/edit', [BarangSatuanController::class, 'edit']);
+            Route::get('{id}/child', [BarangSatuanController::class, 'child']);
             Route::post('{uuid}/update', [BarangSatuanController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangSatuanController::class, 'destroy']);
         });
@@ -117,7 +130,106 @@ Route::prefix('v1')->group(function () {
             Route::post('{uuid}/update', [BarangSatuanJadiController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangSatuanJadiController::class, 'destroy']);
         });
-       
-       
+
+        Route::prefix('supplier')->group(function () {
+            Route::get('get', [SupplierController::class, 'get']);
+            Route::post('paginate', [SupplierController::class, 'paginate']);
+            Route::post('store', [SupplierController::class, 'store']);
+            Route::get('{uuid}/edit', [SupplierController::class, 'edit']);
+            Route::post('{uuid}/update', [SupplierController::class, 'update']);
+            Route::delete('{uuid}/destroy', [SupplierController::class, 'destroy']);
+            Route::get('getcode', [SupplierController::class, 'getcode']);
+        });  
+        Route::prefix('customer')->group(function () {
+            Route::get('get', [CustomerController::class, 'get']);
+            Route::post('paginate', [CustomerController::class, 'paginate']);
+            Route::post('store', [CustomerController::class, 'store']);
+            Route::get('{uuid}/edit', [CustomerController::class, 'edit']);
+            Route::post('{uuid}/update', [CustomerController::class, 'update']);
+            Route::delete('{uuid}/destroy', [CustomerController::class, 'destroy']);
+        });
+
+        Route::prefix('provinsi')->group(function () {
+            Route::get('get', [ProvinsiController::class, 'get']);
+            Route::post('paginate', [ProvinsiController::class, 'paginate']);
+            Route::post('store', [ProvinsiController::class, 'store']);
+            Route::get('{uuid}/edit', [ProvinsiController::class, 'edit']);
+            Route::post('{uuid}/update', [ProvinsiController::class, 'update']);
+            Route::delete('{uuid}/destroy', [ProvinsiController::class, 'destroy']);
+        });
+        Route::prefix('kota')->group(function () {
+            Route::get('get', [KotaController::class, 'get']);
+            Route::post('paginate', [KotaController::class, 'paginate']);
+            Route::post('store', [KotaController::class, 'store']);
+            Route::get('{uuid}/edit', [KotaController::class, 'edit']);
+            Route::post('{uuid}/update', [KotaController::class, 'update']);
+            Route::delete('{uuid}/destroy', [KotaController::class, 'destroy']);
+        });
+        Route::prefix('kecamatan')->group(function () {
+            Route::get('get', [KecamatanController::class, 'get']);
+            Route::post('paginate', [KecamatanController::class, 'paginate']);
+            Route::post('store', [KecamatanController::class, 'store']);
+            Route::get('{uuid}/edit', [KecamatanController::class, 'edit']);
+            Route::post('{uuid}/update', [KecamatanController::class, 'update']);
+            Route::delete('{uuid}/destroy', [KecamatanController::class, 'destroy']);
+        });
+        Route::prefix('kelurahan')->group(function () {
+            Route::get('get', [KelurahanController::class, 'get']);
+            Route::post('paginate', [KelurahanController::class, 'paginate']);
+            Route::post('store', [KelurahanController::class, 'store']);
+            Route::get('{uuid}/edit', [KelurahanController::class, 'edit']);
+            Route::post('{uuid}/update', [KelurahanController::class, 'update']);
+            Route::delete('{uuid}/destroy', [KelurahanController::class, 'destroy']);
+        });
+
+        Route::prefix('profile')->group(function () {
+            Route::get('get', [ProfileController::class, 'get']);
+            Route::post('paginate', [ProfileController::class, 'paginate']);
+            Route::post('store', [ProfileController::class, 'store']);
+            Route::get('{uuid}/edit', [ProfileController::class, 'edit']);
+            Route::post('{uuid}/update', [ProfileController::class, 'update']);
+            Route::delete('{uuid}/destroy', [ProfileController::class, 'destroy']);
+        });
+            
+        Route::prefix('kategori')->group(function () {
+            Route::get('get', [KategoriController::class, 'get']);
+            Route::post('paginate', [KategoriController::class, 'paginate']);
+            Route::post('store', [KategoriController::class, 'store']);
+            Route::get('{uuid}/edit', [KategoriController::class, 'edit']);
+            Route::post('{uuid}/update', [KategoriController::class, 'update']);
+            Route::delete('{uuid}/destroy', [KategoriController::class, 'destroy']);
+        });
+
+        Route::prefix('barangmentah')->group(function () {
+            Route::get('get', [BarangMentahController::class, 'get']);
+            Route::post('paginate', [BarangMentahController::class, 'paginate']);
+            Route::post('store', [BarangMentahController::class, 'store']);
+            Route::get('getcode', [BarangMentahController::class, 'getcode']);
+            Route::get('{id}/getcode', [BarangMentahController::class, 'getcodebyid']);
+            Route::get('{uuid}/edit', [BarangMentahController::class, 'edit']);
+            Route::get('{id}/child', [BarangMentahController::class, 'child']);
+            Route::post('{uuid}/update', [BarangMentahController::class, 'update']);
+            Route::delete('{uuid}/destroy', [BarangMentahController::class, 'destroy']);
+        });
+
+        Route::prefix('barangjadi')->group(function () {
+            Route::get('get', [BarangJadiController::class, 'get']);
+            Route::post('paginate', [BarangJadiController::class, 'paginate']);
+            Route::post('store', [BarangJadiController::class, 'store']);
+            Route::get('getcode', [BarangJadiController::class, 'getcode']);
+            Route::get('{uuid}/edit', [BarangJadiController::class, 'edit']);
+            Route::post('{uuid}/update', [BarangJadiController::class, 'update']);
+            Route::delete('{uuid}/destroy', [BarangJadiController::class, 'destroy']);
+        });
+
+        Route::prefix('gudang')->group(function () {
+            Route::get('get', [GudangController::class, 'get']);
+            Route::post('paginate', [GudangController::class, 'paginate']);
+            Route::post('store', [GudangController::class, 'store']);
+            Route::get('getcode', [GudangController::class, 'getcode']);
+            Route::get('{uuid}/edit', [GudangController::class, 'edit']);
+            Route::post('{uuid}/update', [GudangController::class, 'update']);
+            Route::delete('{uuid}/destroy', [GudangController::class, 'destroy']);
+        });
     });
 });
