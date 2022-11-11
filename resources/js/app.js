@@ -8,6 +8,7 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy/dist/vue.m";
 import { QueryClient } from "vue-query";
 
+
 import VueAxios from "vue-axios";
 import axios from "./libs/axios";
 
@@ -54,6 +55,7 @@ const queryClient = new QueryClient({
     },
   },
 });
+
 
 createInertiaApp({
   title: (title) => `${title} - ${appName}`,

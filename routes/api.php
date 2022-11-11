@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangSatuanController;
 use App\Http\Controllers\BarangSatuanJadiController;
 use App\Http\Controllers\DashboardController;
@@ -10,6 +10,8 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
+use App\Http\Controllers\AccountController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +76,30 @@ Route::prefix('v1')->group(function () {
             Route::post('{uuid}/update', [PositionController::class, 'update']);
             Route::delete('{uuid}/destroy', [PositionController::class, 'destroy']);
         });
+        // Route::prefix('master_migration')->group(function(){
+		// 	Route::prefix('account')->group(function(){
+		// 		Route::get('show', 'AccountController@show');
+		// 		Route::group(['middleware' => ['admin.access']], function() {
+		// 			Route::post('index', 'AccountController@index');
+		// 			Route::post('create', 'AccountController@store');
+		// 			Route::get('{uuid}/edit', 'AccountController@edit');
+		// 			Route::post('{uuid}/update', 'AccountController@update');
+		// 			Route::delete('{uuid}/delete', 'AccountController@destroy');
+		// 		});
+		// 	});
+        // });
+
+        Route::prefix('account')->group(function () {
+            Route::get('get', [AccountController::class, 'get']);
+            Route::get('getdata', [AccountController::class, 'getdata']);
+            Route::post('paginate', [AccountController::class, 'paginate']);
+            Route::post('store', [AccountController::class, 'store']);
+            Route::post('send', [AccountController::class, 'send']);
+            Route::get('{uuid}/edit', [AccountController::class, 'edit']);
+            Route::post('{uuid}/update', [AccountController::class, 'update']);
+            Route::delete('{uuid}/destroy', [AccountController::class, 'destroy']);
+
+        });
         Route::prefix('barangsatuan')->group(function () {
             Route::get('get', [BarangSatuanController::class, 'get']);
             Route::post('paginate', [BarangSatuanController::class, 'paginate']);
@@ -91,5 +117,7 @@ Route::prefix('v1')->group(function () {
             Route::post('{uuid}/update', [BarangSatuanJadiController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangSatuanJadiController::class, 'destroy']);
         });
+       
+       
     });
 });
