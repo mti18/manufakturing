@@ -37,6 +37,7 @@
         "vue-filepond": "^7.0.3",
         "vue-query": "^1.26.0",
         "vue-toast-notification": "^3.0.4",
-        "vue3-otp-input": "^0.3.6"
+        "vue3-otp-input": "^0.3.6",
+        "vuejs-tree": "^3.0.2"
     }
 }

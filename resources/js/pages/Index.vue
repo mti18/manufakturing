@@ -1,9 +1,6 @@
 <template>
-  <main>
-    <h1>Index</h1>
-  </main>
+    <h1>
+        index
+
+    </h1>
 </template>
-
-<script setup></script>
-
-<style></style>
