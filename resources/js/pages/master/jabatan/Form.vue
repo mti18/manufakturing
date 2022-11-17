@@ -49,7 +49,7 @@ import { useQueryClient } from "vue-query";
 export default {
   props: {
     selected: {
-      type: String,
+      type: String,Numeric,
       default: null,
     }
   },

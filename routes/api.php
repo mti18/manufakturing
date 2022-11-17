@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\AssetGroupController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BulanController;
+use App\Http\Controllers\GolonganController;
+use App\Http\Controllers\TahunController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarangJadiController;
@@ -88,18 +92,6 @@ Route::prefix('v1')->group(function () {
             Route::post('{uuid}/update', [PositionController::class, 'update']);
             Route::delete('{uuid}/destroy', [PositionController::class, 'destroy']);
         });
-        // Route::prefix('master_migration')->group(function(){
-		// 	Route::prefix('account')->group(function(){
-		// 		Route::get('show', 'AccountController@show');
-		// 		Route::group(['middleware' => ['admin.access']], function() {
-		// 			Route::post('index', 'AccountController@index');
-		// 			Route::post('create', 'AccountController@store');
-		// 			Route::get('{uuid}/edit', 'AccountController@edit');
-		// 			Route::post('{uuid}/update', 'AccountController@update');
-		// 			Route::delete('{uuid}/delete', 'AccountController@destroy');
-		// 		});
-		// 	});
-        // });
 
         Route::prefix('account')->group(function () {
             Route::get('get', [AccountController::class, 'get']);
@@ -111,6 +103,14 @@ Route::prefix('v1')->group(function () {
             Route::post('{uuid}/update', [AccountController::class, 'update']);
             Route::delete('{uuid}/destroy', [AccountController::class, 'destroy']);
 
+        });
+        Route::prefix('master_jurnal')->group(function () {
+            Route::get('tahun', [TahunController::class, 'get']);
+            Route::post('paginate', [TahunController::class, 'paginate']);
+            Route::post('store', [TahunController::class, 'store']);
+            Route::get('{uuid}/edit', [TahunController::class, 'edit']);
+            Route::post('{uuid}/update', [TahunController::class, 'update']);
+            Route::delete('{uuid}/destroy', [TahunController::class, 'destroy']);
         });
         Route::prefix('barangsatuan')->group(function () {
             Route::get('get', [BarangSatuanController::class, 'get']);
@@ -230,6 +230,30 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [GudangController::class, 'edit']);
             Route::post('{uuid}/update', [GudangController::class, 'update']);
             Route::delete('{uuid}/destroy', [GudangController::class, 'destroy']);
+        });
+        Route::prefix('bulan')->group(function () {
+            Route::get('get', [BulanController::class, 'get']);
+            Route::post('paginate', [BulanController::class, 'paginate']);
+            Route::post('store', [BulanController::class, 'store']);
+            Route::get('{uuid}/edit', [BulanController::class, 'edit']);
+            Route::post('{uuid}/update', [BulanController::class, 'update']);
+            Route::delete('{uuid}/destroy', [BulanController::class, 'destroy']);
+        });
+        Route::prefix('golongan')->group(function () {
+            Route::get('get', [GolonganController::class, 'get']);
+            Route::post('paginate', [GolonganController::class, 'paginate']);
+            Route::post('store', [GolonganController::class, 'store']);
+            Route::get('{uuid}/edit', [GolonganController::class, 'edit']);
+            Route::post('{uuid}/update', [GolonganController::class, 'update']);
+            Route::delete('{uuid}/destroy', [GolonganController::class, 'destroy']);
+        });
+        Route::prefix('assetgroup')->group(function () {
+            Route::get('get', [AssetGroupController::class, 'get']);
+            Route::post('paginate', [AssetGroupController::class, 'paginate']);
+            Route::post('store', [AssetGroupController::class, 'store']);
+            Route::get('{uuid}/edit', [AssetGroupController::class, 'edit']);
+            Route::post('{uuid}/update', [AssetGroupController::class, 'update']);
+            Route::delete('{uuid}/destroy', [AssetGroupController::class, 'destroy']);
         });
     });
 });

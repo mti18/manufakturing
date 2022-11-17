@@ -25,10 +25,7 @@ return new class extends Migration
             $table->string('telp_kontak')->nullable();
             $table->string('alamat');
             $table->enum('tipe', ['supplier', 'customer']);
-
-            $table->integer('parent_id')->unsigned()->nullable();
-            $table->foreign('parent_id')->references('id')->on('suppliers')->onDelete('cascade');
-
+            
             $table->integer('provinsi_id')->unsigned();
             $table->foreign('provinsi_id')->references('id')->on('provinsis')->onDelete('restrict');
             $table->integer('kab_kota_id')->unsigned();
