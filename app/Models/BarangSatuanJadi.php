@@ -17,4 +17,5 @@ class BarangSatuanJadi extends Model
     {
         return $this->hasMany(BarangJadi::class, 'barangsatuanjadi_id', 'id');
     }    
+
 }

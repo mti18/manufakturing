@@ -112,6 +112,12 @@ createInertiaApp({
   },
 });
 
+window.asset = function (uri) {
+  return (
+    import.meta.env.VITE_URL + "/" + uri?.split("/").filter(Boolean).join("/")
+  );
+};
+
 InertiaProgress.init({ color: "#2563eb" });
 
 Inertia.on("navigate", (event) => {

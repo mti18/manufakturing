@@ -20,6 +20,7 @@ class Kategori extends Model
 
     public function barangjadikategoris()
     {
-        return $this->belongsToMany(Kategori::class,'barang_jadi_kategori', 'kategori_id');
+        return $this->belongsToMany(BarangJadi::class,'barang_jadi_kategori', 'kategori_id');
     }
+
 }

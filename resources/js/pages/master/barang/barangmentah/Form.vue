@@ -22,7 +22,21 @@
 
     <div class="card-body">
       <div class="row">
-        <div class="col-6">
+        <div class="col-4">
+          <div class="mb-6">
+            <label for="name" class="form-label required"> Foto : </label>
+            <file-upload
+              :files="selected && form?.foto ? `/${form.foto}` : file"
+              :allow-multiple="false"
+              v-on:updatefiles="onUpdateFiles"
+              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+              required
+              :accepted-file-types="['image/*']"
+            ></file-upload>
+          </div>
+        </div>
+
+        <div class="col-4">
           <div class="mb-8">
             <label for="name" class="form-label required"> Kode : </label>
             <input
@@ -38,7 +52,7 @@
           </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-4">
           <div class="mb-8">
             <label for="name" class="form-label required">
               Barang Mentah :
@@ -56,7 +70,9 @@
             />
           </div>
         </div>
+      </div>
 
+      <div class="row">
         <div class="col-6">
           <div class="mb-8">
             <label for="name" class="form-label required"> Stok : </label>
@@ -160,12 +176,10 @@
                 class="form-control"
                 name="harga"
                 placeholder="Harga Barang"
-                v-model="formData.harga"
-              /> -->
-        <!-- required -->
-        <!-- oninput="this.value = this.value.rupiah(true)" -->
-        <!-- v-model="formData.harga" -->
-        <!-- </div>
+              />
+              required oninput="this.value = this.value.rupiah(true)"
+              v-model="formData.harga"
+            </div>
           </div>
         </div> -->
 
@@ -181,6 +195,7 @@
               type="checkbox"
               :value="item.id"
               id="flexRadioLg"
+              name="barangmentahkategoris[]"
               @change="addkategori(item)"
               :checked="
                 form.barangmentahkategoris?.findIndex(
@@ -195,16 +210,16 @@
             </label>
           </div>
         </div>
+      </div>
 
-        <div class="col-12">
-          <button
-            type="submit"
-            class="btn btn-primary btn-sm ms-auto mt-8 d-block"
-          >
-            <i class="las la-save"></i>
-            Simpan
-          </button>
-        </div>
+      <div class="col-12">
+        <button
+          type="submit"
+          class="btn btn-primary btn-sm ms-auto mt-8 d-block"
+        >
+          <i class="las la-save"></i>
+          Simpan
+        </button>
       </div>
     </div>
   </form>
@@ -234,6 +249,7 @@ export default {
     const form = ref({
       barangmentahkategoris: [],
     });
+    const file = ref([]);
 
     const { data: barangsatuan } = useQuery(["barang_satuans"], () =>
       axios.get("/barangsatuan/get").then((res) => res.data)
@@ -293,6 +309,7 @@ export default {
       gudang,
       submit,
       form,
+      file,
       queryClient,
     };
   },
@@ -346,7 +363,10 @@ export default {
       if (this.type == "store") {
         if (codes != "") {
           vm.kd_barang_mentah =
-            codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
+            codes.replace(/[^A-Za-z]/g, "").toUpperCase() +
+            "BM" +
+            "-" +
+            vm.code;
           vm.form.kd_barang_mentah = vm.kd_barang_mentah;
           $(".codes").val(vm.kd_barang_mentah);
         } else {
@@ -357,7 +377,10 @@ export default {
       } else {
         if (codes != "") {
           vm.kd_barang_mentah =
-            codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
+            codes.replace(/[^A-Za-z]/g, "").toUpperCase() +
+            "BM" +
+            "-" +
+            vm.code;
           vm.form.kd_barang_mentah = vm.kd_barang_mentah;
           $(".codes").val(vm.kd_barang_mentah);
         } else {
@@ -397,8 +420,8 @@ export default {
     },
     onSubmit() {
       const vm = this;
-      var data = vm.form;
-
+      var data = new FormData(document.getElementById("form-barangmentah"));
+      data.append("foto", this.file[0].file);
       this.submit(data, {
         onSuccess: (data) => {
           toastr.success(data.message);

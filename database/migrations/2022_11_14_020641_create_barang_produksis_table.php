@@ -13,12 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('barang_jadi_kategori', function (Blueprint $table) {
+        Schema::create('barang_produksis', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('barang_jadi_id');
-            $table->foreign('barang_jadi_id')->references('id')->on('barang_jadis')->onDelete('cascade');
-            $table->unsignedBigInteger('kategori_id');
-            $table->foreign('kategori_id')->references('id')->on('kategoris')->onDelete('restrict');
+            $table->uuid('uuid');
+
+            $table->bigInteger('stok_jadi');
+
+            $table->BigInteger('barangjadi_id')->unsigned()->nullable();
+            $table->foreign('barangjadi_id')->references('id')->on('barang_jadis')->onDelete('restrict');
+            
             $table->timestamps();
         });
     }
@@ -30,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('barang_jadi_kategori');
+        Schema::dropIfExists('barang_produksis');
     }
 };
