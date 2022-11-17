@@ -12,6 +12,7 @@ use App\Http\Controllers\BarangSatuanController;
 use App\Http\Controllers\BarangSatuanJadiController;
 use App\Http\Controllers\BarangKategoriController;
 use App\Http\Controllers\BarangMentahController;
+use App\Http\Controllers\BarangProduksiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\KategoriController;
@@ -127,6 +128,7 @@ Route::prefix('v1')->group(function () {
             Route::post('paginate', [BarangSatuanJadiController::class, 'paginate']);
             Route::post('store', [BarangSatuanJadiController::class, 'store']);
             Route::get('{uuid}/edit', [BarangSatuanJadiController::class, 'edit']);
+            Route::get('{id}/child', [BarangSatuanJadiController::class, 'child']);
             Route::post('{uuid}/update', [BarangSatuanJadiController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangSatuanJadiController::class, 'destroy']);
         });
@@ -200,6 +202,16 @@ Route::prefix('v1')->group(function () {
             Route::delete('{uuid}/destroy', [KategoriController::class, 'destroy']);
         });
 
+        Route::prefix('gudang')->group(function () {
+            Route::get('get', [GudangController::class, 'get']);
+            Route::post('paginate', [GudangController::class, 'paginate']);
+            Route::post('store', [GudangController::class, 'store']);
+            Route::get('getcode', [GudangController::class, 'getcode']);
+            Route::get('{uuid}/edit', [GudangController::class, 'edit']);
+            Route::post('{uuid}/update', [GudangController::class, 'update']);
+            Route::delete('{uuid}/destroy', [GudangController::class, 'destroy']);
+        });
+        
         Route::prefix('barangmentah')->group(function () {
             Route::get('get', [BarangMentahController::class, 'get']);
             Route::post('paginate', [BarangMentahController::class, 'paginate']);
@@ -217,19 +229,19 @@ Route::prefix('v1')->group(function () {
             Route::post('paginate', [BarangJadiController::class, 'paginate']);
             Route::post('store', [BarangJadiController::class, 'store']);
             Route::get('getcode', [BarangJadiController::class, 'getcode']);
+            Route::get('{id}/getcode', [BarangJadiController::class, 'getcodebyid']);
             Route::get('{uuid}/edit', [BarangJadiController::class, 'edit']);
             Route::post('{uuid}/update', [BarangJadiController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangJadiController::class, 'destroy']);
         });
 
-        Route::prefix('gudang')->group(function () {
-            Route::get('get', [GudangController::class, 'get']);
-            Route::post('paginate', [GudangController::class, 'paginate']);
-            Route::post('store', [GudangController::class, 'store']);
-            Route::get('getcode', [GudangController::class, 'getcode']);
-            Route::get('{uuid}/edit', [GudangController::class, 'edit']);
-            Route::post('{uuid}/update', [GudangController::class, 'update']);
-            Route::delete('{uuid}/destroy', [GudangController::class, 'destroy']);
+        Route::prefix('barangproduksi')->group(function () {
+            Route::get('get', [BarangProduksiController::class, 'get']);
+            Route::post('paginate', [BarangProduksiController::class, 'paginate']);
+            Route::post('store', [BarangProduksiController::class, 'store']);
+            Route::get('{uuid}/edit', [BarangProduksiController::class, 'edit']);
+            Route::post('{uuid}/update', [BarangProduksiController::class, 'update']);
+            Route::delete('{uuid}/destroy', [BarangProduksiController::class, 'destroy']);
         });
         Route::prefix('bulan')->group(function () {
             Route::get('get', [BulanController::class, 'get']);
@@ -255,5 +267,6 @@ Route::prefix('v1')->group(function () {
             Route::post('{uuid}/update', [AssetGroupController::class, 'update']);
             Route::delete('{uuid}/destroy', [AssetGroupController::class, 'destroy']);
         });
+
     });
 });

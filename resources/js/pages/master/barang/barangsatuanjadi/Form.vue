@@ -43,6 +43,64 @@
           </div>
         </div>
         <div class="col-12">
+          <div class="table-responsive">
+            <table class="table gs-7 gy-7 gx-7">
+              <thead>
+                <tr
+                  class="fw-semibold fs-6 text-gray-800 border-bottom border-gray-200"
+                >
+                  <th>Name</th>
+                  <th>Nilai</th>
+                  <th>
+                    <a href="javascript:void(0)">
+                      <i
+                        @click.prevent="plus()"
+                        class="la la-plus icon-lg text-success mr-5"
+                        style="font-size: 25px"
+                      ></i>
+                    </a>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in form.child">
+                  <td>
+                    <input
+                      type="text"
+                      name="nm_satuan_jadi_children"
+                      id="name"
+                      placeholder="Nama Satuan Children"
+                      class="form-control"
+                      requiredautoComplete="off"
+                      v-model="item.nm_satuan_jadi_children"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      name="nilai"
+                      id="name"
+                      placeholder="Nilai Satuan (buah)"
+                      class="form-control"
+                      requiredautoComplete="off"
+                      v-model="item.nilai"
+                    />
+                  </td>
+                  <td>
+                    <a href="javascript:void(0)">
+                      <i
+                        @click.prevent="minus(index)"
+                        class="la la-minus icon-lg text-danger mr-5"
+                        style="font-size: 25px"
+                      ></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-12">
           <button
             type="submit"
             class="btn btn-primary btn-sm ms-auto mt-8 d-block"
@@ -71,7 +129,14 @@ export default {
   },
   setup({ selected }) {
     const queryClient = useQueryClient();
-    const form = ref({});
+    const form = ref({
+      child: [
+        {
+          nm_satuan_jadi_children: "Buah",
+          nilai: 1,
+        },
+      ],
+    });
 
     const { data: barangsatuanjadi } = useQuery(
       ["barangsatuanjadi", selected, "edit"],
@@ -120,15 +185,27 @@ export default {
     };
   },
   methods: {
+    plus() {
+      this.form.child.push({
+        // barang_mentah_id: null,
+        // stok_digunakan: null,
+        // satuan_id: null,
+      });
+    },
+
+    minus(index) {
+      this.form.child.splice(index, 1);
+    },
     onUpdateFiles(files) {
       this.file = files;
     },
     onSubmit() {
       const vm = this;
-      const data = new FormData(
-        document.getElementById("form-barangsatuanjadi")
-      );
-      this.submit(data, {
+      vm.form.child;
+      // const data = new FormData(
+      //   document.getElementById("form-barangsatuanjadi")
+      // );
+      this.submit(vm.form, {
         onSuccess: (data) => {
           toastr.success(data.message);
           vm.$parent.openForm = false;

@@ -4,7 +4,7 @@
     <div class="card">
       <div class="card-header">
         <div class="card-title w-100">
-          <h1>Barang Jadi</h1>
+          <h1>Barang Produksi</h1>
           <button
             v-if="!openForm"
             type="button"
@@ -12,14 +12,14 @@
             @click="openForm = true"
           >
             <i class="las la-plus"></i>
-            Barang Jadi Baru
+            Produksi Barang Baru
           </button>
         </div>
       </div>
       <div class="card-body">
         <mti-paginate
-          id="table-barangjadi"
-          url="/barangjadi/paginate"
+          id="table-barangproduksi"
+          url="/barangproduksi/paginate"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -45,9 +45,9 @@ export default {
     const selected = ref();
     const openForm = ref(false);
 
-    const { delete: deleteBarangJadi } = useDelete({
+    const { delete: deleteBarangProduksi } = useDelete({
       onSuccess: () => {
-        queryClient.invalidateQueries(["/barangjadi/paginate"]);
+        queryClient.invalidateQueries(["/barangproduksi/paginate"]);
       },
     });
 
@@ -59,32 +59,12 @@ export default {
         },
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("foto", {
-        header: "Foto",
-        cell: (cell) =>
-          h("img", {
-            src: asset(cell.getValue()),
-            width: 100,
-          }),
-      }),
-      columnHelper.accessor("nm_barang_jadi", {
-        header: "Barang Jadi",
+      columnHelper.accessor("barangproduksibarangjadi.nm_barang_jadi", {
+        header: "Nama Barang Jadi",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("kd_barang_jadi", {
-        header: "Kode",
-        cell: (cell) => cell.getValue(),
-      }),
-      columnHelper.accessor("stokbarang", {
-        header: "Stok",
-        cell: (cell) => cell.getValue(),
-      }),
-      columnHelper.accessor("nm_gudang", {
-        header: "Gudang",
-        cell: (cell) => cell.getValue(),
-      }),
-      columnHelper.accessor("kategoribadges", {
-        header: "Kategori",
+      columnHelper.accessor("stok_jadi", {
+        header: "Stok Jadi",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("uuid", {
@@ -110,8 +90,8 @@ export default {
                   {
                     class: "btn btn-sm btn-icon btn-danger",
                     onClick: () => {
-                      deleteBarangJadi(
-                        `/barangjadi/${cell.getValue()}/destroy`
+                      deleteBarangProduksi(
+                        `/barangproduksi/${cell.getValue()}/destroy`
                       );
                     },
                   },

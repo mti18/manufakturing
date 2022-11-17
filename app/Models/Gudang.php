@@ -22,4 +22,5 @@ class Gudang extends Model
     {
         return $this->hasMany(BarangJadi::class, 'gudang_id', 'id');
     }
+
 }

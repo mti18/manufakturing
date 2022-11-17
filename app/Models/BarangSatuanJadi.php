@@ -12,9 +12,16 @@ class BarangSatuanJadi extends Model
     use Uuid;
 
     protected $fillable = ['uuid', 'nm_satuan_jadi'];
+    protected $with = ['child'];
 
     public function barangjadi()
     {
         return $this->hasMany(BarangJadi::class, 'barangsatuanjadi_id', 'id');
     }    
+
+    public function child()
+    {
+        return $this->hasMany(SatuanJadiChild::class, 'barangsatuanjadi_id', 'id');
+    }
+
 }

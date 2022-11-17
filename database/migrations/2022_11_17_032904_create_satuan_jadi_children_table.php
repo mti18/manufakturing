@@ -13,12 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('barang_jadi_kategori', function (Blueprint $table) {
+        Schema::create('satuan_jadi_children', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('barang_jadi_id');
-            $table->foreign('barang_jadi_id')->references('id')->on('barang_jadis')->onDelete('cascade');
-            $table->unsignedBigInteger('kategori_id');
-            $table->foreign('kategori_id')->references('id')->on('kategoris')->onDelete('restrict');
+            $table->uuid('uuid');
+            $table->string('nm_satuan_jadi_children');
+
+            $table->bigInteger('barangsatuanjadi_id')->unsigned();
+            $table->foreign('barangsatuanjadi_id')->references('id')->on('barang_satuan_jadis')->onDelete('cascade');
+
+            $table->bigInteger('nilai');
+
             $table->timestamps();
         });
     }
@@ -30,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('barang_jadi_kategori');
+        Schema::dropIfExists('satuan_jadi_children');
     }
 };
