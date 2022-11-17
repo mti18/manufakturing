@@ -39,8 +39,6 @@ class BarangMentahController extends Controller
 
                 $a->stokbarang = $a->stok . ' ' . $a->barangsatuan->child[6]->nm_satuan_children;
 
-                // $a->foto= '<img src="'.$a->foto.'">';
-                // return $a;
 
             });
             

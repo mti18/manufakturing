@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\RestApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\BarangSatuanJadi;
+use App\Models\SatuanJadiChild;
 
 class BarangSatuanJadiController extends Controller
 {
@@ -18,18 +20,40 @@ class BarangSatuanJadiController extends Controller
                 $q->where('nm_satuan_jadi', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
+            $courses->map(function ($a)
+            {
+                $a->nm_satuan_jadi = "Satuan " . $a->nm_satuan_jadi;
+            });
+
             return response()->json($courses);
         } else {
             return abort(404);
         }
     }
 
+    public function child($id)
+    {
+        $data = SatuanJadiChild::where('barangsatuanjadi_id', $id)->get();
+        return RestApi::success($data);
+    }
+
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'nm_satuan_jadi' => 'required|string',
+                'child' => 'required|array',
             ]);
-            BarangSatuanJadi::create($data);
+           $data = BarangSatuanJadi::create($data);
+            foreach($request->child as $item){
+
+                $nilai = $item['nilai'];
+                $nm_satuan_jadi_children = $item['nm_satuan_jadi_children'];
+                    SatuanJadiChild::create([
+                        'nm_satuan_jadi_children' => $nm_satuan_jadi_children,
+                        'nilai' => $nilai,
+                        'barangsatuanjadi_id' => $data->id,
+                    ]);
+            }
 
             return response()->json(['message' => 'Satuan berhasil diperbarui']);
         } else {
@@ -48,7 +72,7 @@ class BarangSatuanJadiController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = BarangSatuanJadi::where('uuid', $uuid)->first();
+            $data = BarangSatuanJadi::with('child')->where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);
@@ -59,8 +83,27 @@ class BarangSatuanJadiController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'nm_satuan_jadi' => 'required|string',
+                'child' => 'required|array',
+
             ]);
-            BarangSatuanJadi::where('uuid', $uuid)->update($data);
+
+            $barangsj = BarangSatuanJadi::where('uuid', $uuid)->first();
+            
+            if ($barangsj->update($data)) {
+                foreach($request->child as $item){
+    
+                    $nilai = $item['nilai'];
+                    $nm_satuan_jadi_children = $item['nm_satuan_jadi_children'];
+
+                    SatuanJadiChild::where('barangsatuanjadi_id', $barangsj->id)->delete();
+
+                        SatuanJadiChild::create([
+                            'nm_satuan_jadi_children' => $nm_satuan_jadi_children,
+                            'nilai' => $nilai,
+                            'barangsatuanjadi_id' => $barangsj->id,
+                        ]);
+            }
+            }
 
             return response()->json(['message' => 'Satuan berhasil diperbarui']);
         } else {

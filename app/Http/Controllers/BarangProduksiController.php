@@ -103,19 +103,25 @@ class BarangProduksiController extends Controller
 
             $data['barangjadi'] = BarangJadi::where('id', $request->barangjadi_id)->first()->id;
 
-            $data = BarangProduksi::where('uuid', $uuid)->first();
+            $barangp = BarangProduksi::where('uuid', $uuid)->first();
+            $data = $request->only(['stok_jadi', 'barangjadi_id']);
 
-            foreach($request->barangproduksibarangmentahs as $item){
+            if ($barangp->update($data)) {
+
+                foreach($request->barangproduksibarangmentahs as $item){
                 $child = SatuanChild::find($item['satuan_id']);
 
                 $stok = $item['stok_digunakan'] * $child->nilai;
 
+                BarangProduksiBarangMentah::where('barang_produksi_id', $barangp->id)->delete();
+
                 BarangProduksiBarangMentah::create([
                     'barang_mentah_id' => $item['barang_mentah_id'],
                     'stok_digunakan' => $stok,
-                    'barang_produksi_id' => $data->id
+                    'barang_produksi_id' => $barangp->id
                 ]);
-            };
+            }
+        }
 
             return response()->json(['message' => 'Barang Produksi berhasil diperbarui']);
         } else {

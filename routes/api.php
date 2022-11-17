@@ -128,6 +128,7 @@ Route::prefix('v1')->group(function () {
             Route::post('paginate', [BarangSatuanJadiController::class, 'paginate']);
             Route::post('store', [BarangSatuanJadiController::class, 'store']);
             Route::get('{uuid}/edit', [BarangSatuanJadiController::class, 'edit']);
+            Route::get('{id}/child', [BarangSatuanJadiController::class, 'child']);
             Route::post('{uuid}/update', [BarangSatuanJadiController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangSatuanJadiController::class, 'destroy']);
         });

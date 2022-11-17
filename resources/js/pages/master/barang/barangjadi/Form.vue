@@ -86,7 +86,7 @@
           </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-3">
           <div class="mb-8">
             <label for="nm_satuan_jadi" class="form-label required">
               Satuan Jadi :
@@ -96,16 +96,46 @@
               name="barangsatuanjadi_id"
               placeholder="Pilih Nama Satuan Jadi"
               id="barangsatuanjadi_id"
+              @change="getChild()"
               v-model="form.barangsatuanjadi_id"
               required
             >
-              <option value="" disabled>Pilih Satuan</option>
+              <option value="" disabled>Pilih Satuan Jadi</option>
               <option
                 v-for="item in barangsatuanjadi"
                 :value="item.id"
                 :key="item.id"
               >
                 {{ item.nm_satuan_jadi }}
+              </option>
+            </select2>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="mb-8">
+            <label for="nm_satuan_child" class="form-label required">
+              Satuan :
+            </label>
+            <select2
+              class="form-control"
+              name="satuan"
+              placeholder="Pilih Satuan"
+              id="satuan"
+              v-model="form.satuan"
+              :disabled="
+                form.barangsatuanjadi_id == undefined ||
+                form.barangsatuanjadi_id == ''
+              "
+              required
+            >
+              <option value="" disabled>Pilih Satuan</option>
+              <option
+                v-for="item in satuan_jadi_child"
+                :value="item.id"
+                :key="item.id"
+              >
+                {{ item.nm_satuan_jadi_children }}
               </option>
             </select2>
           </div>
@@ -210,6 +240,7 @@ export default {
   data() {
     return {
       code: null,
+      satuan_jadi_child: [],
     };
   },
   setup({ selected }) {
@@ -295,6 +326,25 @@ export default {
       } else {
         app.form.barangjadikategoris.splice(index, 1);
       }
+    },
+
+    getChild() {
+      setTimeout(() => {
+        var app = this;
+        var id = app.form.barangsatuanjadi_id;
+        axios
+          .get(`barangsatuanjadi/${id}/child`)
+          .then((res) => {
+            app.satuan_jadi_child = res.data.data;
+
+            if (app.form.satuan_id != "" && app.form.satuan_id != undefined) {
+              app.form.satuan = app.form.satuan_id;
+            }
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
     },
 
     kd() {

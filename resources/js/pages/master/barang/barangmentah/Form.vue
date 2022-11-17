@@ -133,7 +133,7 @@
             >
               <option value="" disabled>Pilih Satuan</option>
               <option
-                v-for="item in satuan_child"
+                v-for="item in satuan_jadi_child"
                 :value="item.id"
                 :key="item.id"
               >
