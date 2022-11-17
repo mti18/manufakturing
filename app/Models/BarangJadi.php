@@ -12,7 +12,7 @@ class BarangJadi extends Model
     use Uuid;
     
 
-    protected $fillable = ['uuid', 'nm_barang_jadi', 'stok', 'barangsatuanjadi_id', 'gudang_id'];
+    protected $fillable = ['uuid', 'nm_barang_jadi', 'stok', 'barangsatuanjadi_id', 'gudang_id', 'kd_barang_jadi', 'foto'];
     protected $with = ['barangjadikategoris'];
 
     public function barangsatuanjadi()
@@ -28,5 +28,20 @@ class BarangJadi extends Model
     public function barangjadigudangs()
     {
         return $this->belongsTo(Gudang::class, 'gudang_id', 'id');
+    }
+
+    public function barangproduksibarangjadi()
+    {
+        return $this->hasMany(BarangProduksi::class, 'barangjadi_id', 'id');
+    }
+
+    public static function booted() {
+        parent::boot();
+
+        self::deleted(function ($model) {
+            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $model->foto)))) {
+                unlink(storage_path('app/public/' . str_replace('storage/', '', $model->foto)));
+            }
+        });
     }
 }

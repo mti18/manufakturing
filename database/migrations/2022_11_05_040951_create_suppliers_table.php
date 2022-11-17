@@ -25,7 +25,10 @@ return new class extends Migration
             $table->string('telp_kontak')->nullable();
             $table->string('alamat');
             $table->enum('tipe', ['supplier', 'customer']);
+<<<<<<<< HEAD:database/migrations/2022_11_05_040951_create_suppliers_table.php
 
+========
+>>>>>>>> refs/remotes/origin/master:database/migrations/2022_11_04_040951_create_suppliers_table.php
             $table->integer('provinsi_id')->unsigned();
             $table->foreign('provinsi_id')->references('id')->on('provinsis')->onDelete('restrict');
             $table->integer('kab_kota_id')->unsigned();

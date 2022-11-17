@@ -20,7 +20,7 @@ return new class extends Migration
             $table->bigInteger('stok')->default(0);
 
             $table->BigInteger('barangsatuan_id')->unsigned()->nullable();
-            $table->foreign('barangsatuan_id')->references('id')->on('barang_satuans')->onDelete('cascade');
+            $table->foreign('barangsatuan_id')->references('id')->on('barang_satuans')->onDelete('restrict');
             
             
 

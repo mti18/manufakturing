@@ -20,7 +20,7 @@
         <div class="col-4">
           <label for="name" class="form-label required"> Avatar : </label>
           <file-upload :files="selected && form?.avatar ? `/${form.avatar}` : file" :allow-multiple="false"
-            v-on:updatefiles="onUpdateFiles" labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>' required
+            v-on:updatefiles="onUpdateFiles" labelIdle='Drag & Drop your files or <span class="filepond-label-action">Browse</span>' required
             :accepted-file-types="['image/*']"></file-upload>
         </div>
         <div class="col-8">

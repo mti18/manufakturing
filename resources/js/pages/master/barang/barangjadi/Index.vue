@@ -59,8 +59,20 @@ export default {
         },
         cell: (cell) => cell.getValue(),
       }),
+      columnHelper.accessor("foto", {
+        header: "Foto",
+        cell: (cell) =>
+          h("img", {
+            src: asset(cell.getValue()),
+            width: 100,
+          }),
+      }),
       columnHelper.accessor("nm_barang_jadi", {
         header: "Barang Jadi",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("kd_barang_jadi", {
+        header: "Kode",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("stokbarang", {

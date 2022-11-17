@@ -63,10 +63,10 @@ export default {
         header: "Nama Gudang",
         cell: (cell) => cell.getValue(),
       }),
-      //   columnHelper.accessor("kode", {
-      //     header: "Kode",
-      //     cell: (cell) => cell.getValue(),
-      //   }),
+      columnHelper.accessor("kode", {
+        header: "Kode",
+        cell: (cell) => cell.getValue(),
+      }),
       columnHelper.accessor("uuid", {
         header: "Aksi",
         cell: (cell) =>

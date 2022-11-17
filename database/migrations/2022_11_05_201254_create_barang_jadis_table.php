@@ -20,7 +20,7 @@ return new class extends Migration
             $table->bigInteger('stok')->default(0);
 
             $table->BigInteger('barangsatuanjadi_id')->unsigned()->nullable();
-            $table->foreign('barangsatuanjadi_id')->references('id')->on('barang_satuan_jadis')->onDelete('cascade');
+            $table->foreign('barangsatuanjadi_id')->references('id')->on('barang_satuan_jadis')->onDelete('restrict');
 
             $table->timestamps();
         });

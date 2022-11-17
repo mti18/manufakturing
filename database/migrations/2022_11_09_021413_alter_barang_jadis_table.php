@@ -17,8 +17,9 @@ return new class extends Migration
             $table->BigInteger('gudang_id')->unsigned()->nullable();
             $table->foreign('gudang_id')->references('id')->on('gudangs')->onDelete('restrict');
 
-            $table->double('harga', 12, 2);
+            $table->double('harga', 12, 2)->nullable();
             $table->string('kd_barang_jadi');
+            $table->string('foto');
         });
     }
 
@@ -35,6 +36,8 @@ return new class extends Migration
 
             $table->dropColumn('harga');
             $table->dropColumn('kd_barang_jadi');
+            $table->dropColumn('foto');
+
         });
     }
 };

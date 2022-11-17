@@ -20,6 +20,7 @@ class BarangMentahController extends Controller
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = BarangMentah::with(['barangmentahgudangs', 'barangsatuan'])->where(function ($q) use ($request) {
                 $q->where('nm_barangmentah', 'LIKE', '%' . $request->search . '%');
+                $q->orwhere('kd_barang_mentah', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
             
@@ -30,19 +31,17 @@ class BarangMentahController extends Controller
                     $a->kategoribadges .= $item->nm_kategori . ', ';
                 }
 
-                // $a->stok = $a->barangsatuan->array_map('map',$child)->
-
                 if(!empty($a->barangmentahgudangs)){
                     $a->nm_gudang = $a->barangmentahgudangs->nm_gudang;
                 } else {
                     $a->nm_gudang = "Belum ada gudang";
                 }
 
-                // $a->gudangbadges="";
-                // foreach($a->gudang as $item){
-                //     $a->gudangbadges .= $item->nm_gudang;
-                // }
+                $a->stokbarang = $a->stok . ' ' . $a->barangsatuan->child[6]->nm_satuan_children;
+
+
             });
+            
 
             return response()->json($courses);
         } else {
@@ -69,7 +68,11 @@ class BarangMentahController extends Controller
                 'satuan' => 'required',
                 'barangsatuan_id' => 'required',
                 'gudang_id' => 'required',
-                'barangmentahkategoris' => 'required|array',      
+                'barangmentahkategoris' => 'required|array',
+                'kd_barang_mentah' => 'required|string',    
+                // 'harga' => 'required|decimal',   
+                'foto' => 'required|image',
+ 
             ]); 
 
             $child = SatuanChild::find($data['satuan']);
@@ -80,10 +83,12 @@ class BarangMentahController extends Controller
             
             $data['stok'] = $stok;
             
-            // return RestApi::error('error', 404, $data);
             unset($data['satuan']);
 
             $data['gudang'] = Gudang::where('id', $request->gudang_id)->first()->id;
+
+            $data['foto'] = 'storage/' . $request->foto->store('barangmentah', 'public');
+
 
             $data = BarangMentah::create($data);
             
@@ -91,7 +96,7 @@ class BarangMentahController extends Controller
             
             foreach($request->barangmentahkategoris as $item){
                 BarangMentahKategori::create([
-                    'kategori_id' => $item['id'],
+                    'kategori_id' => $item,
                     'barang_mentah_id' => $data->id
                 ]);
             }
@@ -132,33 +137,42 @@ class BarangMentahController extends Controller
                 'barangsatuan_id' => 'required',
                 'gudang_id' => 'required',
                 'barangmentahkategoris' => 'required|array',
-
+                'kd_barang_mentah' => 'required|string',
+                'foto' => 'required|image',
+    
             ]);
 
             $child = SatuanChild::find($data['satuan']);
             
             $stok = $data['stok'];
-
+            
             $stok = $stok * $child->nilai;
             
             $data['stok'] = $stok;
-
+            
             unset($request->satuan_id);
             unset($request->satuan);
-
+            
             $data['gudang'] = Gudang::where('id', $request->gudang_id)->first()->id;
+            
+            $bm = BarangMentah::where('uuid', $uuid)->first();
+            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $bm->foto)))) {
+                unlink(storage_path('app/public/' . str_replace('storage/', '', $bm->foto)));
+            }
+
            
-            $data =  BarangMentah::where('uuid', $uuid)->first();
+            $barangm =  BarangMentah::where('uuid', $uuid)->first();
+            $data = $request->only(['stok', 'barangsatuan_id', 'nm_barangmentah', 'gudang_id', 'kd_barang_mentah']);
+            $data['foto'] = 'storage/' . $request->foto->store('barangmentah', 'public');
 
-            // return RestApi::error('', 404, $data);
-            if ($data->update($request->only(['stok', 'barangsatuan_id', 'nm_barangmentah', 'gudang_id']))) {
+            if ($barangm->update($data)) {
 
-                BarangMentahKategori::where('barang_mentah_id', $data->id)->delete();
+                BarangMentahKategori::where('barang_mentah_id', $barangm->id)->delete();
 
                 foreach($request->barangmentahkategoris as $item){
                     BarangMentahKategori::create([
-                        'kategori_id' => $item['id'],
-                        'barang_mentah_id' => $data->id
+                        'kategori_id' => $item,
+                        'barang_mentah_id' => $barangm->id
                     ]);
                 }
 
@@ -173,10 +187,46 @@ class BarangMentahController extends Controller
 
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            BarangMentah::where('uuid', $uuid)->delete();
+            $barangmentah = BarangMentah::where('uuid', $uuid)->first();
+            $barangmentah->delete();
             return response()->json(['message' => 'Barang Mentah berhasil dihapus']);
         } else {
             return abort(404);
         }
     }
+
+    
+    public function getcode()
+    {
+        $data = BarangMentah::pluck('kd_barang_mentah')->toArray();
+        $a = [];
+
+        foreach($data as $item){
+              $exp = explode("-", $item);
+              $a[] = $exp[1];
+        }
+
+        
+        if(count($a) > 0){
+            sort($a);
+            $start = 1;
+            for ($i=0; $i < count($a); $i++) { 
+                if((int)$a[$i] != $start){
+                    return str_pad($start,4,"0",STR_PAD_LEFT);
+                }
+                $start++;
+            }
+            return str_pad($start,4,"0",STR_PAD_LEFT);
+            
+        }
+        return str_pad('1',4,"0",STR_PAD_LEFT);
+    }
+    
+    public function getcodebyid($id)
+    {
+        $data = BarangMentah::findByUuid($id)->kd_barang_mentah;
+        $exp = explode("-",$data);
+        return $exp[1];
+    }
 }
+
