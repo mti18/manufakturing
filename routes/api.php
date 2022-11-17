@@ -22,6 +22,9 @@ use App\Http\Controllers\KotaController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\KelompokController;
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\JenisAssetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,15 +111,18 @@ Route::prefix('v1')->group(function () {
             Route::get('get', [SupplierController::class, 'get']);
             Route::post('paginate', [SupplierController::class, 'paginate']);
             Route::post('store', [SupplierController::class, 'store']);
+            Route::get('getcode', [SupplierController::class, 'getcode']);
+            Route::get('{id}/getcode', [SupplierController::class, 'getcodebyid']);
             Route::get('{uuid}/edit', [SupplierController::class, 'edit']);
             Route::post('{uuid}/update', [SupplierController::class, 'update']);
             Route::delete('{uuid}/destroy', [SupplierController::class, 'destroy']);
-            Route::get('getcode', [SupplierController::class, 'getcode']);
         });  
         Route::prefix('customer')->group(function () {
             Route::get('get', [CustomerController::class, 'get']);
             Route::post('paginate', [CustomerController::class, 'paginate']);
             Route::post('store', [CustomerController::class, 'store']);
+            Route::get('getcode', [CustomerController::class, 'getcode']);
+            Route::get('{id}/getcode', [CustomerController::class, 'getcodebyid']);
             Route::get('{uuid}/edit', [CustomerController::class, 'edit']);
             Route::post('{uuid}/update', [CustomerController::class, 'update']);
             Route::delete('{uuid}/destroy', [CustomerController::class, 'destroy']);
@@ -200,6 +206,33 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [GudangController::class, 'edit']);
             Route::post('{uuid}/update', [GudangController::class, 'update']);
             Route::delete('{uuid}/destroy', [GudangController::class, 'destroy']);
+        });
+
+        Route::prefix('kelompok')->group(function () {
+            Route::get('get', [KelompokController::class, 'get']);
+            Route::post('paginate', [KelompokController::class, 'paginate']);
+            Route::post('store', [KelompokController::class, 'store']);
+            Route::get('{uuid}/edit', [KelompokController::class, 'edit']);
+            Route::post('{uuid}/update', [KelompokController::class, 'update']);
+            Route::delete('{uuid}/destroy', [KelompokController::class, 'destroy']);
+        });
+
+        Route::prefix('asset')->group(function () {
+            Route::get('get', [AssetController::class, 'get']);
+            Route::post('paginate', [AssetController::class, 'paginate']);
+            Route::post('store', [AssetController::class, 'store']);
+            Route::get('{uuid}/edit', [AssetController::class, 'edit']);
+            Route::post('{uuid}/update', [AssetController::class, 'update']);
+            Route::delete('{uuid}/destroy', [AssetController::class, 'destroy']);
+        });
+
+        Route::prefix('jenisasset')->group(function () {
+            Route::get('get', [JenisAssetController::class, 'get']);
+            Route::post('paginate', [JenisAssetController::class, 'paginate']);
+            Route::post('store', [JenisAssetController::class, 'store']);
+            Route::get('{uuid}/edit', [JenisAssetController::class, 'edit']);
+            Route::post('{uuid}/update', [JenisAssetController::class, 'update']);
+            Route::delete('{uuid}/destroy', [JenisAssetController::class, 'destroy']);
         });
     });
 });

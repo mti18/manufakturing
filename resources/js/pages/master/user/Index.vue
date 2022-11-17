@@ -33,6 +33,7 @@ export default {
   setup() {
     const selected = ref();
     const openForm = ref(false);
+
     const columns = [
       columnHelper.accessor("nomor", {
         header: "#",
