@@ -117,4 +117,37 @@ class CustomerController extends Controller
             return abort(404);
         }
     }
+
+    public function getcodebyid($id)
+    {
+        $data = Supplier::findByUuid($id)->kode;
+        $exp = explode("-",$data);
+        return $exp[1];
+    }
+
+    public function getcode()
+    {
+        $data = Supplier::where('tipe', 'customer')->pluck('kode')->toArray();
+        $a = [];
+
+        foreach($data as $item){
+              $exp = explode("-", $item);
+              $a[] = $exp[1];
+        }
+
+        
+        if(count($a) > 0){
+            sort($a);
+            $start = 1;
+            for ($i=0; $i < count($a); $i++) { 
+                if((int)$a[$i] != $start){
+                    return str_pad($start,4,"0",STR_PAD_LEFT);
+                }
+                $start++;
+            }
+            return str_pad($start,4,"0",STR_PAD_LEFT);
+            
+        }
+        return str_pad('1',4,"0",STR_PAD_LEFT);
+    }
 }

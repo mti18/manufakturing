@@ -3,7 +3,7 @@
     <div class="card-header">
       <div class="card-title w-100">
         <h3>
-          {{ supplier?.uuid ? `Edit Customer : ${supplier.name}` : "Tambah Data Customer"  }}
+          {{ supplier?.uuid ? `Edit Customer : ${supplier.nama}` : "Tambah Data Customer"  }}
         </h3>
         <button
           type="button"
@@ -21,7 +21,7 @@
           <div class="mb-8">
             <label for="name" class="form-label required"> Nama : </label>
             <input type="text" name="nama" id="nama" placeholder="Nama Supplier"
-              class="form-control" required autoComplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z]/g,'')"
+              class="form-control" required autoComplete="off"
               @input.prevent="kd" v-model="form.nama" />
           </div>
         </div>
@@ -117,6 +117,13 @@ export default {
       default: null,
     }
   },
+
+  data() {
+    return {
+      code: null,
+    };
+  },
+
   setup({ selected }) {
     const queryClient = useQueryClient();
     const form = ref({});
@@ -169,45 +176,32 @@ export default {
   },
   methods: {
 
-    getcode() {
-        this.$http
-          .get("supplier/getcode")
-          .then((res) => {
-            console.log(res.data)
-            this.code = res.data;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      },
-
-
-      kd: _.debounce(function () {
-        var vm = this;
-        var myString = this.form.nama;
-        var splits = myString.split(" ");
-        var codes = "";
-        for (var i = 0; i < splits.length; i++) {
-          if (splits[i][0]) {
-            codes = codes + splits[i][0];
-          }
+    kd: _.debounce(function () {
+      var vm = this;
+      var myString = this.form.nama;
+      var splits = myString.split(" ");
+      var codes = "";
+      for (var i = 0; i < splits.length; i++) {
+        if (splits[i][0]) {
+          codes = codes + splits[i][0];
         }
-        if (this.type == "store") {
-          if (codes != "") {
-            vm.kode =
-              codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
-            vm.form.kode = vm.kode;
-            $(".codes").val(vm.kode);
-          } else {
-            vm.kode = "";
-            vm.form.kode = vm.kode;
-            $(".codes").val(vm.kode);
-          }
+      }
+      if (this.type == "store") {
+        if (codes != "") {
+          vm.kode =
+            codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
+          vm.form.kode = vm.kode;
+          $(".codes").val(vm.kode);
         } else {
-          if (codes != "") {
-            vm.kode =
-              "C" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
-            vm.form.kode = vm.kode;
+          vm.kode = "";
+          vm.form.kode = vm.kode;
+          $(".codes").val(vm.kode);
+        }
+      } else {
+        if (codes != "") {
+          vm.kode =
+            "S" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
+          vm.form.kode = vm.kode;
             $(".codes").val(vm.kode);
           } else {
             vm.kode = "";
@@ -216,6 +210,30 @@ export default {
           }
         }
       }, 1000),
+
+    getcode() {
+      this.$http
+        .get("customer/getcode")
+        .then((res) => {
+          console.log(res.data)
+          this.code = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    editGetcode() {
+      this.$http
+        .get("customer/" + this.selected + "/getcode")
+         .then((res) => {
+          console.log(res.data);
+          this.code = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
 
     onUpdateFiles(files) {
       this.file = files;
@@ -235,8 +253,12 @@ export default {
   },
 
   mounted() {
+    if (!this.selected) {
       this.getcode();
-    },
+      return;
+    }
+    this.editGetcode();
+  },
   
 };
 </script>

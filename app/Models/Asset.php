@@ -2,28 +2,31 @@
 
 namespace App\Models;
 
-use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Traits\Uuid;
 
 class Asset extends Model
 {
     use HasFactory;
     use Uuid;
-    protected $table = "asset";
 
-    protected $fillable = [
-        'uuid', 'nm_asset', 'number', 'price', 'golongan_id', 'asset_group_id'
-    ];
 
-    public function Golongan()
+    protected $fillable = ['uuid', 'nm_assets', 'tahun', 'kelompok_id', 'jumlah', 'profile_id', 'jenisasset_id'];
+
+    public function kelompok()
     {
-        return $this->belongsTo('\App\Models\Golongan', 'golongan_id');
+        return $this->belongsTo(Kelompok::class, 'kelompok_id', 'id');
     }
 
-    public function AssetGroup()
+    public function jenisasset()
     {
-        return $this->belongsTo('\App\Models\AssetGroup', 'asset_group_id');
+        return $this->belongsTo(JenisAsset::class, 'jenisasset_id', 'id');
+    }
+
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class, 'profile_id', 'id');
+
     }
 }

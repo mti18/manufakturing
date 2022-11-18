@@ -27,6 +27,9 @@ class ProfileController extends Controller
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
+                'logo' => 'required|image',
+                'kop' => 'nullable|image',
+                'ttd' => 'nullable|image',
                 'nama' => 'required|string',
                 'telepon' => 'required|numeric', 
                 'pimpinan' => 'required|string',
@@ -39,9 +42,16 @@ class ProfileController extends Controller
                 'kelurahan_id' => 'required|integer',
             ]);
 
-            Profile::create($request->all());
+            
+            $data['logo'] = 'storage/' . $request->logo->store('profile', 'public');
+            $data['kop'] = 'storage/' . $request->kop->store('profile', 'public');
+            $data['ttd'] = 'storage/' . $request->ttd->store('profile', 'public');
 
-            return response()->json(['message' => 'Data customer berhasil diperbarui']);
+            $profile = Profile::create($data);
+
+            return response()->json([
+                'message' => 'Profile baru berhasil ditambahkan',
+            ]);
         } else {
             return abort(404);
         }
@@ -65,9 +75,14 @@ class ProfileController extends Controller
         }
     }
 
-    public function update(Request $request, $uuid) {
+    public function update(Request $request, $uuid) {  
         if (request()->wantsJson() && request()->ajax()) {
+            $profile = Profile::where('uuid', $uuid)->first();
+
             $data = $request->validate([
+                'logo' => 'required|image',
+                'kop' => 'required|image',
+                'ttd' => 'required|image',
                 'nama' => 'required|string',
                 'telepon' => 'required|numeric', 
                 'pimpinan' => 'required|string',
@@ -79,9 +94,28 @@ class ProfileController extends Controller
                 'kecamatan_id' => 'required|integer',
                 'kelurahan_id' => 'required|integer',
             ]);
-            Profile::where('uuid', $uuid)->update($data);
 
-            return response()->json(['message' => 'Data customer berhasil diperbarui']);
+            $profile = Profile::where('uuid', $uuid)->first();
+                if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $profile->logo)))) {
+                    unlink(storage_path('app/public/' . str_replace('storage/', '', $profile->logo)));
+                }
+                if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $profile->kop)))) {
+                    unlink(storage_path('app/public/' . str_replace('storage/', '', $profile->kop)));
+                }
+                if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $profile->ttd)))) {
+                    unlink(storage_path('app/public/' . str_replace('storage/', '', $profile->ttd)));
+                }
+
+            $data['logo'] = 'storage/' . $request->logo->store('profile', 'public');
+            $data['kop'] = 'storage/' . $request->kop->store('profile', 'public');
+            $data['ttd'] = 'storage/' . $request->ttd->store('profile', 'public');
+
+
+            $profile->update($data);
+
+            return response()->json([
+                'message' => $profile->nama . ' berhasil diperbarui',
+            ]);
         } else {
             return abort(404);
         }
@@ -89,8 +123,9 @@ class ProfileController extends Controller
 
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            Profile::where('uuid', $uuid)->delete();
-            return response()->json(['message' => 'Data customer berhasil dihapus']);
+            $profile = Profile::where('uuid', $uuid)->first();
+            $profile->delete();
+            return response()->json(['message' => 'Profile berhasil dihapus']);
         } else {
             return abort(404);
         }

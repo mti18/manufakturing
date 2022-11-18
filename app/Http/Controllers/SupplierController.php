@@ -120,10 +120,23 @@ class SupplierController extends Controller
         }
     }
 
+    public function getcodebyid($id)
+    {
+        $data = Supplier::findByUuid($id)->kode;
+        $exp = explode("-",$data);
+        return $exp[1];
+    }
+
     public function getcode()
     {
-        
-        $a = Supplier::pluck('kode')->toArray();
+        $data = Supplier::where('tipe', 'supplier')->pluck('kode')->toArray();
+        $a = [];
+
+        foreach($data as $item){
+              $exp = explode("-", $item);
+              $a[] = $exp[1];
+        }
+
         
         if(count($a) > 0){
             sort($a);
@@ -139,9 +152,5 @@ class SupplierController extends Controller
         }
         return str_pad('1',4,"0",STR_PAD_LEFT);
     }
-
-
-
-
 
 }
