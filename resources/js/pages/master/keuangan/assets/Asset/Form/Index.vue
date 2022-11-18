@@ -8,6 +8,13 @@
           <button
             type="button"
             class="btn btn-light-danger btn-sm ms-auto"
+          >
+            
+            
+          </button>
+          <button
+            type="button"
+            class="btn btn-light-danger btn-sm ms-auto"
             @click="($parent.openForm = false, $parent.selected = undefined)"
           >
             <i class="las la-times-circle"></i>
@@ -16,6 +23,7 @@
         </div>
       </div>
       <div class="card-body">
+        <!------- form ------------>
         <div class="row">
           <div class="col-6">
             <div class="mb-10">
@@ -53,17 +61,22 @@
               <label for="code" class="form-label required"> Tahun : </label>
               <select2 name="tahun" id="tahun"
                 class="form-control" required autoComplete="off" v-model="form.tahun" >
-                <option v-for="tahun in tahuns"
+                <option
+                v-for="tahun in tahuns"
                 :value="tahun.id"
-                :data="tahun">{{ tahun }}</option>
+                :data="tahun"
+                :key="tahun.uuid">
+                {{ tahun }}
+                </option>
               </select2>
             </div>
           </div>
           <div class="col-2" style="width: 20.6%">
             <div class="mb-8">
               <label for="code" class="form-label required"> Kelompok : </label>
-              <select2 name="kelompok_id" id="kelompok_id"
+              <select2 name="kelompok_id" id="kelompok_id" @change="tarif($event)"
                 class="form-control" required autoComplete="off" v-model="form.kelompok_id" >
+                <option disabled>Pilih</option>
                 <option v-for="kelompok in kelompoks" :value="kelompok.id" :key="kelompok.uuid">{{ kelompok.nama }}</option>
               </select2>
             </div>
@@ -72,7 +85,7 @@
             <div class="mb-8">
               <label for="code" class="form-label required"> Tarif Penyusutan : </label>
               <input type="text" name="tarif" id="tarif" placeholder="Kode"
-                class="form-control" required autoComplete="off" v-model="form.tarif" />
+                class="form-control" required readonly autoComplete="off" v-model="form.tarif" />
             </div>
           </div>
           <div class="col-1" style="width: 11%">
@@ -106,6 +119,11 @@
   import { useQueryClient } from "vue-query";
   
   export default {
+    data() {
+      return {
+        tahuns: [],
+      };
+    },
     props: {
       selected: {
         type: String,
@@ -151,6 +169,7 @@
       const { data: jenisasset } = useQuery(["jenisasset"], () => axios.get("/jenisasset/get").then((res) => res.data), {
       placeholderData: []
       });
+      
   
       return {
         asset,
@@ -163,6 +182,19 @@
       }
     },
     methods: {
+
+      profile(e){
+        var app=this;
+        var index = app.kelompoks.findIndex((cat) => cat.id==e);
+        app.form.tarif = app.kelompoks[index].tarif;
+      },
+
+      tarif(e){
+        var app=this;
+        var index = app.kelompoks.findIndex((cat) => cat.id==e);
+        app.form.tarif = app.kelompoks[index].tarif;
+      },
+
       onUpdateFiles(files) {
         this.file = files;
       },
@@ -181,7 +213,7 @@
 
       getTahun(){
         var app = this;
-        app.tahuns = _.range(new Date().getFullYear(), 1999);
+        app.tahuns = _.range(new Date().getFullYear(), 1990);
 
       },
     },
