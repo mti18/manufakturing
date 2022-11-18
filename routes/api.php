@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetGroupController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BulanController;
@@ -266,6 +267,22 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [AssetGroupController::class, 'edit']);
             Route::post('{uuid}/update', [AssetGroupController::class, 'update']);
             Route::delete('{uuid}/destroy', [AssetGroupController::class, 'destroy']);
+        });
+        Route::prefix('asset')->group(function () {
+            Route::get('get', [AssetController::class, 'get']);
+            Route::post('paginate', [AssetController::class, 'paginate']);
+            Route::post('store', [AssetController::class, 'store']);
+            Route::get('{uuid}/edit', [AssetController::class, 'edit']);
+            Route::post('{uuid}/update', [AssetController::class, 'update']);
+            Route::delete('{uuid}/destroy', [AssetController::class, 'destroy']);
+        });
+        Route::prefix('masterjurnal')->group(function () {
+            Route::get('get', [AssetController::class, 'get']);
+            Route::post('paginate', [AssetController::class, 'paginate']);
+            Route::post('store', [AssetController::class, 'store']);
+            Route::get('{uuid}/edit', [AssetController::class, 'edit']);
+            Route::post('{uuid}/update', [AssetController::class, 'update']);
+            Route::delete('{uuid}/destroy', [AssetController::class, 'destroy']);
         });
 
     });

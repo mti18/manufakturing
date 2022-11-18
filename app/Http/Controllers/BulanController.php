@@ -38,7 +38,7 @@ class BulanController extends Controller
 
             ]);
            
-            $data = Bulan::create($request->only(['bulan']));
+            $data = Bulan::create($data->only(['bulan']));
 
 
 
