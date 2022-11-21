@@ -53,8 +53,14 @@ class MenuSeeder extends Seeder
                         ['name' => 'Kategori', 'url' => '/master/barang/kategori', 'route' => 'dashboard.master.barang.kategori', 'icon' => 'aeaf', 'component' => 'master/barang/kategori/Index'],
                         ['name' => 'Barang Jadi', 'url' => '/master/barang/barangjadi', 'route' => 'dashboard.master.barang.barangjadi', 'icon' => 'poiu', 'component' => 'master/barang/barangjadi/Index'],
                         ['name' => 'Gudang', 'url' => '/master/barang/gudang', 'route' => 'dashboard.master.barang.gudang', 'icon' => 'pojh', 'component' => 'master/barang/gudang/Index'],
-                    ]],
+                    ]], 
                 ]],
+                ['name' => 'Setting', 'route' => 'dashboard.setting', 'icon' => 'las fa-database fs-2', 'children' => [
+                    ['name' => 'Config', 'route' => 'dashboard.setting.config', 'icon' => 'fas fa-box-open', 'children' => [
+                        ['name' => 'Profile', 'url' => '/setting/config/profile', 'route' => 'dashboard.setting.config.profile', 'icon' => 'pojh', 'component' => 'setting/config/profile/Index'],
+                    ]], 
+                ]],
+                ['name' => 'Sales Order', 'url' => '/salesorder', 'route' => 'dashboard.salesorder', 'component' => 'salesorder/Index', 'icon' => 'las la-home fs-2'],
             ]]
         ];
 

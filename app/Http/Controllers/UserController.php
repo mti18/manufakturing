@@ -63,6 +63,15 @@ class UserController extends Controller
         }
     }
 
+    public function get() {
+        if (request()->wantsJson()) {
+            $data = User::all();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
+
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = User::where('uuid', $uuid)->first();
