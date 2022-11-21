@@ -14,14 +14,19 @@ class BarangSatuanJadi extends Model
     protected $fillable = ['uuid', 'nm_satuan_jadi'];
     protected $with = ['child'];
 
-    public function barangjadi()
-    {
-        return $this->hasMany(BarangJadi::class, 'barangsatuanjadi_id', 'id');
-    }    
-
     public function child()
     {
         return $this->hasMany(SatuanJadiChild::class, 'barangsatuanjadi_id', 'id');
     }
+
+    public function barangjadi()
+    {
+        return $this->hasMany(BarangJadi::class, 'barangsatuanjadi_id', 'id');
+    }    
+    
+    public function barangproduksi()
+    {
+        return $this->hasMany(BarangProduksi::class, 'barangsatuanjadi_id', 'id');
+    }    
 
 }

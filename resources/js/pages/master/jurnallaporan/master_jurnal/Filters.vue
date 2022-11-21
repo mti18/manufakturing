@@ -75,22 +75,15 @@
       };
     },
     methods: {
-      filterValidate() {
-        var vm = this;
-  
-        if (
-          vm.$parent.formFilter.start_date != undefined &&
-          vm.$parent.formFilter.end_date != undefined
-        ) {
-          vm.$parent.setShowPaginate();
-        }
-      },
+
       sendFilter() {
         var app = this;
+        
+        
         if (app.formRequest.bulan == "" || app.formRequest.tahun == "") {
           app.$toast.error("Bulan dan Tahun harus diisi");
         } else {
-          app.$parent.setShowPaginate(
+          app.$parent.openFilters = false;(
             app.formRequest.bulan,
             app.formRequest.tahun
           );

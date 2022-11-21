@@ -37,7 +37,7 @@ class TahunController extends Controller
 
             ]);
            
-            $data = Tahun::create($request->only(['tahun']));
+            $data = Tahun::create($data->only(['tahun']));
 
 
 

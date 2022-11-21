@@ -215,6 +215,7 @@ Route::prefix('v1')->group(function () {
             Route::post('paginate', [GudangController::class, 'paginate']);
             Route::post('store', [GudangController::class, 'store']);
             Route::get('getcode', [GudangController::class, 'getcode']);
+            Route::get('{id}/rak', [GudangController::class, 'rak']);
             Route::get('{uuid}/edit', [GudangController::class, 'edit']);
             Route::post('{uuid}/update', [GudangController::class, 'update']);
             Route::delete('{uuid}/destroy', [GudangController::class, 'destroy']);
@@ -227,7 +228,6 @@ Route::prefix('v1')->group(function () {
             Route::get('getcode', [BarangMentahController::class, 'getcode']);
             Route::get('{id}/getcode', [BarangMentahController::class, 'getcodebyid']);
             Route::get('{uuid}/edit', [BarangMentahController::class, 'edit']);
-            Route::get('{id}/child', [BarangMentahController::class, 'child']);
             Route::post('{uuid}/update', [BarangMentahController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangMentahController::class, 'destroy']);
         });
@@ -250,6 +250,7 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [BarangProduksiController::class, 'edit']);
             Route::post('{uuid}/update', [BarangProduksiController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangProduksiController::class, 'destroy']);
+            Route::delete('{uuid}/produce', [BarangProduksiController::class, 'produce']);
         });
 
         Route::prefix('kelompok')->group(function () {
@@ -310,5 +311,14 @@ Route::prefix('v1')->group(function () {
             Route::post('{uuid}/update', [SalesOrderController::class, 'update']);
             Route::delete('{uuid}/destroy', [SalesOrderController::class, 'destroy']);
         });
+        Route::prefix('masterjurnal')->group(function () {
+            Route::get('get', [AssetController::class, 'get']);
+            Route::post('paginate', [AssetController::class, 'paginate']);
+            Route::post('store', [AssetController::class, 'store']);
+            Route::get('{uuid}/edit', [AssetController::class, 'edit']);
+            Route::post('{uuid}/update', [AssetController::class, 'update']);
+            Route::delete('{uuid}/destroy', [AssetController::class, 'destroy']);
+        });
+
     });
 });

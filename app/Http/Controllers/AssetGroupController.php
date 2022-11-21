@@ -43,7 +43,7 @@ class AssetGroupController extends Controller
 
 
 
-            return response()->json(['message' => ' AssetGroup berhasil diperbarui']);
+            return response()->json(['message' => ' AssetGroup berhasil ditambahkan']);
         } else {
             return abort(404);
         }

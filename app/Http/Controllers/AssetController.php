@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Models\Asset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Asset;
+
 
 class AssetController extends Controller
 {
@@ -15,6 +17,7 @@ class AssetController extends Controller
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = Asset::where(function ($q) use ($request) {
+
                 $q->where('nama', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
@@ -96,7 +99,7 @@ class AssetController extends Controller
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             Asset::where('uuid', $uuid)->delete();
-            return response()->json(['message' => 'Jabatan berhasil dihapus']);
+         return response()->json(['message' => 'Jabatan berhasil dihapus']);
         } else {
             return abort(404);
         }

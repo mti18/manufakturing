@@ -7,6 +7,7 @@ use App\Models\BarangJadi;
 use App\Models\BarangJadiKategori;
 use App\Models\BarangSatuanJadi;
 use App\Models\Gudang;
+use App\Models\Rak;
 use App\Models\SatuanJadiChild;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +20,8 @@ class BarangJadiController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = BarangJadi::with(['barangjadigudangs', 'barangsatuanjadi'])->where(function ($q) use ($request) {
-                $q->where('nm_barang_jadi', 'LIKE', '%' . $request->search . '%');
+            $courses = BarangJadi::with(['barangjadigudangs', 'rakbarangjadi', 'barangsatuanjadi'])->where(function ($q) use ($request) {
+            $q->where('nm_barang_jadi', 'LIKE', '%' . $request->search . '%');
                 $q->orwhere('kd_barang_jadi', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
@@ -32,13 +33,15 @@ class BarangJadiController extends Controller
                     $a->kategoribadges .= $item->nm_kategori . ', ';
                 }
 
-                $a->stokbarang = $a->stok . ' ' . $a->barangsatuanjadi->nm_satuan_jadi;
-
+                $a->stokbarang = $a->stok . ' ' . $a->barangsatuanjadi->child[0]->nm_satuan_jadi_children;
+                
                 if(!empty($a->barangjadigudangs)){
                     $a->nm_gudang = $a->barangjadigudangs->nm_gudang;
                 } else {
                     $a->nm_gudang = "Belum ada gudang";
                 }
+
+                $a->nm_rak = $a->rakbarangjadi->nm_rak;
             });
 
             return response()->json($courses);
@@ -47,11 +50,7 @@ class BarangJadiController extends Controller
         }
     }
 
-    public function child($id)
-    {
-        $data = SatuanJadiChild::where('barangsatuanjadi_id', $id)->get();
-        return RestApi::success($data);
-    }
+
 
     public function stok($id)
     {
@@ -65,6 +64,7 @@ class BarangJadiController extends Controller
                 'stok' => 'required|numeric',
                 'barangsatuanjadi_id' => 'required',
                 'satuan' => 'required',
+                'rak_id' => 'required',
                 'gudang_id' => 'required',
                 'barangjadikategoris' => 'required|array',
                 'kd_barang_jadi' => 'required|string',
@@ -116,6 +116,13 @@ class BarangJadiController extends Controller
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = BarangJadi::where('uuid', $uuid)->first();
+
+            // $satuan = SatuanJadiChild::where('barangsatuanjadi_id', $data->barangsatuanjadi_id)->orderBy('nilai', 'ASC')->first();
+            // $data->satuan_id = $satuan->id;
+
+            $rak = Rak::where('gudang_id', $data->gudang_id)->first();
+            $data->rak_id = $rak->id;
+
             return response()->json($data);
         } else {
             return abort(404);
@@ -127,9 +134,10 @@ class BarangJadiController extends Controller
             $data = $request->validate([
                 'nm_barang_jadi' => 'required|string',
                 'stok' => 'required|numeric',
-                'satuan' => 'required',
                 'barangsatuanjadi_id' => 'required',
+                'satuan' => 'required',
                 'gudang_id' => 'required',
+                'rak_id' => 'required',
                 'barangjadikategoris' => 'required|array',
                 'kd_barang_jadi' => 'required|string',
                 'foto' => 'required|image',
@@ -137,14 +145,22 @@ class BarangJadiController extends Controller
             ]);
 
             $child = SatuanJadiChild::find($data['satuan']);
+
+            // return $child;
             
             $stok = $data['stok'];
 
             $stok = $stok * $child->nilai;
             
             $data['stok'] = $stok;
+            $request->merge([
+                'stok' => $stok
+            ]);
             
-            unset($data['satuan']);
+            unset($request->satuan_id);
+            unset($request->satuan);
+
+            
 
             $data['barangsatuanjadi'] = BarangSatuanJadi::where('id', $request->barangsatuanjadi_id)->first()->id;
 
@@ -157,7 +173,7 @@ class BarangJadiController extends Controller
 
 
             $barangj = BarangJadi::where('uuid', $uuid)->first();
-            $data = $request->only(['stok', 'barangsatuanjadi_id', 'nm_barangjadi', 'gudang_id', 'kd_barang_jadi']);
+            $data = $request->only(['stok', 'barangsatuanjadi_id', 'nm_barangjadi', 'gudang_id', 'kd_barang_jadi', 'rak_id']);
             $data['foto'] = 'storage/' . $request->foto->store('barangjadi', 'public');
 
             if ($barangj->update($data)) {

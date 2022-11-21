@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\BarangMentah;
 use App\Models\BarangMentahKategori;
 use App\Models\Gudang;
+use App\Models\Rak;
 use App\Models\SatuanChild;
 
 class BarangMentahController extends Controller
@@ -18,7 +19,7 @@ class BarangMentahController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = BarangMentah::with(['barangmentahgudangs', 'barangsatuan'])->where(function ($q) use ($request) {
+            $courses = BarangMentah::with(['barangmentahgudangs','rakbarangmentah', 'barangsatuan'])->where(function ($q) use ($request) {
                 $q->where('nm_barangmentah', 'LIKE', '%' . $request->search . '%');
                 $q->orwhere('kd_barang_mentah', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
@@ -38,7 +39,8 @@ class BarangMentahController extends Controller
                 }
 
                 $a->stokbarang = $a->stok . ' ' . $a->barangsatuan->child[6]->nm_satuan_children;
-
+                
+                $a->nm_rak = $a->rakbarangmentah->nm_rak;
 
             });
             
@@ -68,6 +70,7 @@ class BarangMentahController extends Controller
                 'satuan' => 'required',
                 'barangsatuan_id' => 'required',
                 'gudang_id' => 'required',
+                'rak_id' => 'required',
                 'barangmentahkategoris' => 'required|array',
                 'kd_barang_mentah' => 'required|string',    
                 // 'harga' => 'required|decimal',   
@@ -122,6 +125,9 @@ class BarangMentahController extends Controller
 
             $child = SatuanChild::whereDoesntHave('children')->where('barangsatuan_id', $data->barangsatuan_id)->first();
             $data->satuan_id = $child->id;
+
+            $rak = Rak::where('gudang_id', $data->gudang_id)->first();
+            $data->rak_id = $rak->id;
             return response()->json($data);
         } else {
             return abort(404);
@@ -136,6 +142,7 @@ class BarangMentahController extends Controller
                 'satuan' => 'required',
                 'barangsatuan_id' => 'required',
                 'gudang_id' => 'required',
+                'rak_id' => 'required',
                 'barangmentahkategoris' => 'required|array',
                 'kd_barang_mentah' => 'required|string',
                 'foto' => 'required|image',
@@ -162,7 +169,7 @@ class BarangMentahController extends Controller
 
            
             $barangm =  BarangMentah::where('uuid', $uuid)->first();
-            $data = $request->only(['stok', 'barangsatuan_id', 'nm_barangmentah', 'gudang_id', 'kd_barang_mentah']);
+            $data = $request->only(['stok', 'barangsatuan_id', 'nm_barangmentah', 'gudang_id', 'kd_barang_mentah', 'rak_id']);
             $data['foto'] = 'storage/' . $request->foto->store('barangmentah', 'public');
 
             if ($barangm->update($data)) {

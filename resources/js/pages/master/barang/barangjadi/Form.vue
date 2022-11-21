@@ -151,12 +151,35 @@
               name="gudang_id"
               placeholder="Pilih Gudang"
               id="gudang_id"
+              @change="getRak()"
               v-model="form.gudang_id"
               required
             >
               <option value="" disabled>Pilih Gudang</option>
               <option v-for="item in gudang" :value="item.id" :key="item.id">
                 {{ item.nm_gudang }}
+              </option>
+            </select2>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="mb-8">
+            <label for="nm_satuan_child" class="form-label required">
+              Rak :
+            </label>
+            <select2
+              class="form-control"
+              name="rak_id"
+              placeholder="Pilih Rak"
+              id="rak_id"
+              v-model="form.rak_id"
+              :disabled="form.gudang_id == undefined || form.gudang_id == ''"
+              required
+            >
+              <option value="" disabled>Pilih Rak</option>
+              <option v-for="item in rak" :value="item.id" :key="item.id">
+                {{ item.nm_rak }}
               </option>
             </select2>
           </div>
@@ -249,6 +272,7 @@ export default {
       barangjadikategoris: [],
     });
     const file = ref([]);
+    const rak = ref([]);
 
     const { data: barangsatuanjadi } = useQuery(["barang_satuan_jadis"], () =>
       axios.get("/barangsatuanjadi/get").then((res) => res.data)
@@ -304,6 +328,7 @@ export default {
       barangsatuanjadi,
       kategoris,
       gudang,
+      rak,
       submit,
       form,
       file,
@@ -340,6 +365,21 @@ export default {
             if (app.form.satuan_id != "" && app.form.satuan_id != undefined) {
               app.form.satuan = app.form.satuan_id;
             }
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
+    },
+
+    getRak() {
+      setTimeout(() => {
+        var app = this;
+        var id = app.form.gudang_id;
+        axios
+          .get(`gudang/${id}/rak`)
+          .then((res) => {
+            app.rak = res.data.data;
           })
           .catch((err) => {
             toastr.error("sesuatu error terjadi", "gagal");
