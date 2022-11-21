@@ -55,6 +55,55 @@
           </div>
         </div>
 
+        <hr />
+
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table gs-7 gy-7 gx-7">
+              <thead>
+                <tr
+                  class="fw-semibold fs-6 text-gray-800 border-bottom border-gray-200"
+                >
+                  <th>Tambah Rak</th>
+                  <th>
+                    <a href="javascript:void(0)">
+                      <i
+                        @click.prevent="plus()"
+                        class="la la-plus icon-lg text-success mr-5"
+                        style="font-size: 25px"
+                      ></i>
+                    </a>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in form.rak">
+                  <td>
+                    <input
+                      type="text"
+                      name="nm_rak"
+                      id="name"
+                      placeholder="Nama Rak"
+                      class="form-control"
+                      requiredautoComplete="off"
+                      v-model="item.nm_rak"
+                    />
+                  </td>
+                  <td>
+                    <a href="javascript:void(0)">
+                      <i
+                        @click.prevent="minus(index)"
+                        class="la la-minus icon-lg text-danger mr-5"
+                        style="font-size: 25px"
+                      ></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="col-12">
           <button
             type="submit"
@@ -89,7 +138,9 @@ export default {
   },
   setup({ selected }) {
     const queryClient = useQueryClient();
-    const form = ref({});
+    const form = ref({
+      rak: [],
+    });
 
     const { data: gudang } = useQuery(
       ["gudang", selected, "edit"],
@@ -131,6 +182,17 @@ export default {
     };
   },
   methods: {
+    plus() {
+      this.form.rak.push({
+        // barang_mentah_id: null,
+        // stok_digunakan: null,
+        // satuan_id: null,
+      });
+    },
+
+    minus(index) {
+      this.form.rak.splice(index, 1);
+    },
     getcode() {
       this.$http
         .get("gudang/getcode")
@@ -147,8 +209,9 @@ export default {
     },
     onSubmit() {
       const vm = this;
-      const data = new FormData(document.getElementById("form-gudang"));
-      this.submit(data, {
+      vm.form.rak = vm.form.rak;
+      // const data = new FormData(document.getElementById("form-gudang"));
+      this.submit(vm.form, {
         onSuccess: (data) => {
           toastr.success(data.message);
           vm.$parent.openForm = false;

@@ -207,6 +207,7 @@ Route::prefix('v1')->group(function () {
             Route::post('paginate', [GudangController::class, 'paginate']);
             Route::post('store', [GudangController::class, 'store']);
             Route::get('getcode', [GudangController::class, 'getcode']);
+            Route::get('{id}/rak', [GudangController::class, 'rak']);
             Route::get('{uuid}/edit', [GudangController::class, 'edit']);
             Route::post('{uuid}/update', [GudangController::class, 'update']);
             Route::delete('{uuid}/destroy', [GudangController::class, 'destroy']);
@@ -219,7 +220,6 @@ Route::prefix('v1')->group(function () {
             Route::get('getcode', [BarangMentahController::class, 'getcode']);
             Route::get('{id}/getcode', [BarangMentahController::class, 'getcodebyid']);
             Route::get('{uuid}/edit', [BarangMentahController::class, 'edit']);
-            Route::get('{id}/child', [BarangMentahController::class, 'child']);
             Route::post('{uuid}/update', [BarangMentahController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangMentahController::class, 'destroy']);
         });
@@ -242,6 +242,7 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [BarangProduksiController::class, 'edit']);
             Route::post('{uuid}/update', [BarangProduksiController::class, 'update']);
             Route::delete('{uuid}/destroy', [BarangProduksiController::class, 'destroy']);
+            Route::delete('{uuid}/produce', [BarangProduksiController::class, 'produce']);
         });
 
     });

@@ -19,4 +19,9 @@ class SatuanJadiChild extends Model
         return $this->belongsTo(BarangSatuanJadi::class, 'barangsatuanjadi_id', 'id');
     }
 
+    public function satuanproduksis()
+    {
+        return $this->hasMany(BarangProduksi::class, 'satuanjadichildren_id', 'id');
+    }
+
 }

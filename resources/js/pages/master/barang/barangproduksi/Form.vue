@@ -5,7 +5,7 @@
         <h3>
           {{
             barangproduksi?.uuid
-              ? `Edit Barang Produksi : ${barangproduksi.nm_barang_jadi}`
+              ? `Edit Barang Produksi : ${barangproduksi.barangproduksibarangjadi.nm_barang_jadi}`
               : "Tambah Barang Produksi"
           }}
         </h3>
@@ -31,6 +31,7 @@
               name="barangjadi_id"
               placeholder="Pilih Barang Jadi yang Akan Diproduksi"
               id="barangjadi_id"
+              @change="satuanjadichild()"
               v-model="form.barangjadi_id"
               required
             >
@@ -48,7 +49,9 @@
 
         <div class="col-6">
           <div class="mb-8">
-            <label for="name" class="form-label required"> Stok Jadi : </label>
+            <label for="name" class="form-label required">
+              Stok Produksi :
+            </label>
             <input
               type="number"
               name="stok_jadi"
@@ -59,6 +62,32 @@
               autoComplete="off"
               v-model="form.stok_jadi"
             />
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="mb-8">
+            <label for="nm_satuan_jadi" class="form-label required">
+              Satuan Produksi :
+            </label>
+            <select2
+              class="form-control"
+              name="satuan_produksi"
+              placeholder="Pilih Barang Jadi yang Akan Diproduksi"
+              id="satuan_produksi"
+              v-model="form.satuan_produksi"
+              required
+            >
+              <option value="" disabled>Pilih Barang Jadi</option>
+              <option
+                v-for="item in form.satuan_jadi_child"
+                :value="item.id"
+                :key="item.id"
+                :selected="item.nm_satuan_jadi_children == 'Buah'"
+              >
+                {{ item.nm_satuan_jadi_children }}
+              </option>
+            </select2>
           </div>
         </div>
 
@@ -275,11 +304,29 @@ export default {
       axios.get(`barangsatuan/${satuan_id}/child`).then((res) => {
         app.form.barangproduksibarangmentahs[index].satuan_child =
           res.data.data;
-
-        // if (app.form.satuan_id != "" && app.form.satuan_id != undefined) {
-        //   app.form.satuan = app.form.satuan_id;
-        // }
       });
+    },
+
+    satuanjadichild() {
+      setTimeout(() => {
+        var app = this;
+        var id = app.form.barangjadi_id;
+
+        var index = app.barangjadis.findIndex((cat) => cat.id == id);
+        id = app.barangjadis[index].barangsatuanjadi_id;
+        axios
+          .get(`barangsatuanjadi/${id}/child`)
+          .then((res) => {
+            app.form.satuan_jadi_child = res.data.data;
+
+            // if (app.form.satuan_id != "" && app.form.satuan_id != undefined) {
+            //   app.form.satuan = app.form.satuan_id;
+            // }
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
     },
 
     onUpdateFiles(files) {

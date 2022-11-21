@@ -23,4 +23,9 @@ class Gudang extends Model
         return $this->hasMany(BarangJadi::class, 'gudang_id', 'id');
     }
 
+    public function rak()
+    {
+        return $this->hasMany(Rak::class, 'gudang_id', 'id');
+    }
+
 }

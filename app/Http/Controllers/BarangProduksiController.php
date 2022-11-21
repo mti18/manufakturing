@@ -8,6 +8,7 @@ use App\Models\BarangProduksi;
 use App\Models\BarangProduksiBarangMentah;
 use App\Models\BarangSatuanJadi;
 use App\Models\SatuanChild;
+use App\Models\SatuanJadiChild;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +23,12 @@ class BarangProduksiController extends Controller
             $courses = BarangProduksi::where(function ($q) use ($request) {
                 $q->where('barangjadi_id', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
+
+            $courses->map(function ($a)
+            {
+                $a->stokbarang = $a->stok_jadi . ' buah';
+            });
+
 
             return response()->json($courses);
         } else {
@@ -39,8 +46,19 @@ class BarangProduksiController extends Controller
             $data = $request->validate([
                 'stok_jadi' => 'required|numeric',
                 'barangjadi_id' => 'required',
+                'satuan_produksi' => 'required',
                 'barangproduksibarangmentahs' => 'required|array',
             ]);
+
+            $child = SatuanJadiChild::find($data['satuan_produksi']);
+            
+            $stok = $data['stok_jadi'];
+
+            $stok = $stok * $child->nilai;
+            
+            $data['stok_jadi'] = $stok;
+            
+            unset($data['satuan_produksi']);
             
             $data['barangjadi'] = BarangJadi::where('id', $request->barangjadi_id)->first()->id;
 
@@ -77,7 +95,7 @@ class BarangProduksiController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = BarangProduksi::with('barangproduksibarangmentahs')->where('uuid', $uuid)->first();
+            $data = BarangProduksi::with(['barangproduksibarangmentahs'])->where('uuid', $uuid)->first();
 
    
             $data->barangproduksibarangmentahs->map(function($q){
@@ -86,6 +104,10 @@ class BarangProduksiController extends Controller
                 $child = SatuanChild::whereDoesntHave('children')->where('barangsatuan_id', $data->barangsatuan_id)->first();
                 $q->satuan_id = $child->id;
             });
+
+            // $satuan = SatuanJadiChild::where('barangsatuanjadi_id', $data->barangsatuanjadi_id)->orderBy('nilai', 'ASC')->first();
+            // $data->satuan_produksi = $satuan->id;
+
             return response()->json($data);
         } else {
             return abort(404);
@@ -97,9 +119,24 @@ class BarangProduksiController extends Controller
             $data = $request->validate([
                 'stok_jadi' => 'required|numeric',
                 'barangjadi_id' => 'required',
+                'satuan_produksi' => 'required',
                 'barangproduksibarangmentahs' => 'required|array',
 
             ]);
+
+            $child = SatuanJadiChild::find($data['satuan_produksi']);
+            
+            $stok = $data['stok_jadi'];
+
+            $stok = $stok * $child->nilai;
+            
+            $data['stok_jadi'] = $stok;
+            $request->merge([
+                'stok_jadi' => $stok
+            ]);
+            
+            unset($request->satuan_produksi);
+            unset($request->satuan);
 
             $data['barangjadi'] = BarangJadi::where('id', $request->barangjadi_id)->first()->id;
 
@@ -133,6 +170,16 @@ class BarangProduksiController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $barangproduksi =  BarangProduksi::where('uuid', $uuid)->first();
             $barangproduksi->delete();
+            return response()->json(['message' => 'Barang Produksi berhasil dihapus']);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function produce($uuid) {
+        if (request()->wantsJson() && request()->ajax()) {
+            $barangproduksibarangmentah =  BarangProduksiBarangMentah::where('uuid', $uuid)->first();
+            return $barangproduksibarangmentah;
             return response()->json(['message' => 'Barang Produksi berhasil dihapus']);
         } else {
             return abort(404);

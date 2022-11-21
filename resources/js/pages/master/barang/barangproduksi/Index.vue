@@ -63,7 +63,11 @@ export default {
         header: "Nama Barang Jadi",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("stok_jadi", {
+      columnHelper.accessor("barangproduksibarangjadi.kd_barang_jadi", {
+        header: "Kode",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("stokbarang", {
         header: "Stok Jadi",
         cell: (cell) => cell.getValue(),
       }),
@@ -96,6 +100,16 @@ export default {
                     },
                   },
                   h("i", { class: "la la-trash fs-2" })
+                ),
+                h(
+                  "button",
+                  {
+                    class: "btn btn-sm btn-icon btn-success",
+                    onClick: () => {
+                      `/barangproduksi/${cell.getValue()}/produce`;
+                    },
+                  },
+                  h("i", { class: "la la-tools fs-2" })
                 ),
               ]),
       }),
