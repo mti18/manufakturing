@@ -16,6 +16,9 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->string('logo');
+            $table->string('kop');
+            $table->string('ttd');
             $table->string('nama');
             $table->string('telepon');
             $table->string('npwp');

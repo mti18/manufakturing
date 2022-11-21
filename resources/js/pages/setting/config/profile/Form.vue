@@ -3,7 +3,7 @@
       <div class="card-header">
         <div class="card-title w-100">
           <h3>
-            {{ profile?.uuid ? `Edit Profile : ${profile.name}` : "Tambah Profile"  }}
+            {{ profile?.uuid ? `Edit Profile : ${profile.nama}` : "Tambah Profile"  }}
           </h3>
           <button
             type="button"
@@ -16,52 +16,26 @@
         </div>
       </div>
       <div class="card-body">
+        <br>
         <div class="row">
-          <div class="col">
-            <div class="mb-12 mt-8 ml-10">
-              <!--begin::Image input-->
-              <div class="image-input image-input-empty" data-kt-image-input="true" style="background-image: url(/assets/media/svg/avatars/blank.svg)">
-                  <!--begin::Image preview wrapper-->
-                  <div class="image-input-wrapper w-125px h-125px"></div>
-                  <!--end::Image preview wrapper-->
-
-                  <!--begin::Edit button-->
-                  <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                      data-kt-image-input-action="change"
-                      data-bs-toggle="tooltip"
-                      data-bs-dismiss="click"
-                      title="Change avatar">
-                      <i class="bi bi-pencil-fill fs-7"></i>
-
-                      <!--begin::Inputs-->
-                      <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
-                      <input type="hidden" name="avatar_remove" />
-                      <!--end::Inputs-->
-                  </label>
-                  <!--end::Edit button-->
-
-                  <!--begin::Cancel button-->
-                  <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                      data-kt-image-input-action="cancel"
-                      data-bs-toggle="tooltip"
-                      data-bs-dismiss="click"
-                      title="Cancel avatar">
-                      <i class="bi bi-x fs-2"></i>
-                  </span>
-                  <!--end::Cancel button-->
-
-                  <!--begin::Remove button-->
-                  <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                      data-kt-image-input-action="remove"
-                      data-bs-toggle="tooltip"
-                      data-bs-dismiss="click"
-                      title="Remove avatar">
-                      <i class="bi bi-x fs-2"></i>
-                  </span>
-                  <!--end::Remove button-->
-              </div>
-              <!--end::Image input-->
-            </div>
+          <div class="col-3">
+            <label for="name" class="form-label required"> Logo : </label>
+            <file-upload :files="selected && form?.logo ? `/${form.logo}` : fileLogo" :allow-multiple="false"
+              v-on:updatefiles="onUpdateFilesLogo" labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>' required
+              :accepted-file-types="['image/*']"></file-upload>
+          </div>
+          <div class="col-6">
+            <label for="name" class="form-label required"> Kop : </label>
+            <file-upload :files="selected && form?.kop ? `/${form.kop
+            }` : fileKop" :allow-multiple="false"
+              v-on:updatefiles="onUpdateFilesKop" labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>' required
+              :accepted-file-types="['image/*']"></file-upload>
+          </div>
+          <div class="col-3">
+            <label for="name" class="form-label required"> Tanda tangan : </label>
+            <file-upload :files="selected && form?.ttd ? `/${form.ttd}` : fileTtd" :allow-multiple="false"
+              v-on:updatefiles="onUpdateFilesTtd" labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>' required
+              :accepted-file-types="['image/*']"></file-upload>
           </div>
         </div>
         <div class="row">
@@ -69,7 +43,7 @@
             <div class="mb-8">
               <label for="name" class="form-label required"> Nama : </label>
               <input type="text" name="nama" id="nama" placeholder="Nama "
-                class="form-control" required autoComplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z]/g,'')" v-model="form.nama" />
+                class="form-control" required autoComplete="off" v-model="form.nama" />
             </div>
           </div>
           <div class="col-6">
@@ -81,14 +55,14 @@
             <div class="mb-8">
               <label for="code" class="form-label required"> NPWP : </label>
               <input type="text" name="npwp" id="npwp" placeholder="NPWP"
-                class="form-control" required autoComplete="off" oninput="this.value = this.value.replace(/\D/g, '')" v-mask="'99.999.999.9-999.999'" v-model="form.npwp" />
+                class="form-control" autoComplete="off" oninput="this.value = this.value.replace(/\D/g, '')" v-mask="'99.999.999.9-999.999'" v-model="form.npwp" />
             </div>
           </div>
           <div class="col-6">
             <div class="mb-8">
               <label for="code" class="form-label required"> FAX : </label>
               <input type="text" name="fax" id="fax" placeholder="fax"
-                class="form-control" required autoComplete="off" v-model="form.fax" />
+                class="form-control" autoComplete="off" v-model="form.fax" />
             </div>
             <div class="mb-8">
               <label for="code" class="form-label required"> Pimpinan : </label>
@@ -137,6 +111,8 @@
               <textarea name="alamat" id="alamat" placeholder="Alamat"
                 class="form-control" required autoComplete="off" v-model="form.alamat" />
             </div>
+            <div class="mb-8">
+            </div>
           </div>
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-sm ms-auto mt-8 d-block">
@@ -165,6 +141,10 @@
     setup({ selected }) {
       const queryClient = useQueryClient();
       const form = ref({});
+
+      const fileLogo = ref([]);
+      const fileKop = ref([]);
+      const fileTtd = ref([]);
   
       const { data: profile } = useQuery(
         ["profile", selected, "edit"],
@@ -207,6 +187,9 @@
   
       return {
         profile,
+        fileLogo,
+        fileKop,
+        fileTtd,
         submit,
         form,
         provinsis,
@@ -217,12 +200,33 @@
       }
     },
     methods: {
-      onUpdateFiles(files) {
-        this.file = files;
+      onUpdateFilesLogo(filesLogo) {
+        this.fileLogo = filesLogo;
       },
+      onUpdateFilesKop(filesKop) {
+        this.fileKop = filesKop;
+      },
+      onUpdateFilesTtd(filesTtd) {
+        this.fileTtd = filesTtd;
+      },
+
+    // methods: {
+    //   onUpdateFilesLogo(files) {
+    //     this.fileLogo = files;
+    //   },
+    //   onUpdateFilesKop(files) {
+    //     this.fileKop = files;
+    //   },
+    //   onUpdateFilesTtd(files) {
+    //     this.fileTtd = files;
+    //   },
+
       onSubmit() {
         const vm = this;
         const data = new FormData(document.getElementById("form-profile"));
+        data.append("logo", this.fileLogo[0].file);
+        data.append("kop", this.fileKop[0].file);
+        data.append("ttd", this.fileTtd[0].file);
         this.submit(data, {
           onSuccess: (data) => {
             toastr.success(data.message);
@@ -237,4 +241,5 @@
   </script>
   
   <style>
+  
   </style>

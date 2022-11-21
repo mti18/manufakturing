@@ -15,6 +15,19 @@ class Supplier extends Model
      'provinsi_id', 'kab_kota_id', 'kecamatan_id'];
     protected $hidden = ['id', 'createded_at', 'updated_at'];
 
+    public function provinsi()
+    {
+        return $this->belongsTo(Provinsi::class);
+    }
+    public function kota()
+    {
+        return $this->belongsTo(Kota::class);
+    }
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class);
+    }
+
 
 
     // public function getTextAttribute(){

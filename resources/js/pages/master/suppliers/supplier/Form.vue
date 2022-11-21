@@ -3,7 +3,7 @@
       <div class="card-header">
         <div class="card-title w-100">
           <h3>
-            {{ supplier?.uuid ? `Edit Supplier : ${supplier.name}` : "Tambah Data Supplier"  }}
+            {{ supplier?.uuid ? `Edit Supplier : ${supplier.nama}` : "Tambah Data Supplier"  }}
           </h3>
           <button
             type="button"
@@ -22,6 +22,7 @@
               <label for="name" class="form-label required"> Nama Supplier: </label>
               <input type="text" name="nama" id="nama" placeholder="Nama Supplier"
                 class="form-control" required autoComplete="off"  @input.prevent="kd" v-model="form.nama" />
+                
             </div>
           </div>
           <div class="col-6">
@@ -114,8 +115,15 @@
       selected: {
         type: String,
         default: null,
-      }
+      },
     },
+
+    data() {
+      return {
+        code: null,
+      };
+    },
+
     setup({ selected }) {
       const queryClient = useQueryClient();
       const form = ref({});
@@ -168,19 +176,6 @@
     },
     methods: {
 
-      getcode() {
-        this.$http
-          .get("supplier/getcode")
-          .then((res) => {
-            console.log(res.data)
-            this.code = res.data;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      },
-
-
       kd: _.debounce(function () {
         var vm = this;
         var myString = this.form.nama;
@@ -216,7 +211,29 @@
         }
       }, 1000),
 
+      getcode() {
+        this.$http
+          .get("supplier/getcode")
+          .then((res) => {
+            console.log(res.data)
+            this.code = res.data;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
 
+      editGetcode() {
+        this.$http
+          .get("supplier/" + this.selected + "/getcode")
+          .then((res) => {
+            console.log(res.data);
+            this.code = res.data;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
 
       onUpdateFiles(files) {
         this.file = files;
@@ -236,7 +253,11 @@
     },
 
     mounted() {
-      this.getcode();
+      if (!this.selected) {
+        this.getcode();
+        return;
+      }
+      this.editGetcode();
     },
   };
   </script>

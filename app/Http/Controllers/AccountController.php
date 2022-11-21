@@ -43,7 +43,7 @@ class AccountController extends Controller
 
 
 
-            return response()->json(['message' => ' Account berhasil diperbarui']);
+            return response()->json(['message' => ' Account berhasil ditambahkan']);
         } else {
             return abort(404);
         }
