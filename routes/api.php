@@ -30,7 +30,6 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelompokController;
-use App\Http\Controllers\AssetController;
 use App\Http\Controllers\JenisAssetController;
 use App\Http\Controllers\SalesOrderController;
 
@@ -318,6 +317,15 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [AssetController::class, 'edit']);
             Route::post('{uuid}/update', [AssetController::class, 'update']);
             Route::delete('{uuid}/destroy', [AssetController::class, 'destroy']);
+        });
+
+        Route::prefix('stokmasuk')->group(function () {
+            Route::get('get', [StokMasukController::class, 'get']);
+            Route::post('paginate', [StokMasukController::class, 'paginate']);
+            Route::post('store', [StokMasukController::class, 'store']);
+            Route::get('{uuid}/edit', [StokMasukController::class, 'edit']);
+            Route::post('{uuid}/update', [StokMasukController::class, 'update']);
+            Route::delete('{uuid}/destroy', [StokMasukController::class, 'destroy']);
         });
 
     });

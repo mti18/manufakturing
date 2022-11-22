@@ -30,10 +30,5 @@ class BarangProduksi extends Model
     {
         return $this->belongsTo(BarangJadi::class, 'barangjadi_id', 'id');
     }
-
-    // public function satuanproduksis()
-    // {
-    //     return $this->belongsTo(SatuanJadiChild::class, 'satuanjadichildren_id', 'id');
-    // }
     
 }

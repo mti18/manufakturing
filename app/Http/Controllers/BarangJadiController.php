@@ -33,12 +33,17 @@ class BarangJadiController extends Controller
                     $a->kategoribadges .= $item->nm_kategori . ', ';
                 }
 
-                $a->stokbarang = $a->stok . ' ' . $a->barangsatuanjadi->child[0]->nm_satuan_jadi_children;
                 
                 if(!empty($a->barangjadigudangs)){
                     $a->nm_gudang = $a->barangjadigudangs->nm_gudang;
                 } else {
                     $a->nm_gudang = "Belum ada gudang";
+                }
+
+                if ($a->stok != 0) {
+                    $a->stokbarang = $a->stok . ' ' . $a->barangsatuanjadi->child[0]->nm_satuan_jadi_children;
+                } else {
+                    $a->stokbarang = "Habis";
                 }
 
                 $a->nm_rak = $a->rakbarangjadi->nm_rak;
@@ -61,7 +66,6 @@ class BarangJadiController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'nm_barang_jadi' => 'required|string',
-                'stok' => 'required|numeric',
                 'barangsatuanjadi_id' => 'required',
                 'satuan' => 'required',
                 'rak_id' => 'required',
@@ -71,13 +75,13 @@ class BarangJadiController extends Controller
                 'foto' => 'required|image',
             ]);
 
-            $child = SatuanJadiChild::find($data['satuan']);
+            // $child = SatuanJadiChild::find($data['satuan']);
             
-            $stok = $data['stok'];
+            // $stok = $data['stok'];
 
-            $stok = $stok * $child->nilai;
+            // $stok = $stok * $child->nilai;
             
-            $data['stok'] = $stok;
+            // $data['stok'] = $stok;
             
             unset($data['satuan']);
 

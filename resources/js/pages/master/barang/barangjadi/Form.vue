@@ -70,22 +70,6 @@
           </div>
         </div>
 
-        <div class="col-6">
-          <div class="mb-8">
-            <label for="name" class="form-label required"> Stok : </label>
-            <input
-              type="number"
-              name="stok"
-              id="name"
-              placeholder="Stok Barang"
-              class="form-control"
-              required
-              autoComplete="off"
-              v-model="form.stok"
-            />
-          </div>
-        </div>
-
         <div class="col-3">
           <div class="mb-8">
             <label for="nm_satuan_jadi" class="form-label required">
