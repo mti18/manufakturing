@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetGroupController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BulanController;
@@ -32,6 +31,7 @@ use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\JenisAssetController;
+use App\Http\Controllers\SalesOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +73,7 @@ Route::prefix('v1')->group(function () {
             });
         });
         Route::prefix('user')->group(function () {
+            Route::get('get', [UserController::class, 'get']);
             Route::post('paginate', [UserController::class, 'paginate']);
             Route::post('store', [UserController::class, 'store']);
             Route::get('{uuid}/edit', [UserController::class, 'edit']);
@@ -300,6 +301,14 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [AssetGroupController::class, 'edit']);
             Route::post('{uuid}/update', [AssetGroupController::class, 'update']);
             Route::delete('{uuid}/destroy', [AssetGroupController::class, 'destroy']);
+        });
+        Route::prefix('salesorder')->group(function () {
+            Route::get('get', [SalesOrderController::class, 'get']);
+            Route::post('paginate', [SalesOrderController::class, 'paginate']);
+            Route::post('store', [SalesOrderController::class, 'store']);
+            Route::get('{uuid}/edit', [SalesOrderController::class, 'edit']);
+            Route::post('{uuid}/update', [SalesOrderController::class, 'update']);
+            Route::delete('{uuid}/destroy', [SalesOrderController::class, 'destroy']);
         });
         Route::prefix('masterjurnal')->group(function () {
             Route::get('get', [AssetController::class, 'get']);
