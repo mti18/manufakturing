@@ -183,11 +183,7 @@
     },
     methods: {
 
-      profile(e){
-        var app=this;
-        var index = app.kelompoks.findIndex((cat) => cat.id==e);
-        app.form.tarif = app.kelompoks[index].tarif;
-      },
+
 
       tarif(e){
         var app=this;

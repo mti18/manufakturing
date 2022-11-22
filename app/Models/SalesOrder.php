@@ -16,4 +16,17 @@ class SalesOrder extends Model
         'jenis_pembayaran', 'account_id', 'pembayaran', 'tgl_pesan', 'tgl_pengiriman', 'tempo', 'status', 
         'keterangan', 'total', 'diskon', 'uangmuka', 'pph', 'ppn', 'netto'
     ];
+
+    public function diketahui_oleh()
+    {
+        return $this->belongsTo(User::class, 'diketahui_oleh', 'id');
+    }
+    public function kota()
+    {
+        return $this->belongsTo(Kota::class);
+    }
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class);
+    }
 }
