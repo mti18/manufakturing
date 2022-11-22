@@ -31,7 +31,6 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelompokController;
-use App\Http\Controllers\AssetController;
 use App\Http\Controllers\JenisAssetController;
 
 /*
@@ -302,14 +301,6 @@ Route::prefix('v1')->group(function () {
             Route::post('{uuid}/update', [AssetGroupController::class, 'update']);
             Route::delete('{uuid}/destroy', [AssetGroupController::class, 'destroy']);
         });
-        Route::prefix('asset')->group(function () {
-            Route::get('get', [AssetController::class, 'get']);
-            Route::post('paginate', [AssetController::class, 'paginate']);
-            Route::post('store', [AssetController::class, 'store']);
-            Route::get('{uuid}/edit', [AssetController::class, 'edit']);
-            Route::post('{uuid}/update', [AssetController::class, 'update']);
-            Route::delete('{uuid}/destroy', [AssetController::class, 'destroy']);
-        });
         Route::prefix('masterjurnal')->group(function () {
             Route::get('get', [AssetController::class, 'get']);
             Route::post('paginate', [AssetController::class, 'paginate']);
@@ -317,6 +308,15 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [AssetController::class, 'edit']);
             Route::post('{uuid}/update', [AssetController::class, 'update']);
             Route::delete('{uuid}/destroy', [AssetController::class, 'destroy']);
+        });
+
+        Route::prefix('stokmasuk')->group(function () {
+            Route::get('get', [StokMasukController::class, 'get']);
+            Route::post('paginate', [StokMasukController::class, 'paginate']);
+            Route::post('store', [StokMasukController::class, 'store']);
+            Route::get('{uuid}/edit', [StokMasukController::class, 'edit']);
+            Route::post('{uuid}/update', [StokMasukController::class, 'update']);
+            Route::delete('{uuid}/destroy', [StokMasukController::class, 'destroy']);
         });
 
     });

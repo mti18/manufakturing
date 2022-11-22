@@ -38,7 +38,11 @@ class BarangMentahController extends Controller
                     $a->nm_gudang = "Belum ada gudang";
                 }
 
-                $a->stokbarang = $a->stok . ' ' . $a->barangsatuan->child[6]->nm_satuan_children;
+                if ($a->stok != 0) {
+                    $a->stokbarang = $a->stok . ' ' . $a->barangsatuan->child[6]->nm_satuan_children;
+                } else {
+                    $a->stokbarang = "Habis";
+                }
                 
                 $a->nm_rak = $a->rakbarangmentah->nm_rak;
 

@@ -87,10 +87,6 @@ export default {
         header: "Rak",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("rak_id", {
-        header: "Rak",
-        cell: (cell) => cell.getValue(),
-      }),
       columnHelper.accessor("kategoribadges", {
         header: "Kategori Barang",
         cell: (cell) => cell.getValue(),

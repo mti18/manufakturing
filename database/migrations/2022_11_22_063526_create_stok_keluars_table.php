@@ -13,10 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('barang_jadis', function (Blueprint $table) {
-            $table->BigInteger('rak_id')->unsigned()->nullable();
-            $table->foreign('rak_id')->references('id')->on('raks')->onDelete('restrict');
-
+        Schema::create('stok_keluars', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -27,9 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('barang_jadis', function (Blueprint $table) {
-            $table->dropForeign(['rak_id']);
-            $table->dropColumn('rak_id');
-        });
+        Schema::dropIfExists('stok_keluars');
     }
 };

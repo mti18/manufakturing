@@ -20,7 +20,7 @@ class BarangProduksiController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = BarangProduksi::where(function ($q) use ($request) {
+            $courses = BarangProduksi::with(['barangproduksibarangmentahs.barang_mentah' ])->where(function ($q) use ($request) {
                 $q->where('barangjadi_id', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
@@ -59,8 +59,6 @@ class BarangProduksiController extends Controller
             $data['stok_jadi'] = $stok;
             
             unset($data['satuan_produksi']);
-            
-            $data['barangjadi'] = BarangJadi::where('id', $request->barangjadi_id)->first()->id;
 
             $data = BarangProduksi::create($data);
 
@@ -137,8 +135,6 @@ class BarangProduksiController extends Controller
             
             unset($request->satuan_produksi);
             unset($request->satuan);
-
-            $data['barangjadi'] = BarangJadi::where('id', $request->barangjadi_id)->first()->id;
 
             $barangp = BarangProduksi::where('uuid', $uuid)->first();
             $data = $request->only(['stok_jadi', 'barangjadi_id']);

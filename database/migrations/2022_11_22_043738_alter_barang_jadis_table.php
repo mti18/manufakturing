@@ -14,9 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('barang_jadis', function (Blueprint $table) {
-            $table->BigInteger('rak_id')->unsigned()->nullable();
-            $table->foreign('rak_id')->references('id')->on('raks')->onDelete('restrict');
+            $table->bigInteger('stok_bagus')->default(0);
+            $table->bigInteger('stok_jelek')->default(0);
 
+            $table->dropColumn('stok');
         });
     }
 
@@ -28,8 +29,10 @@ return new class extends Migration
     public function down()
     {
         Schema::table('barang_jadis', function (Blueprint $table) {
-            $table->dropForeign(['rak_id']);
-            $table->dropColumn('rak_id');
+            $table->dropColumn('stok_bagus');
+            $table->dropColumn('stok_jelek');
+
+            $table->bigInteger('stok');
         });
     }
 };
