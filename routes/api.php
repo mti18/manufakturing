@@ -5,6 +5,7 @@ use App\Http\Controllers\AssetGroupController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BulanController;
 use App\Http\Controllers\GolonganController;
+use App\Http\Controllers\MasterJurnalController;
 use App\Http\Controllers\TahunController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,7 +32,7 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelompokController;
-use App\Http\Controllers\AssetController;
+
 use App\Http\Controllers\JenisAssetController;
 
 /*
@@ -310,12 +311,13 @@ Route::prefix('v1')->group(function () {
             Route::delete('{uuid}/destroy', [AssetController::class, 'destroy']);
         });
         Route::prefix('masterjurnal')->group(function () {
-            Route::get('get', [AssetController::class, 'get']);
-            Route::post('paginate', [AssetController::class, 'paginate']);
-            Route::post('store', [AssetController::class, 'store']);
-            Route::get('{uuid}/edit', [AssetController::class, 'edit']);
-            Route::post('{uuid}/update', [AssetController::class, 'update']);
-            Route::delete('{uuid}/destroy', [AssetController::class, 'destroy']);
+            Route::get('get', [MasterJurnalController::class, 'get']);
+            Route::post('paginate/{bulan}/{tahun}', [MasterJurnalController::class, 'paginate']);
+            Route::post('store', [MasterJurnalController::class, 'store']);
+            Route::post('getCode', [MasterJurnalController::class, 'getCode']);
+            Route::get('{uuid}/edit', [MasterJurnalController::class, 'edit']);
+            Route::post('{uuid}/update', [MasterJurnalController::class, 'update']);
+            Route::delete('{uuid}/destroy', [MasterJurnalController::class, 'destroy']);
         });
 
     });
