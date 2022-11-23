@@ -12,7 +12,7 @@
           </div>
         </div>
         <div class="card-body">
-          <mti-paginate id="table-position" url="/position/paginate" :columns="columns"></mti-paginate>
+          <mti-paginate id="table-salesorder" url="/salesorder/paginate" :columns="columns"></mti-paginate>
         </div>
       </div>
     </section>
@@ -36,9 +36,9 @@
       const selected = ref();
       const openForm = ref(false);
       
-      const { delete: deletePosition } = useDelete({
+      const { delete: deletesalesorder } = useDelete({
         onSuccess: () => {
-          queryClient.invalidateQueries(["/position/paginate"]);
+          queryClient.invalidateQueries(["/salesorder/paginate"]);
         }
       })
   
@@ -50,12 +50,36 @@
           },
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("name", {
-          header: "Nama",
+        columnHelper.accessor("profile.nama", {
+          header: "Nama Perusahaan",
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("code", {
-          header: "Kode",
+        columnHelper.accessor("supplier.nama", {
+          header: "Nama Pemesan",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("tempo", {
+          header: "Jatuh Tempo",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("diketahui_oleh.name", {
+          header: "User",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("pembayaran", {
+          header: "Pembayaran",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("status", {
+          header: "Status",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("tgl_pesan", {
+          header: "Tanggal Pesan",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("tgl_pengiriman", {
+          header: "Tanggal Pengiriman",
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("uuid", {
@@ -67,7 +91,7 @@
                 openForm.value = true;
               }}, h('i', { class: 'la la-pencil fs-2' })), 
               h('button', { class: 'btn btn-sm btn-icon btn-danger', onClick: () => {
-                deletePosition(`/position/${cell.getValue()}/destroy`);
+                deletesalesorder(`/salesorder/${cell.getValue()}/destroy`);
               }}, h('i', { class: 'la la-trash fs-2' }))
             ]),
         }),

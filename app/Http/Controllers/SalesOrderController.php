@@ -15,12 +15,30 @@ class SalesOrderController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = SalesOrder::where(function ($q) use ($request) {
-                $q->where('name', 'LIKE', '%' . $request->search . '%');
-                $q->orWhere('code', 'LIKE', '%' . $request->search . '%');
+            $courses = SalesOrder::with(['supplier', 'profile', 'diketahui_oleh'])->where(function ($q) use ($request) {
+                $q->where('profile_id', 'LIKE', '%' . $request->search . '%');
+                $q->orWhere('supplier_id', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
+
+            // $courses->map(function ($a)
+            // {
+            //     if($a->status=='draft'){
+            //         '<span class="label label-danger label-pill label-inline mr-2">Draft</span>';
+            //     }
+            //     elseif ($a->status=='process') {
+            //         '<span class="label label-danger label-pill label-inline mr-2">Process</span>';
+            //     }
+            //     elseif ($a->staus=='ready') {
+            //         '<span class="label label-danger label-pill label-inline mr-2">Ready</span>';
+            //     }
+            //     else {
+            //         '<span class="label label-danger label-pill label-inline mr-2">Success</span>';
+            //     }
+            // });
+
             return response()->json($courses);
+            
         } else {
             return abort(404);
         }
@@ -87,6 +105,20 @@ class SalesOrderController extends Controller
                 'tempo' => 'nullable|numeric',
             ]);
             SalesOrder::where('uuid', $uuid)->update($data);
+
+            return response()->json(['message' => 'Jabatan berhasil diperbarui']);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function updateMore(Request $request, $uuid) {
+        if (request()->wantsJson() && request()->ajax()) {
+            $data = $request->validate([
+                'name' => 'required',
+                'code' => 'required',
+            ]);
+            Position::where('uuid', $uuid)->update($data);
 
             return response()->json(['message' => 'Jabatan berhasil diperbarui']);
         } else {

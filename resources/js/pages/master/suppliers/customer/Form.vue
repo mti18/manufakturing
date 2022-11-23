@@ -189,7 +189,7 @@ export default {
       if (this.type == "store") {
         if (codes != "") {
           vm.kode =
-            codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
+            "C" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
           vm.form.kode = vm.kode;
           $(".codes").val(vm.kode);
         } else {
@@ -200,7 +200,7 @@ export default {
       } else {
         if (codes != "") {
           vm.kode =
-            "S" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
+            "C" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "-" + vm.code;
           vm.form.kode = vm.kode;
             $(".codes").val(vm.kode);
           } else {

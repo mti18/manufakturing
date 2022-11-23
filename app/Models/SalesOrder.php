@@ -21,12 +21,12 @@ class SalesOrder extends Model
     {
         return $this->belongsTo(User::class, 'diketahui_oleh', 'id');
     }
-    public function kota()
+    public function profile()
     {
-        return $this->belongsTo(Kota::class);
+        return $this->belongsTo(Profile::class);
     }
-    public function kecamatan()
+    public function supplier()
     {
-        return $this->belongsTo(Kecamatan::class);
+        return $this->belongsTo(Supplier::class);
     }
 }
