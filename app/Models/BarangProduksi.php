@@ -18,7 +18,7 @@ class BarangProduksi extends Model
     
     public function barang_mentah()
     {
-        return $this->belongsToMany(BarangMentah::class, 'barang_produksi_barang_mentah', 'barang_produksi_id', 'barang_mentah_id');
+        return $this->belongsToMany(BarangMentah::class, 'barang_produksi_barang_mentah', 'barang_produksi_id', 'barang_mentah_id', );
     }
 
     public function barangproduksibarangmentahs()

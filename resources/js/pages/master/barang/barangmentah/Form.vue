@@ -73,22 +73,6 @@
       </div>
 
       <div class="row">
-        <div class="col-6">
-          <div class="mb-8">
-            <label for="name" class="form-label required"> Stok : </label>
-            <input
-              type="number"
-              name="stok"
-              id="name"
-              placeholder="Stok Barang"
-              class="form-control"
-              required
-              autoComplete="off"
-              v-model="form.stok"
-            />
-          </div>
-        </div>
-
         <div class="col-3">
           <div class="mb-8">
             <label for="nm_satuan" class="form-label required">
@@ -133,7 +117,7 @@
             >
               <option value="" disabled>Pilih Satuan</option>
               <option
-                v-for="item in satuan_jadi_child"
+                v-for="item in satuan_child"
                 :value="item.id"
                 :key="item.id"
               >
@@ -153,12 +137,35 @@
               name="gudang_id"
               placeholder="Pilih Gudang"
               id="gudang_id"
+              @change="getRak()"
               v-model="form.gudang_id"
               required
             >
               <option value="" disabled>Pilih Gudang</option>
               <option v-for="item in gudang" :value="item.id" :key="item.id">
                 {{ item.nm_gudang }}
+              </option>
+            </select2>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="mb-8">
+            <label for="nm_satuan_child" class="form-label required">
+              Rak :
+            </label>
+            <select2
+              class="form-control"
+              name="rak_id"
+              placeholder="Pilih Rak"
+              id="rak_id"
+              v-model="form.rak_id"
+              :disabled="form.gudang_id == undefined || form.gudang_id == ''"
+              required
+            >
+              <option value="" disabled>Pilih Rak</option>
+              <option v-for="item in rak" :value="item.id" :key="item.id">
+                {{ item.nm_rak }}
               </option>
             </select2>
           </div>
@@ -250,6 +257,7 @@ export default {
       barangmentahkategoris: [],
     });
     const file = ref([]);
+    const rak = ref([]);
 
     const { data: barangsatuan } = useQuery(["barang_satuans"], () =>
       axios.get("/barangsatuan/get").then((res) => res.data)
@@ -307,6 +315,7 @@ export default {
       barangsatuan,
       kategoris,
       gudang,
+      rak,
       submit,
       form,
       file,
@@ -348,6 +357,21 @@ export default {
       } else {
         app.form.barangmentahkategoris.splice(index, 1);
       }
+    },
+
+    getRak() {
+      setTimeout(() => {
+        var app = this;
+        var id = app.form.gudang_id;
+        axios
+          .get(`gudang/${id}/rak`)
+          .then((res) => {
+            app.rak = res.data.data;
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
     },
 
     kd() {

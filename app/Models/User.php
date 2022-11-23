@@ -24,7 +24,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array<int, string>
      */
-    protected $hidden = ['password', 'remember_token', 'id', 'created_at', 'updated_at', 'user_group_id', 'position_id', 'otp', 'otp_expire'];
+    protected $hidden = ['password', 'remember_token', 'created_at', 'updated_at', 'user_group_id', 'position_id', 'otp', 'otp_expire'];
 
     /**
      * The attributes that should be cast.

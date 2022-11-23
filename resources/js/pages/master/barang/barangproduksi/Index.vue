@@ -51,6 +51,57 @@ export default {
       },
     });
 
+    const genBarangProduksi = (url, data) => {
+      const mySwal = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success btn-sm",
+          cancelButton: "btn btn-secondary btn-sm",
+        },
+        buttonsStyling: false,
+      });
+
+      mySwal
+        .fire({
+          width: 500,
+          title: "Apakah anda yakin ingin memproduksi dengan bahan ini?",
+          text: "Memproduksi akan mengurangi barang mentah dan menambah barang jadi",
+
+          html: `<table id="bahan" class="table table-bordered table-responsive " border=1 responsive>
+              <tbody>
+                ${data.barangproduksibarangmentahs
+                  .map(
+                    (item, i) => `
+                    <tr>
+                      <td>${i + 1}</td>
+                      <td>${item.barang_mentah?.nm_barangmentah}</td>
+                      <td>${item.stok_digunakan}</td>
+                    </tr>
+                `
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+            Memproduksi akan mengurangi barang mentah dan menambah barang jadi
+            `,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Ya, Produksi!",
+          cancelButtonText: "Batalkan!",
+          reverseButtons: true,
+          preConfirm: () => {
+            return axios.delete(url).catch((error) => {
+              Swal.showValidationMessage(error.response.data.message);
+            });
+          },
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            mySwal.fire("Berhasil!", result.value.data.message, "success");
+            onSuccess && onSuccess();
+          }
+        });
+    };
+
     const columns = [
       columnHelper.accessor("nomor", {
         header: "#",
@@ -63,7 +114,11 @@ export default {
         header: "Nama Barang Jadi",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("stok_jadi", {
+      columnHelper.accessor("barangproduksibarangjadi.kd_barang_jadi", {
+        header: "Kode",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("stokbarang", {
         header: "Stok Jadi",
         cell: (cell) => cell.getValue(),
       }),
@@ -96,6 +151,18 @@ export default {
                     },
                   },
                   h("i", { class: "la la-trash fs-2" })
+                ),
+                h(
+                  "button",
+                  {
+                    class: "btn btn-sm btn-icon btn-success",
+                    onClick: () =>
+                      genBarangProduksi(
+                        `/barangproduksi/${cell.getValue()}/produce`,
+                        cell.row.original
+                      ),
+                  },
+                  h("i", { class: "la la-tools fs-2" })
                 ),
               ]),
       }),

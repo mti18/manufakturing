@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\RestApi;
 use App\Models\Gudang;
+use App\Models\Rak;
+use App\Models\SatuanJadiChild;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,10 +17,20 @@ class GudangController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = Gudang::where(function ($q) use ($request) {
+            $courses = Gudang::with(['rak'])->where(function ($q) use ($request) {
                 $q->where('nm_gudang', 'LIKE', '%' . $request->search . '%');
                 $q->orwhere('kode', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
+
+            $courses->map(function ($a)
+            {
+                // if (!empty($a->rak)) {
+                    // $a->rak = $a->rak;
+            //     }else {
+            //         $a->rak = "Belum ada Rak";
+            //     }
+            });
+
 
             return response()->json($courses);
         } else {
@@ -25,13 +38,30 @@ class GudangController extends Controller
         }
     }
 
+    public function rak($id)
+    {
+        $data = Rak::where('gudang_id', $id)->get();
+        return RestApi::success($data);
+    }
+
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'nm_gudang' => 'required|string',
                 'kode' => 'required|string',
+                'rak' => 'required|array',
             ]);
-            Gudang::create($data);
+
+            $data = Gudang::create($data);
+
+            foreach($request->rak as $item){
+                $nm_rak = $item['nm_rak'];
+
+                    Rak::create([
+                        'nm_rak' => $nm_rak,
+                        'gudang_id' => $data->id,
+                    ]);
+            }
 
             return response()->json(['message' => 'Gudang berhasil diperbarui']);
         } else {
@@ -41,7 +71,7 @@ class GudangController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = Gudang::all();
+            $data = Gudang::with(['rak'])->get();
             return response()->json($data);
         } else {
             return abort(404);
@@ -50,7 +80,7 @@ class GudangController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = Gudang::where('uuid', $uuid)->first();
+            $data = Gudang::with(['rak'])->where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);
@@ -61,8 +91,25 @@ class GudangController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'nm_gudang' => 'required|string',
+                'rak' => 'required|array',
             ]);
-            Gudang::where('uuid', $uuid)->update($data);
+
+            $gudang = Gudang::where('uuid', $uuid)->first();
+            $data = $request->only(['nm_gudang']);
+            
+            if ($gudang->update($data)) {
+                Rak::where('gudang_id', $gudang->id)->delete();
+                foreach($request->rak as $item){
+                    $nm_rak = $item['nm_rak'];
+    
+                        Rak::create([
+                            'nm_rak' => $nm_rak,
+                            'gudang_id' => $gudang->id,
+                        ]);
+                }
+            }
+
+            
 
             return response()->json(['message' => 'Gudang berhasil diperbarui']);
         } else {

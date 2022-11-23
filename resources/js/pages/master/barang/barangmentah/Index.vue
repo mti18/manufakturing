@@ -83,6 +83,10 @@ export default {
         header: "Gudang",
         cell: (cell) => cell.getValue(),
       }),
+      columnHelper.accessor("nm_rak", {
+        header: "Rak",
+        cell: (cell) => cell.getValue(),
+      }),
       columnHelper.accessor("kategoribadges", {
         header: "Kategori Barang",
         cell: (cell) => cell.getValue(),

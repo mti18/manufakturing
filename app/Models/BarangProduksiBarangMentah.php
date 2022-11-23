@@ -13,4 +13,8 @@ class BarangProduksiBarangMentah extends Model
 
     protected $fillable = ['barang_produksi_id', 'barang_mentah_id', 'stok_digunakan', 'satuan_id'];
 
+    public function barang_mentah() {
+        return $this->belongsTo(BarangMentah::class, 'barang_mentah_id');
+    }
+
 }

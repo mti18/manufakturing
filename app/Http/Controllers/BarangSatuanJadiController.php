@@ -6,6 +6,7 @@ use App\Helpers\RestApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\BarangSatuanJadi;
+use App\Models\Rak;
 use App\Models\SatuanJadiChild;
 
 class BarangSatuanJadiController extends Controller
@@ -34,6 +35,12 @@ class BarangSatuanJadiController extends Controller
     public function child($id)
     {
         $data = SatuanJadiChild::where('barangsatuanjadi_id', $id)->get();
+        return RestApi::success($data);
+    }
+
+    public function rak($id)
+    {
+        $data = Rak::where('gudang_id', $id)->get();
         return RestApi::success($data);
     }
 
@@ -85,18 +92,17 @@ class BarangSatuanJadiController extends Controller
                 'nm_satuan_jadi' => 'required|string',
                 'child' => 'required|array',
 
-            ]);
+            ]); 
 
             $barangsj = BarangSatuanJadi::where('uuid', $uuid)->first();
-            
+            $data = $request->only(['nm_satuan_jadi']);
+                        
             if ($barangsj->update($data)) {
+                SatuanJadiChild::where('barangsatuanjadi_id', $barangsj->id)->delete();
                 foreach($request->child as $item){
-    
                     $nilai = $item['nilai'];
                     $nm_satuan_jadi_children = $item['nm_satuan_jadi_children'];
-
-                    SatuanJadiChild::where('barangsatuanjadi_id', $barangsj->id)->delete();
-
+                    
                         SatuanJadiChild::create([
                             'nm_satuan_jadi_children' => $nm_satuan_jadi_children,
                             'nilai' => $nilai,
