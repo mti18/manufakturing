@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date("tanggal");
 
             $table->enum('type', ['umum', 'penyesuaian', 'penutup']);
+            $table->string('upload');
 
 
             $table->timestamps();

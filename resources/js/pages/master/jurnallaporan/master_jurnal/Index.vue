@@ -5,7 +5,7 @@
           <Form v-if="openForm" :selected="selected" />
           <div class="card">
             <div class="card-header">
-                <h1>Master Jurnal</h1>
+                <h1 >Master Jurnal</h1>
               <div class="card-title ">
                 <button v-if="!openFilters" type="button" class="back btn btn btn-danger btn-sm ms-auto " @click="openFilters = true">
                   <i class="fas fa-angle-left"></i>
@@ -19,7 +19,10 @@
               </div>
             </div>
             <div class="card-body">
-              <mti-paginate id="table-masterjurnal" url="/masterjurnal/paginate" :columns="columns"></mti-paginate>
+              <mti-paginate id="table-masterjurnal" 
+              :url="`/masterjurnal/paginate/${formRequest.bulan}/${formRequest.tahun}`" 
+              :columns="columns"
+               :callback="callback"></mti-paginate>
             </div>
           </div>
       </template>
@@ -41,7 +44,12 @@
       Form, Filters
     },
     data(){
-
+      return{
+        formRequest: {
+          bulan: '',
+          tahun: ''
+        }
+      }
     },
     setup() {
       const queryClient = useQueryClient();
@@ -49,6 +57,7 @@
       const openForm = ref(false);
       const openFilters = ref(true);
       
+     
       const { delete: deletemasterjurnal } = useDelete({
         onSuccess: () => {
           queryClient.invalidateQueries(["/masterjurnal/paginate"]);
@@ -63,12 +72,20 @@
           },
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("name", {
-          header: "Nama",
+        columnHelper.accessor("kd_jurnal", {
+          header: "Kode",
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("code", {
-          header: "Kode",
+        columnHelper.accessor("type", {
+          header: "Tipe",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("tanggal", {
+          header: "Tanggal",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("upload", {
+          header: "Bukti",
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("uuid", {
@@ -87,6 +104,7 @@
       ]
   
       return {
+      
         selected,
         openForm,
         openFilters,
