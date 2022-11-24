@@ -42,6 +42,16 @@ class BarangMentah extends Model
         return $this->belongsTo(Rak::class, 'rak_id', 'id');
     }
 
+    public function stok_masuk_mentahs()
+    {
+        return $this->hasMany(StokMasuk::class, 'barangmentah_id', 'id');
+    }
+
+    public function stok_keluar_mentahs()
+    {
+        return $this->hasMany(StokKeluar::class, 'barangmentah_id', 'id');
+    }
+
     
     public static function booted() {
         parent::boot();

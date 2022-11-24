@@ -32,35 +32,20 @@ class MenuSeeder extends Seeder
                     ['id' => 7, 'name' => 'Setting', 'route' => 'dashboard.master.setting', 'icon' => 'las fa-cog fs-2', 'children' => [
                         ['id' => 8, 'name' => 'Website', 'url' => '/master/setting/website', 'route' => 'dashboard.master.setting.website', 'icon' => 'las la-laptop fs-2', 'component' => 'master/user/Index'],
                     ]],
-                    ['id' => 9, 'name' => 'Suppliers', 'route' => 'dashboard.master.suppliers', 'icon' => 'las fa-cog fs-2', 'children' => [
-                        ['id' => 10, 'name' => 'Supplier', 'url' => '/master/suppliers/supplier', 'route' => 'dashboard.master.suppliers.supplier', 'icon' => 'las la-laptop fs-2', 'component' => 'master/suppliers/supplier/Index'],
-                        ['id' => 11, 'name' => 'Customer', 'url' => '/master/suppliers/customer', 'route' => 'dashboard.master.suppliers.customer', 'icon' => 'las la-laptop fs-2', 'component' => 'master/suppliers/customer/Index'],
-                    ]],
-                    ['id' => 12, 'name' => 'Stok Barang', 'route' => 'dashboard.master.stokbarang', 'icon' => 'las fa-cog fs-2', 'children' => [
-                        ['id' => 13, 'name' => 'Stok Barang Masuk', 'url' => '/master/stokbarang/stokmasuk', 'route' => 'dashboard.master.stokbarang.stokmasuk', 'icon' => 'las la-laptop fs-2', 'component' => 'master/stokbarang/stokmasuk/Index'],
-                        ['id' => 14, 'name' => 'Stok Barang Keluar', 'url' => '/master/stokbarang/stokkeluar', 'route' => 'dashboard.master.stokbarang.stokkeluar', 'icon' => 'las la-laptop fs-2', 'component' => 'master/stokbarang/stokkeluar/Index'],
-                    ]],
-                    ['id' => 15, 'name' => 'Wilayah', 'route' => 'dashboard.master.wilayah', 'icon' => 'las fa-cog fs-2', 'children' => [
-                        ['id' => 16, 'name' => 'Provinsi', 'url' => '/master/wilayah/provinsi', 'route' => 'dashboard.master.wilayah.provinsi', 'icon' => 'las la-laptop fs-2', 'component' => 'master/wilayah/provinsi/Index'],
-                        ['id' => 17, 'name' => 'Kota', 'url' => '/master/wilayah/kota', 'route' => 'dashboard.master.wilayah.kota', 'icon' => 'las la-laptop fs-2', 'component' => 'master/wilayah/kota/Index'],
-                        ['id' => 18, 'name' => 'Kecamatan', 'url' => '/master/wilayah/kecamatan', 'route' => 'dashboard.master.wilayah.kecamatan', 'icon' => 'las la-laptop fs-2', 'component' => 'master/wilayah/kecamatan/Index'],
-                        ['id' => 19, 'name' => 'Kelurahan', 'url' => '/master/wilayah/kelurahan', 'route' => 'dashboard.master.wilayah.kelurahan', 'icon' => 'las la-laptop fs-2', 'component' => 'master/wilayah/kelurahan/Index'],
-                    ]],
-                    ['name' => 'Barang', 'route' => 'dashboard.master.barang', 'icon' => 'fas fa-box-open', 'children' => [
-                        ['name' => 'Satuan', 'url' => '/master/barang/barangsatuan', 'route' => 'dashboard.master.barang.barangsatuan', 'icon' => 'asdasd', 'component' => 'master/barang/barangsatuan/Index'],
-                        ['name' => 'Satuan Jadi', 'url' => '/master/barang/barangsatuanjadi', 'route' => 'dashboard.master.barang.barangsatuanjadi', 'icon' => 'dasdsad', 'component' => 'master/barang/barangsatuanjadi/Index'],
-                        ['name' => 'Barang Mentah', 'url' => '/master/barang/barangmentah', 'route' => 'dashboard.master.barang.barangmentah', 'icon' => 'cvbn', 'component' => 'master/barang/barangmentah/Index'],
-                        ['name' => 'Kategori', 'url' => '/master/barang/kategori', 'route' => 'dashboard.master.barang.kategori', 'icon' => 'aeaf', 'component' => 'master/barang/kategori/Index'],
-                        ['name' => 'Barang Jadi', 'url' => '/master/barang/barangjadi', 'route' => 'dashboard.master.barang.barangjadi', 'icon' => 'poiu', 'component' => 'master/barang/barangjadi/Index'],
-                        ['name' => 'Gudang', 'url' => '/master/barang/gudang', 'route' => 'dashboard.master.barang.gudang', 'icon' => 'pojh', 'component' => 'master/barang/gudang/Index'],
+                    ['id' => 9, 'name' => 'Barang', 'route' => 'dashboard.master.barang', 'icon' => 'fas fa-box-open', 'children' => [
+                        ['id' => 10, 'name' => 'Satuan', 'url' => '/master/barang/barangsatuan', 'route' => 'dashboard.master.barang.barangsatuan', 'icon' => 'asdasd', 'component' => 'master/barang/barangsatuan/Index'],
+                        ['id' => 11, 'name' => 'Satuan Jadi', 'url' => '/master/barang/barangsatuanjadi', 'route' => 'dashboard.master.barang.barangsatuanjadi', 'icon' => 'dasdsad', 'component' => 'master/barang/barangsatuanjadi/Index'],
+                        ['id' => 13, 'name' => 'Barang Mentah', 'url' => '/master/barang/barangmentah', 'route' => 'dashboard.master.barang.barangmentah', 'icon' => 'cvbn', 'component' => 'master/barang/barangmentah/Index'],
+                        ['id' => 14, 'name' => 'Kategori', 'url' => '/master/barang/kategori', 'route' => 'dashboard.master.barang.kategori', 'icon' => 'aeaf', 'component' => 'master/barang/kategori/Index'],
+                        ['id' => 15, 'name' => 'Barang Jadi', 'url' => '/master/barang/barangjadi', 'route' => 'dashboard.master.barang.barangjadi', 'icon' => 'poiu', 'component' => 'master/barang/barangjadi/Index'],
+                        ['id' => 16, 'name' => 'Gudang', 'url' => '/master/barang/gudang', 'route' => 'dashboard.master.barang.gudang', 'icon' => 'pojh', 'component' => 'master/barang/gudang/Index'],
+                        ['id' => 17, 'name' => 'Barang Produksi', 'url' => '/master/barang/barangproduksi', 'route' => 'dashboard.master.barang.barangproduksi', 'icon' => 'pojh', 'component' => 'master/barang/barangproduksi/Index'],
                     ]], 
+                    ['id' => 18, 'name' => 'Stok Barang', 'route' => 'dashboard.master.stokbarang', 'icon' => 'fas fa-warehouse', 'children' => [
+                        ['id' => 19, 'name' => 'Stok Masuk', 'url' => '/master/barang/stokmasuk', 'route' => 'dashboard.master.barang.stokmasuk', 'icon' => 'pojh', 'component' => 'master/barang/stokmasuk/Index'],
+                        ['id' => 20, 'name' => 'Stok Keluar', 'url' => '/master/barang/stokkeluar', 'route' => 'dashboard.master.barang.stokkeluar', 'icon' => 'pojh', 'component' => 'master/barang/stokkeluar/Index'],
+                    ]],
                 ]],
-                ['name' => 'Setting', 'route' => 'dashboard.setting', 'icon' => 'las fa-database fs-2', 'children' => [
-                    ['name' => 'Config', 'route' => 'dashboard.setting.config', 'icon' => 'fas fa-box-open', 'children' => [
-                        ['name' => 'Profile', 'url' => '/setting/config/profile', 'route' => 'dashboard.setting.config.profile', 'icon' => 'pojh', 'component' => 'setting/config/profile/Index'],
-                    ]], 
-                ]],
-                ['name' => 'Sales Order', 'url' => '/salesorder', 'route' => 'dashboard.salesorder', 'component' => 'salesorder/Index', 'icon' => 'las la-home fs-2'],
             ]]
         ];
 

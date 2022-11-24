@@ -67,7 +67,6 @@ class BarangJadiController extends Controller
             $data = $request->validate([
                 'nm_barang_jadi' => 'required|string',
                 'barangsatuanjadi_id' => 'required',
-                'satuan' => 'required',
                 'rak_id' => 'required',
                 'gudang_id' => 'required',
                 'barangjadikategoris' => 'required|array',
@@ -75,20 +74,6 @@ class BarangJadiController extends Controller
                 'foto' => 'required|image',
             ]);
 
-            // $child = SatuanJadiChild::find($data['satuan']);
-            
-            // $stok = $data['stok'];
-
-            // $stok = $stok * $child->nilai;
-            
-            // $data['stok'] = $stok;
-            
-            unset($data['satuan']);
-
-
-            $data['barangsatuanjadi'] = BarangSatuanJadi::where('id', $request->barangsatuanjadi_id)->first()->id;
-
-            $data['gudang'] = Gudang::where('id', $request->gudang_id)->first()->id;
 
             $data['foto'] = 'storage/' . $request->foto->store('barangjadi', 'public');
 
@@ -121,9 +106,6 @@ class BarangJadiController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = BarangJadi::where('uuid', $uuid)->first();
 
-            // $satuan = SatuanJadiChild::where('barangsatuanjadi_id', $data->barangsatuanjadi_id)->orderBy('nilai', 'ASC')->first();
-            // $data->satuan_id = $satuan->id;
-
             $rak = Rak::where('gudang_id', $data->gudang_id)->first();
             $data->rak_id = $rak->id;
 
@@ -148,27 +130,9 @@ class BarangJadiController extends Controller
 
             ]);
 
-            $child = SatuanJadiChild::find($data['satuan']);
-
-            // return $child;
-            
-            $stok = $data['stok'];
-
-            $stok = $stok * $child->nilai;
-            
-            $data['stok'] = $stok;
-            $request->merge([
-                'stok' => $stok
-            ]);
-            
-            unset($request->satuan_id);
-            unset($request->satuan);
-
             
 
-            $data['barangsatuanjadi'] = BarangSatuanJadi::where('id', $request->barangsatuanjadi_id)->first()->id;
-
-            $data['gudang'] = Gudang::where('id', $request->gudang_id)->first()->id;
+    
 
             $bj = BarangJadi::where('uuid', $uuid)->first();
             if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $bj->foto)))) {

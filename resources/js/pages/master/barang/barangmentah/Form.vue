@@ -24,7 +24,7 @@
       <div class="row">
         <div class="col-4">
           <div class="mb-6">
-            <label for="name" class="form-label required"> Foto : </label>
+            <label for="name" class="form-label"> Foto : </label>
             <file-upload
               :files="selected && form?.foto ? `/${form.foto}` : file"
               :allow-multiple="false"
@@ -73,7 +73,7 @@
       </div>
 
       <div class="row">
-        <div class="col-3">
+        <div class="col-6">
           <div class="mb-8">
             <label for="nm_satuan" class="form-label required">
               Nama Satuan :
@@ -83,7 +83,6 @@
               name="barangsatuan_id"
               placeholder="Pilih Nama Satuan"
               id="barangsatuan_id"
-              @change="getChild()"
               v-model="form.barangsatuan_id"
               required
             >
@@ -98,35 +97,9 @@
             </select2>
           </div>
         </div>
+      </div>
 
-        <div class="col-3">
-          <div class="mb-8">
-            <label for="nm_satuan_child" class="form-label required">
-              Satuan :
-            </label>
-            <select2
-              class="form-control"
-              name="satuan"
-              placeholder="Pilih Satuan"
-              id="satuan"
-              v-model="form.satuan"
-              :disabled="
-                form.barangsatuan_id == undefined || form.barangsatuan_id == ''
-              "
-              required
-            >
-              <option value="" disabled>Pilih Satuan</option>
-              <option
-                v-for="item in satuan_child"
-                :value="item.id"
-                :key="item.id"
-              >
-                {{ item.nm_satuan_children }}
-              </option>
-            </select2>
-          </div>
-        </div>
-
+      <div class="row">
         <div class="col-6">
           <div class="mb-8">
             <label for="nm_gudang" class="form-label required">
@@ -190,7 +163,7 @@
           </div>
         </div> -->
 
-        <div class="col-md-6 form-group">
+        <div class="col-md-12 form-group">
           <label class="required form-label">Kategori</label>
           <div
             class="form-check mb-2 form-check-custom form-check-solid form-check-sm"
@@ -253,22 +226,21 @@ export default {
   },
   setup({ selected }) {
     const queryClient = useQueryClient();
+    const rak = ref([]);
     const form = ref({
       barangmentahkategoris: [],
     });
     const file = ref([]);
-    const rak = ref([]);
 
+    const { data: gudang } = useQuery(["gudangs"], () =>
+      axios.get("/gudang/get").then((res) => res.data)
+    );
     const { data: barangsatuan } = useQuery(["barang_satuans"], () =>
       axios.get("/barangsatuan/get").then((res) => res.data)
     );
 
     const { data: kategoris = [] } = useQuery(["kategoris"], () =>
       axios.get("/kategori/get").then((res) => res.data)
-    );
-
-    const { data: gudang } = useQuery(["gudangs"], () =>
-      axios.get("/gudang/get").then((res) => res.data)
     );
 
     const { data: barangmentah } = useQuery(
@@ -323,24 +295,24 @@ export default {
     };
   },
   methods: {
-    getChild() {
-      setTimeout(() => {
-        var app = this;
-        var id = app.form.barangsatuan_id;
-        axios
-          .get(`barangsatuan/${id}/child`)
-          .then((res) => {
-            app.satuan_child = res.data.data;
+    // getChild() {
+    //   setTimeout(() => {
+    //     var app = this;
+    //     var id = app.form.barangsatuan_id;
+    //     axios
+    //       .get(`barangsatuan/${id}/child`)
+    //       .then((res) => {
+    //         app.satuan_child = res.data.data;
 
-            if (app.form.satuan_id != "" && app.form.satuan_id != undefined) {
-              app.form.satuan = app.form.satuan_id;
-            }
-          })
-          .catch((err) => {
-            toastr.error("sesuatu error terjadi", "gagal");
-          });
-      }, 500);
-    },
+    //         if (app.form.satuan_id != "" && app.form.satuan_id != undefined) {
+    //           app.form.satuan = app.form.satuan_id;
+    //         }
+    //       })
+    //       .catch((err) => {
+    //         toastr.error("sesuatu error terjadi", "gagal");
+    //       });
+    //   }, 500);
+    // },
 
     addkategori(item) {
       var app = this;

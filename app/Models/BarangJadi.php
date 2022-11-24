@@ -40,6 +40,16 @@ class BarangJadi extends Model
         return $this->belongsTo(Rak::class, 'rak_id', 'id');
     }
 
+    public function stok_masuk_jadis()
+    {
+        return $this->hasMany(StokMasuk::class, 'barangjadi_id', 'id');
+    }
+
+    public function stok_keluar_jadis()
+    {
+        return $this->hasMany(StokKeluar::class, 'barangjadi_id', 'id');
+    }
+
     public static function booted() {
         parent::boot();
 
