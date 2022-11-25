@@ -32,6 +32,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\JenisAssetController;
 use App\Http\Controllers\SalesOrderController;
+use App\Http\Controllers\SalesOrderDetailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -326,6 +327,14 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [StokMasukController::class, 'edit']);
             Route::post('{uuid}/update', [StokMasukController::class, 'update']);
             Route::delete('{uuid}/destroy', [StokMasukController::class, 'destroy']);
+        });
+        Route::prefix('salesorderdetail')->group(function () {
+            Route::get('get', [SalesOrderDetail::class, 'get']);
+            Route::post('paginate', [SalesOrderDetail::class, 'paginate']);
+            Route::post('store', [SalesOrderDetail::class, 'store']);
+            Route::get('{uuid}/edit', [SalesOrderDetail::class, 'edit']);
+            Route::post('{uuid}/update', [SalesOrderDetail::class, 'update']);
+            Route::delete('{uuid}/destroy', [SalesOrderDetail::class, 'destroy']);
         });
 
     });
