@@ -11,5 +11,17 @@ class MasterJurnal extends Model
     use HasFactory;
     
     use Uuid;
-    protected $fillable = ["uuid", "kd_jurnal", "tanggal", "type", "status"];
+    protected $fillable = ["uuid", "kd_jurnal", "tanggal", "type", "upload"];
+    protected $hidden = [ 'created_at', 'updated_at'];
+
+    public static function booted() {
+        parent::boot();
+
+        self::deleted(function ($model) {
+            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $model->upload)))) {
+                unlink(storage_path('app/public/' . str_replace('storage/', '', $model->upload)));
+            }
+        });
+    }
+
 }

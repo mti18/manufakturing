@@ -17,15 +17,15 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
 
-            $table->enum('tipe_barang', ['`Barang Jadi`', 'Barang Jelek']);
+            $table->enum('tipe_barang', ['barang_jadi', 'barang_mentah']);
 
             $table->bigInteger('barangjadi_id')->unsigned()->nullable();
             $table->foreign('barangjadi_id')->references('id')->on('barang_jadis')->onDelete('restrict');
             $table->bigInteger('barangmentah_id')->unsigned()->nullable();
             $table->foreign('barangmentah_id')->references('id')->on('barang_mentahs')->onDelete('restrict');
 
-            $table->enum('kualitas', ['Bagus', 'Jelek'])->default('Bagus');
-            $table->date('tanggal_masuk');
+            $table->enum('kualitas', ['bagus', 'jelek'])->default('bagus');
+            $table->date('tanggal_masuk')->nullable();
             $table->bigInteger('barang_masuk');
             $table->string('keterangan')->nullable(); 
 

@@ -3,11 +3,7 @@
     <div class="card-header">
       <div class="card-title w-100">
         <h3>
-          {{
-            stokmasuk?.uuid
-              ? `Edit Stok Masuk : ${stokmasuk.name}`
-              : "Tambah Stok Masuk"
-          }}
+          {{ stokmasuk?.uuid ? `Edit Stok Masuk` : "Tambah Stok Masuk" }}
         </h3>
         <button
           type="button"
@@ -32,17 +28,16 @@
               placeholder="Pilih Tipe Barang"
               id="tipe_barang"
               v-model="form.tipe_barang"
-              @change="getSatuan()"
               required
             >
               <option value="" disabled>Pilih Tipe Barang</option>
-              <option value="Barang Jadi">Barang Jadi</option>
-              <option value="Barang Mentah">Barang Mentah</option>
+              <option value="barang_jadi">Barang Jadi</option>
+              <option value="barang_mentah">Barang Mentah</option>
             </select2>
           </div>
         </div>
 
-        <div class="col-6" v-if="form.tipe_barang === 'Barang Mentah'">
+        <div class="col-6" v-if="form.tipe_barang === 'barang_mentah'">
           <div class="mb-8">
             <label for="nm_barang_mentah" class="form-label required">
               Nama Barang Mentah :
@@ -53,6 +48,7 @@
               placeholder="Pilih Nama Barang Mentah"
               id="barangmentah_id"
               v-model="form.barangmentah_id"
+              @change="getSatuanMentah()"
               required
             >
               <option value="" disabled>Pilih Barang Mentah</option>
@@ -67,7 +63,7 @@
           </div>
         </div>
 
-        <div class="col-6" v-else-if="form.tipe_barang === 'Barang Jadi'">
+        <div class="col-6" v-else-if="form.tipe_barang === 'barang_jadi'">
           <div class="mb-8">
             <label for="nm_barang_jadi" class="form-label required">
               Nama Barang Jadi :
@@ -78,6 +74,7 @@
               placeholder="Pilih Nama Barang Jadi"
               id="barangjadi_id"
               v-model="form.barangjadi_id"
+              @change="getSatuanJadi()"
               required
             >
               <option value="" disabled>Pilih Barang Jadi</option>
@@ -91,19 +88,36 @@
             </select2>
           </div>
         </div>
+
+        <div class="col-6" v-else>
+          <div class="mb-8">
+            <label for="" class="form-label required"> Nama Barang : </label>
+            <select2
+              class="form-control"
+              name=""
+              placeholder="Pilih Tipe Barang Terlebih Dahulu "
+              id=""
+              required
+            >
+              <option value="" disabled>
+                Pilih Tipe Barang Terlebih Dahulu
+              </option>
+            </select2>
+          </div>
+        </div>
       </div>
 
       <div class="row">
         <div class="col-6">
           <div class="mb-8">
             <label for="barang_masuk" class="form-label required">
-              Jumlah Stok Masuk :
+              Jumlah Stok Barang Masuk :
             </label>
             <input
-              type="text"
+              type="numeric"
               name="barang_masuk"
               id="barang_masuk"
-              placeholder="Jumlah Stok Masuk"
+              placeholder="Jumlah Stok Barang Masuk"
               class="form-control"
               required
               autoComplete="off"
@@ -111,7 +125,33 @@
             />
           </div>
         </div>
-        <div class="col-6">
+
+        <div class="col-6" v-if="form.tipe_barang === 'barang_mentah'">
+          <div class="mb-8">
+            <label for="satuan_mentah" class="form-label required">
+              Nama Satuan Mentah :
+            </label>
+            <select2
+              class="form-control"
+              name="satuan_mentah"
+              placeholder="Pilih Satuan Mentah"
+              id="satuan_mentah"
+              v-model="form.satuan_mentah"
+              required
+            >
+              <option value="" disabled>Pilih Satuan</option>
+              <option
+                v-for="item in form.child"
+                :value="item.id"
+                :key="item.id"
+              >
+                {{ item.nm_satuan_children }}
+              </option>
+            </select2>
+          </div>
+        </div>
+
+        <div class="col-6" v-else-if="form.tipe_barang === 'barang_jadi'">
           <div class="mb-8">
             <label for="satuan_jadi" class="form-label required">
               Nama Satuan Jadi :
@@ -119,22 +159,40 @@
             <select2
               class="form-control"
               name="satuan_jadi"
-              placeholder="Pilih Satuan_jadi"
+              placeholder="Pilih Satuan jadi"
               id="satuan_jadi"
               v-model="form.satuan_jadi"
               required
             >
               <option value="" disabled>Pilih Satuan</option>
-              <!-- <option
-                v-for="item in barangjadi"
+              <option
+                v-for="item in form.child"
                 :value="item.id"
                 :key="item.id"
               >
-                {{ item.nm_barang_jadi }}
-              </option> -->
+                {{ item.nm_satuan_jadi_children }}
+              </option>
             </select2>
           </div>
         </div>
+
+        <div class="col-6" v-else>
+          <div class="mb-8">
+            <label for="" class="form-label required"> Nama Satuan : </label>
+            <select2
+              class="form-control"
+              name=""
+              placeholder="Pilih Tipe Barang Terlebih Dahulu"
+              id=""
+              required
+            >
+              <option value="" disabled>
+                Pilih Tipe Barang Terlebih Dahulu
+              </option>
+            </select2>
+          </div>
+        </div>
+
         <div class="col-6">
           <div class="mb-8">
             <label for="tanggal_masuk" class="form-label required">
@@ -146,18 +204,38 @@
               id="tanggal_masuk"
               placeholder="Kode"
               class="form-control"
-              required
               autoComplete="off"
               v-model="form.tanggal_masuk"
             />
           </div>
         </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="mb-8">
+            <label for="kualitas" class="form-label required">
+              Kualitas :
+            </label>
+            <select2
+              class="form-control"
+              name="kualitas"
+              placeholder="Pilih Kualitas"
+              id="kualitas"
+              v-model="form.kualitas"
+              required
+            >
+              <option value="" disabled>Pilih Kualitas</option>
+              <option value="bagus">Bagus</option>
+              <option value="jelek" v-if="form.tipe_barang === 'barang_jadi'">
+                Jelek
+              </option>
+            </select2>
+          </div>
+        </div>
 
         <div class="col-12">
           <div class="mb-8">
-            <label for="keterangan" class="form-label required">
-              Keterangan :
-            </label>
+            <label for="keterangan" class="form-label"> Keterangan : </label>
             <textarea
               name="keterangan"
               id="keterangan"
@@ -251,14 +329,6 @@ export default {
     };
   },
   methods: {
-    getSatuan() {
-      if (this.form.tipe_barang == "Barang Jadi") {
-        this.getSatuanJadi();
-      } else {
-        this.getSatuanMentah();
-      }
-    },
-
     getSatuanJadi() {
       setTimeout(() => {
         var app = this;
@@ -269,11 +339,25 @@ export default {
         axios
           .get(`barangsatuanjadi/${id}/child`)
           .then((res) => {
-            app.form.satuan_jadi_child = res.data.data;
+            app.form.child = res.data.data;
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
+    },
 
-            // if (app.form.satuan_id != "" && app.form.satuan_id != undefined) {
-            //   app.form.satuan = app.form.satuan_id;
-            // }
+    getSatuanMentah() {
+      setTimeout(() => {
+        var app = this;
+        var id = app.form.barangmentah_id;
+
+        var index = app.barangmentahs.findIndex((cat) => cat.id == id);
+        id = app.barangmentahs[index].barangsatuan_id;
+        axios
+          .get(`barangsatuan/${id}/child`)
+          .then((res) => {
+            app.form.child = res.data.data;
           })
           .catch((err) => {
             toastr.error("sesuatu error terjadi", "gagal");

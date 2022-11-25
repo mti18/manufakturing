@@ -70,8 +70,6 @@ class BarangMentahController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'nm_barangmentah' => 'required|string',
-                'stok' => 'required|numeric',
-                'satuan' => 'required',
                 'barangsatuan_id' => 'required',
                 'gudang_id' => 'required',
                 'rak_id' => 'required',
@@ -81,18 +79,6 @@ class BarangMentahController extends Controller
                 'foto' => 'required|image',
  
             ]); 
-
-            $child = SatuanChild::find($data['satuan']);
-            
-            $stok = $data['stok'];
-
-            $stok = $stok * $child->nilai;
-            
-            $data['stok'] = $stok;
-            
-            unset($data['satuan']);
-
-            $data['gudang'] = Gudang::where('id', $request->gudang_id)->first()->id;
 
             $data['foto'] = 'storage/' . $request->foto->store('barangmentah', 'public');
 
@@ -127,11 +113,8 @@ class BarangMentahController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = BarangMentah::where('uuid', $uuid)->first();
 
-            $child = SatuanChild::whereDoesntHave('children')->where('barangsatuan_id', $data->barangsatuan_id)->first();
-            $data->satuan_id = $child->id;
-
-            $rak = Rak::where('gudang_id', $data->gudang_id)->first();
-            $data->rak_id = $rak->id;
+            // $rak = Rak::where('gudang_id', $data->gudang_id)->first();
+            // $data->rak_id = $rak->id;
             return response()->json($data);
         } else {
             return abort(404);
@@ -142,8 +125,6 @@ class BarangMentahController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'nm_barangmentah' => 'required|string',
-                'stok' => 'required|numeric',
-                'satuan' => 'required',
                 'barangsatuan_id' => 'required',
                 'gudang_id' => 'required',
                 'rak_id' => 'required',
@@ -152,20 +133,7 @@ class BarangMentahController extends Controller
                 'foto' => 'required|image',
     
             ]);
-
-            $child = SatuanChild::find($data['satuan']);
-            
-            $stok = $data['stok'];
-            
-            $stok = $stok * $child->nilai;
-            
-            $data['stok'] = $stok;
-            
-            unset($request->satuan_id);
-            unset($request->satuan);
-            
-            $data['gudang'] = Gudang::where('id', $request->gudang_id)->first()->id;
-            
+                        
             $bm = BarangMentah::where('uuid', $uuid)->first();
             if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $bm->foto)))) {
                 unlink(storage_path('app/public/' . str_replace('storage/', '', $bm->foto)));
