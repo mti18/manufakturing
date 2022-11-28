@@ -16,6 +16,7 @@ class SalesOrder extends Model
         'jenis_pembayaran', 'account_id', 'pembayaran', 'tgl_pesan', 'tgl_pengiriman', 'tempo', 'status', 
         'keterangan', 'total', 'diskon', 'uangmuka', 'pph', 'ppn', 'netto'
     ];
+    protected $with = ['details'];
 
     public function diketahui_oleh()
     {
@@ -28,5 +29,13 @@ class SalesOrder extends Model
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
+    }
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
+    public function details() {
+        return $this->hasMany(SalesOrderDetail::class, 'salesorder_id');
     }
 }

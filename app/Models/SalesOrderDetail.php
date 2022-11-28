@@ -12,6 +12,11 @@ class SalesOrderDetail extends Model
     use Uuid;
 
     protected $fillable = ['uuid', 'barang_id', 'volume', 'nm_satuan', 'harga', 'diskon', 
-        'jumlah', 'keterangan'
+        'jumlah', 'keterangan', 'salesorder_id'
     ];
+
+    public function salesorder()
+    {
+        return $this->belongsTo(SalesOrder::class);
+    }
 }
