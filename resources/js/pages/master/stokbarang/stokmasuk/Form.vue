@@ -195,24 +195,6 @@
 
         <div class="col-6">
           <div class="mb-8">
-            <label for="tanggal_masuk" class="form-label required">
-              Tanggal :
-            </label>
-            <input
-              type="date"
-              name="tanggal_masuk"
-              id="tanggal_masuk"
-              placeholder="Kode"
-              class="form-control"
-              autoComplete="off"
-              v-model="form.tanggal_masuk"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-6">
-          <div class="mb-8">
             <label for="kualitas" class="form-label required">
               Kualitas :
             </label>
@@ -230,6 +212,24 @@
                 Jelek
               </option>
             </select2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="mb-8">
+              <label for="tanggal_masuk" class="form-label required">
+                Tanggal :
+              </label>
+              <input
+                type="date"
+                name="tanggal_masuk"
+                id="tanggal_masuk"
+                placeholder="Kode"
+                class="form-control"
+                autoComplete="off"
+                v-model="form.tanggal_masuk"
+              />
+            </div>
           </div>
         </div>
 

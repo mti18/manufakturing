@@ -30,6 +30,7 @@
 <script>
 import { ref, h } from "vue";
 import { useQueryClient } from "vue-query";
+import { useMutation } from "vue-query";
 import { createColumnHelper } from "@tanstack/vue-table";
 const columnHelper = createColumnHelper();
 
@@ -66,7 +67,7 @@ export default {
           title: "Apakah anda yakin ingin memproduksi dengan bahan ini?",
           text: "Memproduksi akan mengurangi barang mentah dan menambah barang jadi",
 
-          html: `<table id="bahan" class="table table-bordered table-responsive " border=1 responsive>
+          html: `<table type="produce" id="bahan" class="table table-bordered table-responsive " border=1 responsive>
               <tbody>
                 ${data.barangproduksibarangmentahs
                   .map(
@@ -89,10 +90,11 @@ export default {
           cancelButtonText: "Batalkan!",
           reverseButtons: true,
           preConfirm: () => {
-            return axios.delete(url).catch((error) => {
+            return axios.post(url).catch((error) => {
               Swal.showValidationMessage(error.response.data.message);
             });
           },
+          confirm: () => {},
         })
         .then((result) => {
           if (result.isConfirmed) {
@@ -101,6 +103,29 @@ export default {
           }
         });
     };
+
+    const { mutate: produce } = useMutation(
+      (data) =>
+        axios
+          .post(
+            selected
+              ? `/barangproduksi/${selected}/update`
+              : "/barangproduksi/produce",
+            data
+          )
+          .then((res) => res.data),
+      {
+        onMutate: () => {
+          KTApp.block("#form-barangproduksi");
+        },
+        onError: (error) => {
+          toastr.error(error.response.data.message);
+        },
+        onSettled: () => {
+          KTApp.unblock("#form-barangproduksi");
+        },
+      }
+    );
 
     const columns = [
       columnHelper.accessor("nomor", {
@@ -115,7 +140,7 @@ export default {
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("barangproduksibarangjadi.kd_barang_jadi", {
-        header: "Kode",
+        header: "Kode Barang",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("stokbarang", {
@@ -152,13 +177,14 @@ export default {
                   },
                   h("i", { class: "la la-trash fs-2" })
                 ),
+
                 h(
                   "button",
                   {
                     class: "btn btn-sm btn-icon btn-success",
                     onClick: () =>
                       genBarangProduksi(
-                        `/barangproduksi/${cell.getValue()}/produce`,
+                        "/barangproduksi/{uuid}/produce",
                         cell.row.original
                       ),
                   },
@@ -171,6 +197,7 @@ export default {
     return {
       selected,
       openForm,
+      produce,
       columns,
     };
   },

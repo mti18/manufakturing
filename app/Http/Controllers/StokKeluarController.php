@@ -27,14 +27,19 @@ class StokKeluarController extends Controller
                 if ($a->tipe_barang == "barang_mentah") {
                     $a->nm_barang = $a->barang_mentah->nm_barangmentah;
                     $a->gudang = $a->barang_mentah->barangmentahgudangs->nm_gudang;
-                    $a->barang_terakhir = $a->barang_mentah->stok + $a->barang_keluar . " " . $a->barang_mentah->barangsatuan->child[6]->nm_satuan_children;
+                    // $a->barang_terakhir = $a->barang_mentah->stok + $a->barang_keluar . " " . $a->barang_mentah->barangsatuan->child[6]->nm_satuan_children;
                     $a->barang_keluar = $a->barang_keluar. " " . $a->barang_mentah->barangsatuan->child[6]->nm_satuan_children;
                 } elseif ($a->tipe_barang == "barang_jadi") {
                     $a->nm_barang = $a->barang_jadi->nm_barang_jadi;
                     $a->gudang = $a->barang_jadi->barangjadigudangs->nm_gudang;
-                    $a->barang_terakhir = $a->barang_jadi->stok_bagus + $a->barang_jadi->stok_jelek + $a->barang_keluar . " Buah";
+                    // $a->barang_terakhir = $a->barang_jadi->stok_bagus + $a->barang_jadi->stok_jelek + $a->barang_keluar . " Buah";
                     $a->barang_keluar = $a->barang_keluar . " Buah";
-                
+                }
+
+                if ($a->kualitas == "bagus") {
+                    $a->kualitas = 'Bagus';
+                } else {
+                    $a->kualitas = 'Jelek';
                 }
 
                 if ($a->tipe_barang == "barang_mentah") {
@@ -68,6 +73,7 @@ class StokKeluarController extends Controller
                 'kualitas' => 'required',
                 'tanggal_keluar' => 'nullable',
                 'barang_keluar' => 'required|numeric',
+                // 'stok_terakhir' => 'nullable',
                 'keterangan' => 'nullable',
                 'satuan_jadi' => 'nullable',
                 'satuan_mentah' => 'nullable',
@@ -93,10 +99,13 @@ class StokKeluarController extends Controller
             }
             unset($data['satuan_jadi']);
             unset($data['satuan_mentah']);
+
+            
             
             $kualitas = $data['kualitas'];
             if ($tipe_barang == "barang_mentah") {
                 $stok = BarangMentah::find($request->barangmentah_id)->stok;
+                $data['stok_terakhir'] = $stok;
                 if ($stok - $data['barang_keluar'] < 0) {
                     return response()->json(['message' => 'Stok Habis'], 400);
                 } else {
@@ -105,6 +114,7 @@ class StokKeluarController extends Controller
             } elseif ($tipe_barang == "barang_jadi") {
                 $stok_bagus = BarangJadi::find($request->barangjadi_id)->stok_bagus;
                 $stok_jelek = BarangJadi::find($request->barangjadi_id)->stok_jelek;
+                $data['stok_terakhir'] = $stok_bagus + $stok_jelek;
                 if ($kualitas == "bagus") {
                     if ($stok_bagus - $data['barang_keluar'] < 0) {
                         return response()->json(['message' => 'Stok Habis'], 400);
@@ -190,9 +200,36 @@ class StokKeluarController extends Controller
             }
             unset($data['satuan_jadi']);
             unset($data['satuan_mentah']);
-            
-            StokKeluar::where('uuid', $uuid)->update($data);
 
+            $kualitas = $data['kualitas'];
+            if ($tipe_barang == "barang_mentah") {
+                $stok = BarangMentah::find($request->barangmentah_id)->stok;
+                $data['stok_terakhir'] = $stok;
+                if ($stok - $data['barang_keluar'] < 0) {
+                    return response()->json(['message' => 'Stok Habis'], 400);
+                } else {
+                    StokKeluar::where('uuid', $uuid)->update($data);;
+                }
+            } elseif ($tipe_barang == "barang_jadi") {
+                $stok_bagus = BarangJadi::find($request->barangjadi_id)->stok_bagus;
+                $stok_jelek = BarangJadi::find($request->barangjadi_id)->stok_jelek;
+                $data['stok_terakhir'] = $stok_bagus + $stok_jelek;
+                if ($kualitas == "bagus") {
+                    if ($stok_bagus - $data['barang_keluar'] < 0) {
+                        return response()->json(['message' => 'Stok Habis'], 400);
+                    } else {
+                        StokKeluar::where('uuid', $uuid)->update($data);;
+                    }
+                } elseif ($kualitas == "jelek") {
+                    if ($stok_jelek - $data['barang_keluar'] < 0) {
+                        return response()->json(['message' => 'Stok Habis'], 400);
+                    }
+                    else {
+                        StokKeluar::where('uuid', $uuid)->update($data);;
+                    }
+                }
+            }
+            
             return response()->json(['message' => 'Jabatan berhasil diperbarui']);
         } else {
             return abort(404);

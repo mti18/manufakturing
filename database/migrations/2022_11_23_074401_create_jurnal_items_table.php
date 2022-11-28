@@ -19,11 +19,11 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
 
 
-            $table->integer('jurnal_id')->unsigned();
-            $table->foreign('jurnal_id')->references('id')->on('jurnals')->onDelete('cascade');
+            // $table->bigInteger('jurnal_id')->unsigned();
+            // $table->foreign('jurnal_id')->references('id')->on('jurnals')->onDelete('cascade');
 
-            $table->integer('acount_id')->unsigned();
-            $table->foreign('acount_id')->references('id')->on('acounts')->onDelete('cascade');
+            // $table->bigInteger('acount_id')->unsigned();
+            // $table->foreign('acount_id')->references('id')->on('acounts')->onDelete('cascade');
 
             $table->double('debit', 13, 2)->default(0);
             $table->double('kredit', 13, 2)->default(0);

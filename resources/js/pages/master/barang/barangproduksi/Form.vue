@@ -83,7 +83,10 @@
                 v-for="item in form.satuan_jadi_child"
                 :value="item.id"
                 :key="item.id"
-                :selected="item.nm_satuan_jadi_children == 'Buah'"
+                :selected="
+                  item.nm_satuan_jadi_children ==
+                  form.satuan_jadi_child[0].nm_satuan_jadi_children
+                "
               >
                 {{ item.nm_satuan_jadi_children }}
               </option>
@@ -221,7 +224,7 @@ export default {
   setup({ selected }) {
     const queryClient = useQueryClient();
     const form = ref({
-      barangproduksibarangmentahs: [],
+      barangproduksibarangmentahs: [{}],
     });
 
     const { data: barangmentahs = [] } = useQuery(["barang_mentahs"], () =>
@@ -294,11 +297,10 @@ export default {
     },
 
     satuanchild(index, satuan_id) {
-      // console.log(index, satuan_id);
       var app = this;
       var i = app.barangmentahs.findIndex((cat) => cat.id == satuan_id);
 
-      satuan_id = app.barangmentahs[i].barangsatuan_id;
+      satuan_id = app.barangmentahs[i]?.barangsatuan_id;
 
       var app = this;
       axios.get(`barangsatuan/${satuan_id}/child`).then((res) => {

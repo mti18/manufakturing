@@ -75,10 +75,7 @@ export default {
         header: "Kualitas",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("barang_terakhir", {
-        header: "Stok Terakhir",
-        cell: (cell) => cell.getValue(),
-      }),
+
       columnHelper.accessor("barang_keluar", {
         header: "Stok Keluar",
         cell: (cell) => cell.getValue(),

@@ -40,8 +40,8 @@ class BarangJadiController extends Controller
                     $a->nm_gudang = "Belum ada gudang";
                 }
 
-                if ($a->stok != 0) {
-                    $a->stokbarang = $a->stok . ' ' . $a->barangsatuanjadi->child[0]->nm_satuan_jadi_children;
+                if (($a->stok_bagus + $a->stok_jelek ) != 0) {
+                    $a->stokbarang = $a->stok_bagus + $a->stok_jelek . ' ' . $a->barangsatuanjadi->child[0]->nm_satuan_jadi_children;
                 } else {
                     $a->stokbarang = "Habis";
                 }
