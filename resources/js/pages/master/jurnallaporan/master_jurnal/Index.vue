@@ -47,7 +47,7 @@
       return{
         formRequest: {
           bulan: '',
-          tahun: ''
+          tahun: '',
         }
       }
     },
@@ -110,6 +110,21 @@
         openFilters,
         columns,
       }
+    },
+    methods:{
+      checkTambah(){
+      var app = this;
+      app.axios.get('masterjurnal/checkTambah/'+ app.formRequest.tahun).then((res) => {
+        if(_.isEmpty(res.data)){
+          app.status = true;
+        } else {
+        
+          app.status = false;
+        }
+      }).catch((err) => {
+        toastr.error('seuatu error sedang terjadi', "Error");
+      });
+    },
     }
   }
   </script>

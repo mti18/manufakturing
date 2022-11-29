@@ -57,6 +57,14 @@ class AccountController extends Controller
             return abort(404);
         }
     }
+    public function child() {
+        if (request()->wantsJson()) {
+            $data = Account::with('parent')->get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
