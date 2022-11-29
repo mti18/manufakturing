@@ -164,7 +164,7 @@
               <th>Satuan</th>
             </tr>
           </thead>
-          <tbody class="border">
+          <tbody class="border align-middle">
           <tr v-for="detail in form.details" :key="detail.id">
             <!-- <td>
               <select2 name="tipe" id="tipe"
@@ -384,7 +384,9 @@
     },
     setup(props) {
       const queryClient = useQueryClient();
-      const form = ref({});
+      const form = ref({
+        details: [{}],
+      });
       const selected = ref(props.selected);
       console.log(selected.value)
   

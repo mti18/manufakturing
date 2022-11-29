@@ -5,6 +5,11 @@
       <div class="card-header">
         <div class="card-title w-100">
           <h1>Assets</h1>
+          <h3>
+          {{
+            profile?.uuid ? `Edit Gudang : ${profile.nama}` : "Tambah Gudang"
+          }}
+        </h3>
           <button
             type="button"
             class="btn btn-light-danger btn-sm ms-auto"
