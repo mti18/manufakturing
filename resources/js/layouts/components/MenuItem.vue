@@ -2,7 +2,7 @@
   <div class="menu-item">
     <Link
       class="menu-link"
-      :class="{ 'active': route().current() === menu.route }"
+      :class="{ active: route().current() === menu.route }"
       :href="route(menu.route)"
     >
       <span class="menu-icon menu-bullet w-25px">
@@ -15,16 +15,14 @@
 
 <script>
 export default {
-  name: 'menu-item',
+  name: "menu-item",
   props: {
     menu: {
       type: Object,
       required: true,
     },
-  }
-}
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -15,7 +15,6 @@ class BarangMentah extends Model
     protected $fillable = ['uuid', 'nm_barangmentah', 'stok', 'barangsatuan_id', 'gudang_id', 'kd_barang_mentah', 'harga', 'foto', 'rak_id'];
     protected $with = ['barangmentahkategoris'];
 
-
     
     public function barangsatuan()
     {
@@ -40,6 +39,16 @@ class BarangMentah extends Model
     public function rakbarangmentah()
     {
         return $this->belongsTo(Rak::class, 'rak_id', 'id');
+    }
+
+    public function stok_masuk_mentahs()
+    {
+        return $this->hasMany(StokMasuk::class, 'barangmentah_id', 'id');
+    }
+
+    public function stok_keluar_mentahs()
+    {
+        return $this->hasMany(StokKeluar::class, 'barangmentah_id', 'id');
     }
 
     

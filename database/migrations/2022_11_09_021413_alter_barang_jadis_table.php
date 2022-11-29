@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->double('harga', 12, 2)->nullable();
             $table->string('kd_barang_jadi');
-            $table->string('foto');
+            $table->string('foto')->nullable();
         });
     }
 

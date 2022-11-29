@@ -21,9 +21,6 @@ return new class extends Migration
             $table->unsignedBigInteger('barang_mentah_id');
             $table->foreign('barang_mentah_id')->references('id')->on('barang_mentahs')->onDelete('restrict');
 
-            $table->unsignedBigInteger('satuan_id');
-            $table->foreign('satuan_id')->references('id')->on('barang_mentahs')->onDelete('restrict');
-
             $table->bigInteger('stok_digunakan')->default(0);
 
             $table->timestamps();

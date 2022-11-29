@@ -183,8 +183,6 @@
     },
     methods: {
 
-
-
       tarif(e){
         var app=this;
         var index = app.kelompoks.findIndex((cat) => cat.id==e);

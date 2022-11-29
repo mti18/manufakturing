@@ -17,21 +17,21 @@ class AccountSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('$account')->delete();
+        DB::table('accounts')->delete();
 
-        $account = [
-            ['id' => 52, 'nm_account' => 'Asset', 'kode_account' => '1', 'account_type' => 'rill', 'type' => 'debit', 'parent_id' => 'NULL'],
+        $accounts = [
+            ['id' => 52, 'nm_account' => 'Asset', 'kode_account' => '1', 'account_type' => 'rill', 'type' => 'debit'],
             ['id' => 55, 'nm_account' => 'Kas', 'kode_account' => '1.1', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => '52'],
             ['id' => 56, 'nm_account' => 'Kas Besar', 'kode_account' => '1.1.1', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => '55'],
             ['id' => 57, 'nm_account' => 'Kas Kecil', 'kode_account' => '1.1.2', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => '55'],
             ['id' => 62, 'nm_account' => 'Piutang', 'kode_account' => 'l.2', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => '52'],
             ['id' => 63, 'nm_account' => 'Asset Tetap', 'kode_account' => '1.3', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => '52'],
-            ['id' => 64, 'nm_account' => 'Kewajiban', 'kode_account' => '2', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => 'NULL'],
+            ['id' => 64, 'nm_account' => 'Kewajiban', 'kode_account' => '2', 'account_type' => 'nominal', 'type' => 'debit'],
             ['id' => 68, 'nm_account' => 'Asset Lancar', 'kode_account' => '1.4', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => '52'],
-            ['id' => 71, 'nm_account' => 'Modal', 'kode_account' => '3', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => 'NULL'],
-            ['id' => 78, 'nm_account' => 'Pendapatan', 'kode_account' => '4', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => 'NULL'],
+            ['id' => 71, 'nm_account' => 'Modal', 'kode_account' => '3', 'account_type' => 'nominal', 'type' => 'debit'],
+            ['id' => 78, 'nm_account' => 'Pendapatan', 'kode_account' => '4', 'account_type' => 'nominal', 'type' => 'debit'],
             ['id' => 79, 'nm_account' => 'Hasil Jual', 'kode_account' => '4.1', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => '78'],
-            ['id' => 80, 'nm_account' => 'Biaya', 'kode_account' => '5', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => 'NULL'],
+            ['id' => 80, 'nm_account' => 'Biaya', 'kode_account' => '5', 'account_type' => 'nominal', 'type' => 'debit'],
             ['id' => 88, 'nm_account' => 'Asset Lainnya', 'kode_account' => '1.5', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => '52'],
             ['id' => 89, 'nm_account' => 'Pengeluaran', 'kode_account' => '5.1', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => '80'],
             ['id' => 90, 'nm_account' => 'Biaya Produksi', 'kode_account' => '5.2', 'account_type' => 'nominal', 'type' => 'debit', 'parent_id' => '80'],
@@ -44,7 +44,7 @@ class AccountSeeder extends Seeder
 
         ];
 
-        foreach ($account as $account) {
+        foreach ($accounts as $account) {
             Account::create($account);
         }
     }

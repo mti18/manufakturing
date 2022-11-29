@@ -24,16 +24,16 @@ class SalesOrderController extends Controller
             // $courses->map(function ($a)
             // {
             //     if($a->status=='draft'){
-            //         '<span class="label label-danger label-pill label-inline mr-2">Draft</span>';
+            //         $a->status='<span class="label label-danger label-pill label-inline mr-2">Draft</span>';
             //     }
             //     elseif ($a->status=='process') {
-            //         '<span class="label label-danger label-pill label-inline mr-2">Process</span>';
+            //         $a->status='<span class="label label-danger label-pill label-inline mr-2">Process</span>';
             //     }
             //     elseif ($a->staus=='ready') {
-            //         '<span class="label label-danger label-pill label-inline mr-2">Ready</span>';
+            //         $a->status='<span class="label label-danger label-pill label-inline mr-2">Ready</span>';
             //     }
             //     else {
-            //         '<span class="label label-danger label-pill label-inline mr-2">Success</span>';
+            //         $a->status='<span class="label label-danger label-pill label-inline mr-2">Success</span>';
             //     }
             // });
 
@@ -51,22 +51,18 @@ class SalesOrderController extends Controller
                 'supplier_id' => 'required|numeric', 
                 'diketahui_oleh' => 'nullable|numeric', 
                 'jumlah_paket' => 'nullable|string', 
-                'bukti_pesan' => 'required|string', 
+                'bukti_pesan' => 'nullable|string', 
                 'jenis_pembayaran' => 'required|in:Tunai,Cek,Transfer,Free', 
                 'account_id' => 'nullable|numeric',  
                 'tgl_pesan' => 'required|string', 
                 'tgl_pengiriman' => 'required|string', 
                 'tempo' => 'nullable|numeric',
             ]);
-            $request->merge([
-                'status' => '1',
-                'pembayaran' => ($request->tempo == '0') ? 'yes' : 'no',
-                
-                // 'kode' => $this->getCode($request->parent_id)
-            ]);
-            SalesOrder::create($data);
+            $data['status'] = '1';
+            $data['pembayaran'] = ($request->tempo == '0') ? 'yes' : 'no';
+            $data = SalesOrder::create($data);
 
-            return response()->json(['message' => 'Jabatan berhasil diperbarui']);
+            return response()->json(['message' => 'Jabatan berhasil diperbarui', 'data' => $data]);
         } else {
             return abort(404);
         }
@@ -83,7 +79,7 @@ class SalesOrderController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = SalesOrder::where('uuid', $uuid)->first();
+            $data = SalesOrder::with('details')->where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);
@@ -115,8 +111,12 @@ class SalesOrderController extends Controller
     public function updateMore(Request $request, $uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
-                'name' => 'required',
-                'code' => 'required',
+                'total' => 'required',
+                'diskon' => 'nullable',
+                'uang_muka' => 'nullable',
+                'pph' => 'nullable',
+                'ppn' => 'nullable',
+                'netto' => 'required',
             ]);
             Position::where('uuid', $uuid)->update($data);
 

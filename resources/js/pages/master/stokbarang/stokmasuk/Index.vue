@@ -59,12 +59,28 @@ export default {
         },
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("name", {
-        header: "Nama",
+      columnHelper.accessor("tipe_barang", {
+        header: "Tipe Barang",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("code", {
-        header: "Kode",
+      columnHelper.accessor("nm_barang", {
+        header: "Nama Barang",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("gudang", {
+        header: "Gudang",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("kualitas", {
+        header: "Kualitas",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("barang_masuk", {
+        header: "Stok Masuk",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("keterangan", {
+        header: "Keterangan",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("uuid", {
