@@ -12,8 +12,9 @@ class BarangJadi extends Model
     use Uuid;
     
 
-    protected $fillable = ['uuid', 'nm_barang_jadi', 'stok', 'barangsatuanjadi_id', 'gudang_id', 'kd_barang_jadi', 'foto', 'rak_id'];
+    protected $fillable = ['uuid', 'nm_barang_jadi', 'barangsatuanjadi_id', 'gudang_id', 'kd_barang_jadi', 'foto', 'rak_id'];
     protected $with = ['barangjadikategoris'];
+    protected $appends = ['stok'];
 
     public function barangsatuanjadi()
     {
@@ -49,6 +50,12 @@ class BarangJadi extends Model
     {
         return $this->hasMany(StokKeluar::class, 'barangjadi_id', 'id');
     }
+
+    public function getStokAttribute()
+    {
+        return $this->stok_bagus + $this->stok_jelek;
+    }
+
 
     public static function booted() {
         parent::boot();

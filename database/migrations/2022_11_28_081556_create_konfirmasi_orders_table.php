@@ -13,15 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('barang_produksis', function (Blueprint $table) {
+        Schema::create('konfirmasi_orders', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid');
-
-            $table->bigInteger('stok_jadi')->default(0);
-
-            $table->BigInteger('barangjadi_id')->unsigned()->nullable();
-            $table->foreign('barangjadi_id')->references('id')->on('barang_jadis')->onDelete('restrict');
-            
             $table->timestamps();
         });
     }
@@ -33,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('barang_produksis');
+        Schema::dropIfExists('konfirmasi_orders');
     }
 };

@@ -13,7 +13,7 @@
           <button
             type="button"
             class="btn btn-light-danger btn-sm ms-auto"
-            @click="($parent.openAsset = false, $parent.selected = undefined)"
+            @click="($parent.openAsset = false), ($parent.selected = undefined)"
           >
             <i class="las la-times-circle"></i>
             Kembali
@@ -21,7 +21,11 @@
         </div>
       </div>
       <div class="card-body">
-        <mti-paginate id="table-jenisasset" url="/jenisasset/paginate" :columns="columns"></mti-paginate>
+        <mti-paginate
+          id="table-jenisasset"
+          url="/jenisasset/paginate"
+          :columns="columns"
+        ></mti-paginate>
       </div>
     </div>
   </section>
@@ -45,7 +49,6 @@ export default {
     const selected = ref();
     const openForm = ref(false);
     const openAsset = ref(false);
-    
 
     const columns = [
       columnHelper.accessor("nomor", {
@@ -62,28 +65,38 @@ export default {
 
       columnHelper.accessor("uuid", {
         header: "Aksi",
-        cell: (cell) => openForm.value ? null : h('div', { class: 'd-flex gap-2' }, [
-            h('button', { class: 'btn btn-sm btn-clean btn-icon ', onClick: () => {
-              selected.value = cell.getValue();
-              openForm.value = true;
-              return;
-            }}, h('i', { class: 'la la-plus fs-2x kt-font-success' }))
-          ]),
+        cell: (cell) =>
+          openForm.value
+            ? null
+            : h("div", { class: "d-flex gap-2" }, [
+                h(
+                  "button",
+                  {
+                    class: "btn btn-sm btn-clean btn-icon ",
+                    onClick: () => {
+                      selected.value = cell.getValue();
+                      openForm.value = true;
+                      return;
+                    },
+                  },
+                  h("i", { class: "la la-plus fs-2x kt-font-success" })
+                ),
+              ]),
       }),
-    ]
+    ];
 
     return {
       selected,
       openForm,
       openAsset,
       columns,
-    }
-  }
-}
+    };
+  },
+};
 </script>
 
 <style>
-.kt-font-success{
+.kt-font-success {
   color: #42ba96;
 }
 </style>

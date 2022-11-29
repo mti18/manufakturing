@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\RestApi;
+use App\Models\BarangJadi;
 use App\Models\BarangMentah;
 use App\Models\SatuanChild;
 use App\Models\SatuanJadiChild;
@@ -27,14 +28,20 @@ class StokMasukController extends Controller
                 if ($a->tipe_barang == "barang_mentah") {
                     $a->nm_barang = $a->barang_mentah->nm_barangmentah;
                     $a->gudang = $a->barang_mentah->barangmentahgudangs->nm_gudang;
-                    $a->barang_terakhir = $a->barang_mentah->stok - $a->barang_masuk . " " . $a->barang_mentah->barangsatuan->child[6]->nm_satuan_children;
+                    // $a->barang_terakhir = $a->barang_mentah->stok - $a->barang_masuk . " " . $a->barang_mentah->barangsatuan->child[6]->nm_satuan_children;
                     $a->barang_masuk = $a->barang_masuk. " " . $a->barang_mentah->barangsatuan->child[6]->nm_satuan_children;
                 } elseif ($a->tipe_barang == "barang_jadi") {
                     $a->nm_barang = $a->barang_jadi->nm_barang_jadi;
                     $a->gudang = $a->barang_jadi->barangjadigudangs->nm_gudang;
-                    $a->barang_terakhir = $a->barang_jadi->stok_bagus + $a->barang_jadi->stok_jelek - $a->barang_masuk . " Buah";
+                    // $a->barang_terakhir = $a->barang_jadi->stok_bagus + $a->barang_jadi->stok_jelek - $a->barang_masuk . " Buah";
                     $a->barang_masuk = $a->barang_masuk . " Buah";
                 
+                }
+
+                if ($a->kualitas == "bagus") {
+                    $a->kualitas = 'Bagus';
+                } else {
+                    $a->kualitas = 'Jelek';
                 }
 
                 if ($a->tipe_barang == "barang_mentah") {
@@ -73,6 +80,7 @@ class StokMasukController extends Controller
                 'kualitas' => 'required',
                 'tanggal_masuk' => 'nullable',
                 'barang_masuk' => 'required|numeric',
+                // 'stok_terakhir' => 'nullable',
                 'keterangan' => 'nullable',
                 'satuan_jadi' => 'nullable',
                 'satuan_mentah' => 'nullable',
@@ -98,9 +106,17 @@ class StokMasukController extends Controller
             }
             unset($data['satuan_jadi']);
             unset($data['satuan_mentah']);
-            
-            
 
+            // if ($tipe_barang == "barang_mentah") {
+            //     $stok = BarangMentah::find($request->barangmentah_id)->stok;
+            //     $data['stok_terakhir'] = $stok;
+            // } elseif ($tipe_barang == "barang_jadi") {
+            //     $stok_bagus = BarangJadi::find($request->barangjadi_id)->stok_bagus;
+            //     $stok_jelek = BarangJadi::find($request->barangjadi_id)->stok_jelek;
+            //     $data['stok_terakhir'] = $stok_bagus + $stok_jelek;
+            // }
+            
+            
             StokMasuk::create($data);
 
             return response()->json(['message' => 'Stok Masuk berhasil diperbarui']);
@@ -120,9 +136,9 @@ class StokMasukController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = StokMasuk::where('uuid', $uuid)->first();
+            $data = StokMasuk::with('barang_mentah')->where('uuid', $uuid)->first();
 
-            // $data->barang_mentah->map(function($1){
+            // $data->barang_mentah->map(function($q){
             //     $data = BarangMentah::where('id', $q->barangmentah_id)->first();
             //     $q->satuan_child = SatuanChild::where('barangsatuan_id', $data->barangsatuan_id)->get();
             //     $child = SatuanChild::whereDoesntHave('children')->where('barangsatuan_id', $data->barangsatuan_id)->first();
@@ -170,6 +186,7 @@ class StokMasukController extends Controller
             }
             unset($data['satuan_jadi']);
             unset($data['satuan_mentah']);
+
             
             StokMasuk::where('uuid', $uuid)->update($data);
 

@@ -183,11 +183,7 @@ export default {
   },
   methods: {
     plus() {
-      this.form.rak.push({
-        // barang_mentah_id: null,
-        // stok_digunakan: null,
-        // satuan_id: null,
-      });
+      this.form.rak.push({});
     },
 
     minus(index) {

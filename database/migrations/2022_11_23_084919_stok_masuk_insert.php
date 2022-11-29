@@ -45,6 +45,6 @@ return new class extends Migration
      */
     public function down()
     {
-        DB::unprepared('DROP TRIGGER `stok_masuk_insert');
+        DB::unprepared('DROP TRIGGER stok_masuk_insert');
     }
 };

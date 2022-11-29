@@ -11,7 +11,7 @@ class StokKeluar extends Model
     use HasFactory;
     use Uuid;
 
-    protected $fillable = ['tipe_barang', 'barangjadi_id', 'barangmentah_id', 'kualitas', 'tanggal_keluar', 'barang_keluar', 'keterangan'];
+    protected $fillable = ['tipe_barang', 'barangjadi_id', 'barangmentah_id', 'kualitas', 'tanggal_keluar', 'barang_keluar', 'stok_terakhir', 'keterangan'];
 
     public function barang_jadi()
     {

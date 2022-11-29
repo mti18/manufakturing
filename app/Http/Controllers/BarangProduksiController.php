@@ -103,8 +103,9 @@ class BarangProduksiController extends Controller
                 $q->satuan_id = $child->id;
             });
 
-            // $satuan = SatuanJadiChild::where('barangsatuanjadi_id', $data->barangsatuanjadi_id)->orderBy('nilai', 'ASC')->first();
-            // $data->satuan_produksi = $satuan->id;
+            // $data->barangproduksibarangjadi->map(function($q){
+            //     $data = BarangJadi::where('id',  $q->)
+            // });
 
             return response()->json($data);
         } else {
@@ -141,12 +142,12 @@ class BarangProduksiController extends Controller
 
             if ($barangp->update($data)) {
 
+                BarangProduksiBarangMentah::where('barang_produksi_id', $barangp->id)->delete();
                 foreach($request->barangproduksibarangmentahs as $item){
                 $child = SatuanChild::find($item['satuan_id']);
 
                 $stok = $item['stok_digunakan'] * $child->nilai;
 
-                BarangProduksiBarangMentah::where('barang_produksi_id', $barangp->id)->delete();
 
                 BarangProduksiBarangMentah::create([
                     'barang_mentah_id' => $item['barang_mentah_id'],
@@ -162,6 +163,7 @@ class BarangProduksiController extends Controller
         }
     }
 
+
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             $barangproduksi =  BarangProduksi::where('uuid', $uuid)->first();
@@ -172,11 +174,44 @@ class BarangProduksiController extends Controller
         }
     }
 
-    public function produce($uuid) {
+    public function produce(Request $request, $uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $barangproduksibarangmentah =  BarangProduksiBarangMentah::where('uuid', $uuid)->first();
-            return $barangproduksibarangmentah;
-            return response()->json(['message' => 'Barang Produksi berhasil dihapus']);
+            $data = $request->validate([
+                'stok_jadi' => 'required|numeric',
+                'barangjadi_id' => 'required',
+                'satuan_produksi' => 'required',
+                'barangproduksibarangmentahs' => 'required|array',
+            ]);
+
+            $child = SatuanJadiChild::find($data['satuan_produksi']);
+            
+            $stok = $data['stok_jadi'];
+
+            $stok = $stok * $child->nilai;
+            
+            $data['stok_jadi'] = $stok;
+            
+            unset($data['satuan_produksi']);
+
+            $data = BarangProduksi::where('uuid', $uuid)->create($data);
+            
+            foreach($request->barangproduksibarangmentahs as $item){
+                $child = SatuanChild::find($item['satuan_id']);
+
+                $stok = $item['stok_digunakan'] * $child->nilai;
+
+                BarangProduksiBarangMentah::where('uuid', $uuid)->create([
+                    'barang_mentah_id' => $item['barang_mentah_id'],
+                    'stok_digunakan' => $stok,
+                    'barang_produksi_id' => $data->id
+                ]);
+            }
+
+
+
+
+            
+            return response()->json(['message' => 'Barang Produksi berhasil diperbarui']);
         } else {
             return abort(404);
         }

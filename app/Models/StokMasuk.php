@@ -22,6 +22,8 @@ class StokMasuk extends Model
     {
         return $this->belongsTo(BarangMentah::class, 'barangmentah_id', 'id');
     }
+    
+
 
 
 
