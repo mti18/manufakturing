@@ -1,16 +1,25 @@
 <template>
   <section>
-    <Detail v-if="openDetail" :selected="selected"></Detail>
-    <div class="card">
+    <div class="card" v-if="!openDetail">
       <div class="card-header">
         <div class="card-title w-100">
           <h1>Konfirmasi Order</h1>
+          <button
+            type="button"
+            class="btn btn-light-danger btn-sm ms-auto"
+            @click="
+              ($parent.openDetail = false), ($parent.selected = undefined)
+            "
+          >
+            <i class="las la-times-circle"></i>
+            Kembali
+          </button>
         </div>
       </div>
       <div class="card-body">
         <mti-paginate
-          id="table-kategori"
-          url="/kategori/paginate"
+          id="table-detail"
+          url="/barangmentah/paginate"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -29,6 +38,7 @@ export default {
   setup() {
     const queryClient = useQueryClient();
     const selected = ref();
+    const openDetail = ref(false);
 
     const columns = [
       columnHelper.accessor("nomor", {
@@ -36,22 +46,38 @@ export default {
         style: {
           width: "25px",
         },
-        cell: (cell) => cell.getValue(),
+        cell: (cell) =>
+          h("div", {}, [
+            h("input", {
+              class: "form-check-input mt-2",
+              type: "checkbox",
+              value: "",
+              id: "flexCheckDefault",
+            }),
+          ]),
       }),
       columnHelper.accessor("nm_kategori", {
         header: "Nomor Pemesanan",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("nm_kategori", {
-        header: "Nama Perusahaan",
+        header: "Nama Barang",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("nm_kategori", {
-        header: "Nama Pemesan",
+        header: "Volume",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("nm_kategori", {
-        header: "User",
+        header: "Harga",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("nm_kategori", {
+        header: "Jumlah",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("nm_kategori", {
+        header: "Status",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("uuid", {
@@ -75,13 +101,19 @@ export default {
           ]),
       }),
     ];
+    
 
     return {
       selected,
+      openDetail,
       columns,
     };
   },
+
+  method: {
+
+  }
 };
 </script>
 
-<style></style>
+<style scoped></style>

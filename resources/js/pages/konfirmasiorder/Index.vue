@@ -1,7 +1,7 @@
 <template>
   <section>
     <Detail v-if="openDetail" :selected="selected"></Detail>
-    <div class="card">
+    <div class="card" v-if="!openDetail">
       <div class="card-header">
         <div class="card-title w-100">
           <h1>Konfirmasi Order</h1>
@@ -9,7 +9,7 @@
       </div>
       <div class="card-body">
         <mti-paginate
-          id="table-kategori"
+          id="table-konfirmasiorder"
           url="/kategori/paginate"
           :columns="columns"
         ></mti-paginate>
@@ -62,27 +62,27 @@ export default {
       columnHelper.accessor("uuid", {
         header: "Aksi",
         cell: (cell) =>
-          openDetail.value
-            ? null
-            : h("div", { class: "d-flex gap-2" }, [
-                h(
-                  "button",
-                  {
-                    class: "btn btn-sm btn-icon btn-success",
-                  },
-                  h("i", { class: "la fa-file-pdf fs-2" })
-                ),
-                h(
-                  "button",
-                  {
-                    class: "btn btn-sm btn-icon btn-primary",
-                    onClick: () => {
-                      openDetail.value = true;
-                    },
-                  },
-                  h("i", { class: "la la-eye fs-2" })
-                ),
-              ]),
+          h("div", { class: "d-flex gap-2" }, [
+            h(
+              "button",
+              {
+                class: "btn btn-sm btn-icon btn-success",
+              },
+              h("i", { class: "la fa-file-pdf fs-2" })
+            ),
+            h(
+              "button",
+              {
+                class: "btn btn-sm btn-icon btn-primary",
+                onClick: () => {
+                  selected.value = cell.getValue();
+                  openDetail.value = true;
+                  return;
+                },
+              },
+              h("i", { class: "la la-eye fs-2" })
+            ),
+          ]),
       }),
     ];
 

@@ -105,25 +105,25 @@ class StokKeluarController extends Controller
             $kualitas = $data['kualitas'];
             if ($tipe_barang == "barang_mentah") {
                 $stok = BarangMentah::find($request->barangmentah_id)->stok;
-                $data['stok_terakhir'] = $stok;
+                // $data['stok_terakhir'] = $stok;
                 if ($stok - $data['barang_keluar'] < 0) {
-                    return response()->json(['message' => 'Stok Habis'], 400);
+                    return response()->json(['message' => 'Stok Kurang'], 400);
                 } else {
                     StokKeluar::create($data);
                 }
             } elseif ($tipe_barang == "barang_jadi") {
                 $stok_bagus = BarangJadi::find($request->barangjadi_id)->stok_bagus;
                 $stok_jelek = BarangJadi::find($request->barangjadi_id)->stok_jelek;
-                $data['stok_terakhir'] = $stok_bagus + $stok_jelek;
+                // $data['stok_terakhir'] = $stok_bagus + $stok_jelek;
                 if ($kualitas == "bagus") {
                     if ($stok_bagus - $data['barang_keluar'] < 0) {
-                        return response()->json(['message' => 'Stok Habis'], 400);
+                        return response()->json(['message' => 'Stok Kurang'], 400);
                     } else {
                         StokKeluar::create($data);
                     }
                 } elseif ($kualitas == "jelek") {
                     if ($stok_jelek - $data['barang_keluar'] < 0) {
-                        return response()->json(['message' => 'Stok Habis'], 400);
+                        return response()->json(['message' => 'Stok Kurang'], 400);
                     }
                     else {
                         StokKeluar::create($data);
@@ -204,7 +204,7 @@ class StokKeluarController extends Controller
             $kualitas = $data['kualitas'];
             if ($tipe_barang == "barang_mentah") {
                 $stok = BarangMentah::find($request->barangmentah_id)->stok;
-                $data['stok_terakhir'] = $stok;
+                // $data['stok_terakhir'] = $stok;
                 if ($stok - $data['barang_keluar'] < 0) {
                     return response()->json(['message' => 'Stok Habis'], 400);
                 } else {
@@ -213,7 +213,7 @@ class StokKeluarController extends Controller
             } elseif ($tipe_barang == "barang_jadi") {
                 $stok_bagus = BarangJadi::find($request->barangjadi_id)->stok_bagus;
                 $stok_jelek = BarangJadi::find($request->barangjadi_id)->stok_jelek;
-                $data['stok_terakhir'] = $stok_bagus + $stok_jelek;
+                // $data['stok_terakhir'] = $stok_bagus + $stok_jelek;
                 if ($kualitas == "bagus") {
                     if ($stok_bagus - $data['barang_keluar'] < 0) {
                         return response()->json(['message' => 'Stok Habis'], 400);
