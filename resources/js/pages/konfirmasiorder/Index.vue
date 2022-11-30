@@ -10,7 +10,7 @@
       <div class="card-body">
         <mti-paginate
           id="table-konfirmasiorder"
-          url="/kategori/paginate"
+          url="/salesorder/paginate"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -43,19 +43,19 @@ export default {
         },
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_kategori", {
+      columnHelper.accessor("nomor", {
         header: "Nomor Pemesanan",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_kategori", {
+      columnHelper.accessor("profile.nama", {
         header: "Nama Perusahaan",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_kategori", {
+      columnHelper.accessor("supplier.nama", {
         header: "Nama Pemesan",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_kategori", {
+      columnHelper.accessor("diketahui_oleh.name", {
         header: "User",
         cell: (cell) => cell.getValue(),
       }),

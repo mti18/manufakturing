@@ -61,6 +61,7 @@ class SalesOrderController extends Controller
             $data['status'] = '1';
             $data['pembayaran'] = ($request->tempo == '0') ? 'yes' : 'no';
             $data = SalesOrder::create($data);
+            $data = SalesOrder::with(['details'])->where('id', $data->id)->first();
 
             return response()->json(['message' => 'Jabatan berhasil diperbarui', 'data' => $data]);
         } else {
