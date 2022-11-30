@@ -78,7 +78,6 @@
             }),
         columnHelper.accessor("status", {
           header: "Status",
-          // cell: (cell) => cell.getValue(),<span class="label label-danger label-pill label-inline mr-2">Draft</span>
           cell: (cell) => cell.getValue()=='draft' ? h('span', { class: 'badge badge-danger' }, 'Draft')
            : cell.getValue()=='process' ? h('span', { class: 'badge badge-warning' }, 'Proses')
            : cell.getValue()=='ready' ? h('span', { class: 'badge badge-info' }, 'Ready')

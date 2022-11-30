@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\AppHelper;
+use App\Models\Account;
 use App\Models\MasterJurnal;
 // use App\Models\Bulan;
-// use App\Models\Tahun;
+use App\Models\JurnalItem;
+use Dotenv\Util\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,13 +19,16 @@ class MasterJurnalController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = MasterJurnal::whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun)->where(function ($q) use ($request) {
+            $courses = MasterJurnal::with(['jurnal_item'])->whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun)->where(function ($q) use ($request) {
                 $q->where('tanggal', 'LIKE', '%' . $request->search . '%');
             })->orderBy('tanggal', 'asc')->paginate($per, ['*', DB::raw('@angka  := @angka  + 1 AS angka')]);
 
             // Add Columns
             $courses->map(function ($a) {
                 $a->tanggal = AppHelper::tanggal_indo($a->tanggal);
+                $a->debit = AppHelper::rupiah($a->jurnal_item->where('kredit', 0)->sum('debit'));
+                $a->kredit = AppHelper::rupiah($a->jurnal_item->where('debit', 0)->sum('kredit'));
+
 
             return $a;
 
@@ -43,14 +48,33 @@ class MasterJurnalController extends Controller
                 'tanggal'  => 'required|string',
                 'type'  => 'required|string',
                 'upload'  => 'required|image',
+                'jurnal_items'  => 'required|array',
 
             ]);
             $data['upload'] = 'storage/' . $request->upload->store('bukti', 'public');
             $data = MasterJurnal::create($data);
 
+            
+    
+            foreach($request->jurnal_items as $item){
+                $account_id = $item['account_id'];
+                $debit = $item['debit'];
+                $kredit = $item['kredit'];
+                $keterangan = $item['keterangan'];
+
+                    JurnalItem::create([
+                        "masterjurnal_id" => $data->id,
+                        "account_id" => $account_id,
+                        "debit" => $debit,
+                        "kredit" => $kredit,
+                        "keterangan" => $keterangan,
+                    ]);
+            }
+            
 
 
-            return response()->json(['message' => ' MasterJurnal berhasil ditambahkan']);
+
+            return response()->json(['message' => ' Jurnal berhasil ditambahkan']);
         } else {
             return abort(404);
         }
@@ -134,6 +158,12 @@ class MasterJurnalController extends Controller
         }
         $exp = explode("-", $data->kd_jurnal);
         return response()->json($tanggal . "-" . $request->tahun . $request->bulan . $day . "-" . strval($exp[2] + 1), 200);
+    }
+    public function checkTambah($tahun)
+    {
+        $data = MasterJurnal::where('tanggal', $tahun)->first();
+
+        return response()->json($data);
     }
     // public function send(Request $request) {
     //     if (request()->wantsJson() && request()->ajax()) {

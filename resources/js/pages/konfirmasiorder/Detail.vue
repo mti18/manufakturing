@@ -19,7 +19,7 @@
       <div class="card-body">
         <mti-paginate
           id="table-detail"
-          url="/barangmentah/paginate"
+          url="/salesorderdetail/paginate"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -56,29 +56,35 @@ export default {
             }),
           ]),
       }),
-      columnHelper.accessor("nm_kategori", {
+      columnHelper.accessor("nomor", {
         header: "Nomor Pemesanan",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_kategori", {
+      columnHelper.accessor("nm_satuan", {
         header: "Nama Barang",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_kategori", {
+      columnHelper.accessor("volume", {
         header: "Volume",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_kategori", {
+      columnHelper.accessor("harga", {
         header: "Harga",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_kategori", {
+      columnHelper.accessor("jumlah", {
         header: "Jumlah",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("nm_kategori", {
+      columnHelper.accessor("status", {
         header: "Status",
-        cell: (cell) => cell.getValue(),
+        cell: (cell) => cell.getValue()=='0' ?
+          h('div', { class: 'd-flex gap-2' }, [
+            h('span', { class: 'badge badge-warning' }, 'Pending')
+          ])    
+          : h('div', { class: 'd-flex gap-2 ms-4' }, [
+              h('span', { class: 'success' }, 'Accept'),
+          ]),
       }),
       columnHelper.accessor("uuid", {
         header: "Aksi",

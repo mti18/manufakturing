@@ -14,6 +14,12 @@ class MasterJurnal extends Model
     protected $fillable = ["uuid", "kd_jurnal", "tanggal", "type", "upload"];
     protected $hidden = [ 'created_at', 'updated_at'];
 
+    
+    public function jurnal_item()
+    {
+        return $this->hasMany(JurnalItem::class, "masterjurnal_id", "id");
+    }
+
     public static function booted() {
         parent::boot();
 

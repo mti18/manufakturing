@@ -33,6 +33,25 @@ class Account extends Model
         return $this->hasMany(Account::class, 'parent_id', 'id');
     }
 
+    public function jurnal_item()
+    {
+        return $this->hasMany('\App\Models\JurnalItem', 'acount_id');
+    }
+
+    public function umum()
+    {
+        return $this->hasMany('\App\Models\JurnalItem', 'acount_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {
+            $query->where('type', 'umum');
+        });
+    }
+
+    public function penyesuaian()
+    {
+        return $this->hasMany('\App\Models\JurnalItem', 'acount_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {
+            $query->where('type', 'penyesuaian');
+        });
+    }
+
     public function getTextAttribute()
     {
         return $this->nm_account . " - " . $this->kode_account;

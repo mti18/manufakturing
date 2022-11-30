@@ -164,7 +164,7 @@
               <th>Satuan</th>
             </tr>
           </thead>
-          <tbody class="border">
+          <tbody class="border align-middle">
           <tr v-for="detail in form.details" :key="detail.id">
             <!-- <td>
               <select2 name="tipe" id="tipe"
@@ -384,9 +384,10 @@
     },
     setup(props) {
       const queryClient = useQueryClient();
-      const form = ref({});
+      const form = ref({
+        details: [{}],
+      });
       const selected = ref(props.selected);
-      console.log(selected.value)
   
       const { data: salesorder = {details: []}, refetch } = useQuery(
         ["salesorder", selected, "edit"],
@@ -395,9 +396,17 @@
           return axios.get(`/salesorder/${selected.value}/edit`).then((res) => res.data);
         },
         {
-          enabled: !!selected,
+          enabled: !!selected.value,
           cacheTime: 0,
-          onSuccess: data => form.value = data,
+          onSuccess: ({data}) => {
+            const datas = {...data.data};
+            console.log(datas)
+            if (datas.details.length) {
+              datas.details.push({});
+            }
+            form.value = datas;
+          },
+          onError: error => console.log(error),
           onSettled: () => KTApp.unblock("#form-salesorder"),
         }
       );
@@ -411,6 +420,13 @@
         },
         onSettled: () => {
           KTApp.unblock("#form-salesorder");
+        },
+        onSuccess: (data) => {
+          const datas = {...data.data};
+          if (!datas.details.length) {
+            datas.details.push({});
+          }
+          form.value = datas;
         }
       });
 

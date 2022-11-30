@@ -31,7 +31,6 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelompokController;
-
 use App\Http\Controllers\JenisAssetController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\SalesOrderDetailController;
@@ -319,10 +318,12 @@ Route::prefix('v1')->group(function () {
             });
             Route::prefix('masterjurnal')->group(function () {
                 Route::get('get', [MasterJurnalController::class, 'get']);
-                Route::post('paginate/{bulan}/{tahun}', [MasterJurnalController::class, 'paginate']);
+                Route::get('checkTambah/{tahun}', [MasterJurnalController::class, 'checkTambah']);
+            Route::post('paginate/{bulan}/{tahun}', [MasterJurnalController::class, 'paginate']);
                 Route::post('store', [MasterJurnalController::class, 'store']);
                 Route::post('getCode', [MasterJurnalController::class, 'getCode']);
-                Route::get('{uuid}/edit', [MasterJurnalController::class, 'edit']);
+                Route::get('child', [AccountController::class, 'child']);
+            Route::get('{uuid}/edit', [MasterJurnalController::class, 'edit']);
                 Route::post('{uuid}/update', [MasterJurnalController::class, 'update']);
                 Route::delete('{uuid}/destroy', [MasterJurnalController::class, 'destroy']);
             });
@@ -336,12 +337,12 @@ Route::prefix('v1')->group(function () {
                 Route::delete('{uuid}/destroy', [StokMasukController::class, 'destroy']);
             });
             Route::prefix('salesorderdetail')->group(function () {
-                Route::get('get', [SalesOrderDetail::class, 'get']);
-                Route::post('paginate', [SalesOrderDetail::class, 'paginate']);
-                Route::post('store', [SalesOrderDetail::class, 'store']);
-                Route::get('{uuid}/edit', [SalesOrderDetail::class, 'edit']);
-                Route::post('{uuid}/update', [SalesOrderDetail::class, 'update']);
-                Route::delete('{uuid}/destroy', [SalesOrderDetail::class, 'destroy']);
+                Route::get('get', [SalesOrderDetailController::class, 'get']);
+                Route::post('paginate', [SalesOrderDetailController::class, 'paginate']);
+                Route::post('store', [SalesOrderDetailController::class, 'store']);
+                Route::get('{uuid}/edit', [SalesOrderDetailController::class, 'edit']);
+                Route::post('{uuid}/update', [SalesOrderDetailController::class, 'update']);
+                Route::delete('{uuid}/destroy', [SalesOrderDetailController::class, 'destroy']);
             });
     
             Route::prefix('stokkeluar')->group(function () {

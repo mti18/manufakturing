@@ -61,6 +61,7 @@ class SalesOrderController extends Controller
             $data['status'] = '1';
             $data['pembayaran'] = ($request->tempo == '0') ? 'yes' : 'no';
             $data = SalesOrder::create($data);
+            $data = SalesOrder::with(['details'])->where('id', $data->id)->first();
 
             return response()->json(['message' => 'Jabatan berhasil diperbarui', 'data' => $data]);
         } else {
@@ -79,7 +80,7 @@ class SalesOrderController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = SalesOrder::where('uuid', $uuid)->first();
+            $data = SalesOrder::with('details')->where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);

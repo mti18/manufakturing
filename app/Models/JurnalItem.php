@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,14 +10,14 @@ class JurnalItem extends Model
 {
     use HasFactory;
     use Uuid;
-    protected $fillable = ["acount_id", "jurnal_id", "debit", "kredit", "uuid",  "keterangan"];
+    protected $fillable = ["account_id", "masterjurnal_id", "debit", "kredit", "uuid",  "keterangan"];
 
     public function acount()
     {
         return $this->belongsTo('\App\Models\Acount', 'acount_id');
     }
-    public function jurnal()
+    public function masterjurnal()
     {
-        return $this->belongsTo('\App\Models\MasterJurnal', 'jurnal_id');
+        return $this->belongsTo('\App\Models\MasterJurnal', 'masterjurnal_id');
     }
 }

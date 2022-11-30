@@ -51,6 +51,10 @@
     setup({ selected }) {
       const queryClient = useQueryClient();
       const form = ref({});
+
+      const { data: accounts  } = useQuery(["accounts"], () =>
+      axios.get("/account/get").then((res) => res.data)
+    );
   
       const { data: jenisasset } = useQuery(
         ["jenisasset", selected, "edit"],
@@ -80,6 +84,7 @@
   
       return {
         jenisasset,
+        accounts,
         submit,
         form,
         queryClient
