@@ -105,10 +105,11 @@
             app.formRequest.bulan,
             app.formRequest.tahun
           );
-          // app.$parent.checkTambah();
+          app.$parent.checkTambah();
   
         }
       },
+      
       loadJs() {
         var vm = this;
         $("#kt_daterangepicker_1")

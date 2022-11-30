@@ -316,9 +316,11 @@ Route::prefix('v1')->group(function () {
         });
         Route::prefix('masterjurnal')->group(function () {
             Route::get('get', [MasterJurnalController::class, 'get']);
+            Route::get('checkTambah/{tahun}', [MasterJurnalController::class, 'checkTambah']);
             Route::post('paginate/{bulan}/{tahun}', [MasterJurnalController::class, 'paginate']);
             Route::post('store', [MasterJurnalController::class, 'store']);
             Route::post('getCode', [MasterJurnalController::class, 'getCode']);
+            Route::get('child', [AccountController::class, 'child']);
             Route::get('{uuid}/edit', [MasterJurnalController::class, 'edit']);
             Route::post('{uuid}/update', [MasterJurnalController::class, 'update']);
             Route::delete('{uuid}/destroy', [MasterJurnalController::class, 'destroy']);
