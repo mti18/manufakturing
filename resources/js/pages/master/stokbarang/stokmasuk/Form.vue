@@ -383,6 +383,9 @@ export default {
       });
     },
   },
+  mounted() {
+    this.getSatuanJadi();
+  },
 };
 </script>
 

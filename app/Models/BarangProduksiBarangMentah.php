@@ -17,9 +17,5 @@ class BarangProduksiBarangMentah extends Model
         return $this->belongsTo(BarangMentah::class, 'barang_mentah_id');
     }
 
-    public function stokproduksi()
-    {
-        return $this->hasMany(StokProduksi::class);
-    }
 
 }
