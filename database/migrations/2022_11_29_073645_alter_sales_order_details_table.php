@@ -15,6 +15,12 @@ return new class extends Migration
     {
         Schema::table('sales_order_details', function (Blueprint $table) {
             $table->enum('status', ['0', '1', '2', '3', '4', '5', '6'])->default('0');
+
+            $table->bigInteger('barangjadi_id')->unsigned()->nullable();
+            $table->foreign('barangjadi_id')->references('id')->on('barang_jadis')->onDelete('restrict');
+            $table->bigInteger('barangmentah_id')->unsigned()->nullable();
+            $table->foreign('barangmentah_id')->references('id')->on('barang_mentahs')->onDelete('restrict');
+
         });
     }
 
@@ -26,7 +32,12 @@ return new class extends Migration
     public function down()
     {
         Schema::table('sales_order_details', function (Blueprint $table) {
-            $table->dropColumn('rak_id');
+            $table->dropColumn('status');
+
+            $table->dropForeign(['barangjadi_id']);
+            $table->dropColumn('barangjadi_id');
+            $table->dropForeign(['barangmentah_id']);
+            $table->dropColumn('barangmentah_id');
         });
     }
 };

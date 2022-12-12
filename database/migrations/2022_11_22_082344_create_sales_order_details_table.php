@@ -29,6 +29,8 @@ return new class extends Migration
             $table->foreign('salesorder_id')->references('id')->on('sales_orders')
                   ->onDelete('cascade');
 
+            
+
             $table->timestamps();
         });
     }

@@ -57,6 +57,7 @@ Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('login', [AuthController::class, 'login']);
         Route::post('register', [AuthController::class, 'register']);
+        Route::post('gantipassword', [AuthController::class, 'gantipassword']);
 
         Route::middleware('auth:api')->group(function () {
             Route::get('refresh', [AuthController::class, 'refresh']);
@@ -76,6 +77,15 @@ Route::prefix('v1')->group(function () {
                     Route::post('access/save', [DashboardController::class, 'menuAccessSave']);
                     Route::post('access/checked', [DashboardController::class, 'menuAccessChecked']);
                 });
+            });
+
+            Route::prefix('menus')->group(function () {
+                Route::get('get', [MenuController::class, 'get']);
+                Route::post('paginate', [MenuController::class, 'paginate']);
+                Route::post('store', [MenuController::class, 'store']);
+                Route::get('{uuid}/edit', [MenuController::class, 'edit']);
+                Route::post('{uuid}/update', [MenuController::class, 'update']);
+                Route::delete('{uuid}/destroy', [MenuController::class, 'destroy']);
             });
             Route::prefix('user')->group(function () {
                 Route::get('get', [UserController::class, 'get']);

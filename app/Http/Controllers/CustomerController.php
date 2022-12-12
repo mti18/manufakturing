@@ -70,7 +70,7 @@ class CustomerController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = Supplier::all();
+            $data = Supplier::where('tipe', 'customer')->get();
             return response()->json($data);
         } else {
             return abort(404);

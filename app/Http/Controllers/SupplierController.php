@@ -71,7 +71,7 @@ class SupplierController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = Supplier::all();
+            $data = Supplier::where('tipe', 'supplier')->get();
             return response()->json($data);
         } else {
             return abort(404);
