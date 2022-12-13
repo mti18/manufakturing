@@ -78,7 +78,8 @@ class MenuSeeder extends Seeder
                 ['id' => 39, 'name' => 'Jurnal Laporan', 'route' => 'dashboard.master.jurnallaporan', 'icon' => 'fas fa-book fs-2', 'children' => [
                         ['id' => 40, 'name' => 'Master Jurnal', 'url' => '/master/jurnallaporan/masterjurnal', 'route' => 'dashboard.master.jurnallaporan.masterjurnal', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/master_jurnal/Index'],
                     ],
-                ]
+                ],
+                ['id' => 41, 'name' => 'Pembelian', 'url' => '/pembelian', 'route' => 'dashboard.pembelian', 'component' => 'pembelian/Index', 'icon' => 'fas fa-clipboard-check fs-2'],
             ]]
         ];
 
