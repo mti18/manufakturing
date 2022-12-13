@@ -52,6 +52,7 @@ class UserController extends Controller
 
             $data['position_id'] = Position::where('uuid', $data['position_uuid'])->first()->id;
             unset($data['position_uuid']);
+            $data['is_active'] = 1;
 
             $user = User::create($data);
 

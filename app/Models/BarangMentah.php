@@ -51,6 +51,11 @@ class BarangMentah extends Model
         return $this->hasMany(StokKeluar::class, 'barangmentah_id', 'id');
     }
 
+    public function bm_so_details() 
+    {
+        return $this->belongsToMany(SalesOrderDetail::class,'sales_order_detail', 'salesorder_id', 'barangjadi_id', 'barangmentah_id');
+    }
+
     
     public static function booted() {
         parent::boot();

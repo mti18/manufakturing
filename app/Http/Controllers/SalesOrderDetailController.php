@@ -31,6 +31,8 @@ class SalesOrderDetailController extends Controller
             $data = $request->validate([
                 'volume' => 'required|numeric',
                 'nm_satuan' => 'required',
+                'barangmentah_id' => 'required',
+                'barangjadi_id' => 'required',
                 'harga' => 'required|numeric',
                 'diskon' => 'required|numeric',
                 'jumlah' => 'required|numeric',

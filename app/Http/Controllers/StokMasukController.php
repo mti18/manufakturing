@@ -21,7 +21,7 @@ class StokMasukController extends Controller
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = StokMasuk::with(['barang_jadi.barangjadigudangs', 'barang_jadi.barangsatuanjadi','barang_mentah.barangmentahgudangs', 'barang_mentah.barangsatuan' ])->where(function ($q) use ($request) {
                 $q->where('tipe_barang', 'LIKE', '%' . $request->search . '%');
-            })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
+            })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
             $courses->map(function ($a)
             {
@@ -136,14 +136,21 @@ class StokMasukController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = StokMasuk::with('barang_mentah')->where('uuid', $uuid)->first();
+            $data = StokMasuk::with('barang_mentah', 'barang_mentah.barangsatuan', 'barang_mentah.barangsatuan.child', 'barang_jadi', 'barang_jadi.barangsatuanjadi', 'barang_jadi.barangsatuanjadi.child')->where('uuid', $uuid)->first();
 
-            // $data->barang_mentah->map(function($q){
-            //     $data = BarangMentah::where('id', $q->barangmentah_id)->first();
-            //     $q->satuan_child = SatuanChild::where('barangsatuan_id', $data->barangsatuan_id)->get();
-            //     $child = SatuanChild::whereDoesntHave('children')->where('barangsatuan_id', $data->barangsatuan_id)->first();
-            //     $q->satuan_id = $child->id;
-            // });
+            $tipe_barang = $data['tipe_barang'];
+            if ($tipe_barang == "barang_jadi") {
+                $data->child = $data->barang_jadi->barangsatuanjadi->child;
+    
+                $satuanjadi = SatuanJadiChild::where('barangsatuanjadi_id', $data->barang_jadi->barangsatuanjadi_id)->orderBy('nilai')->first()->id;
+                $data->satuan_jadi = $satuanjadi;
+            } else {
+                $data->child = $data->barang_mentah->barangsatuan->child;
+    
+                $satuanmentah = SatuanChild::where('barangsatuan_id', $data->barang_mentah->barangsatuan_id)->orderBy('nilai')->first()->id;
+                $data->satuan_mentah = $satuanmentah;
+            }
+
 
             return response()->json($data);
         } else {

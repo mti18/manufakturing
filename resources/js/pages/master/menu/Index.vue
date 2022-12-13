@@ -4,7 +4,7 @@
     <div class="card">
       <div class="card-header">
         <div class="card-title w-100">
-          <h1>Jabatan</h1>
+          <h1>Menu</h1>
           <button
             v-if="!openForm"
             type="button"
@@ -12,14 +12,14 @@
             @click="openForm = true"
           >
             <i class="las la-plus"></i>
-            Jabatan Baru
+            Menu Baru
           </button>
         </div>
       </div>
       <div class="card-body">
         <mti-paginate
-          id="table-position"
-          url="/position/paginate"
+          id="table-menu"
+          url="/menus/paginate"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -45,9 +45,9 @@ export default {
     const selected = ref();
     const openForm = ref(false);
 
-    const { delete: deletePosition } = useDelete({
+    const { delete: deleteMenu } = useDelete({
       onSuccess: () => {
-        queryClient.invalidateQueries(["/position/paginate"]);
+        queryClient.invalidateQueries(["/menus/paginate"]);
       },
     });
 
@@ -60,13 +60,30 @@ export default {
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("name", {
-        header: "Nama",
+        header: "Nama Menu",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("code", {
-        header: "Kode",
+      columnHelper.accessor("url", {
+        header: "URL",
         cell: (cell) => cell.getValue(),
       }),
+      columnHelper.accessor("route", {
+        header: "Route",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("component", {
+        header: "Component",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("parent_id", {
+        header: "Parent id ",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("level", {
+        header: "Level ",
+        cell: (cell) => cell.getValue(),
+      }),
+
       columnHelper.accessor("uuid", {
         header: "Aksi",
         cell: (cell) =>
@@ -90,7 +107,7 @@ export default {
                   {
                     class: "btn btn-sm btn-icon btn-danger",
                     onClick: () => {
-                      deletePosition(`/position/${cell.getValue()}/destroy`);
+                      deleteMenu(`/menus/${cell.getValue()}/destroy`);
                     },
                   },
                   h("i", { class: "la la-trash fs-2" })

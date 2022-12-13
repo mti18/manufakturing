@@ -33,7 +33,7 @@ class BarangProduksi extends Model
 
     public function stokproduksis()
     {
-        return $this->belongsTo(StokProduksi::class, 'barangjadi_id', 'id');
+        return $this->hasMany(StokProduksi::class, 'barang_produksi_id', 'id');
     }
     
 }

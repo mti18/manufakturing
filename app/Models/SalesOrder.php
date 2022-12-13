@@ -35,7 +35,13 @@ class SalesOrder extends Model
         return $this->belongsTo(Account::class);
     }
 
-    public function details() {
-        return $this->hasMany(SalesOrderDetail::class, 'salesorder_id');
+    public function details() 
+    {
+        return $this->belongsToMany(SalesOrderDetail::class,'sales_order_detail', 'salesorder_id', 'barangjadi_id', 'barangmentah_id');
+    }
+
+    public function barangjadikategoris()
+    {
+        return $this->belongsToMany(Kategori::class, 'sales_order_detail', 'barang_jadi_id', 'kategori_id');
     }
 }

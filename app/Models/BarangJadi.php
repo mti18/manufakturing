@@ -51,6 +51,11 @@ class BarangJadi extends Model
         return $this->hasMany(StokKeluar::class, 'barangjadi_id', 'id');
     }
 
+    public function bj_so_details() 
+    {
+        return $this->belongsToMany(SalesOrderDetail::class,'sales_order_detail', 'salesorder_id', 'barangjadi_id', 'barangmentah_id');
+    }
+
     public function getStokAttribute()
     {
         return $this->stok_bagus + $this->stok_jelek;

@@ -13,7 +13,7 @@ class Menu extends Model
     protected $fillable = ['name', 'url', 'route', 'component', 'icon', 'parent_id', 'shown', 'auth', 'level'];
     protected $casts = ['shown' => 'boolean', 'auth' => 'boolean', 'level' => AsArrayObject::class];
     protected $with = ['children'];
-    protected $hidden = ['id', 'created_at', 'updated_at'];
+    protected $hidden = ['created_at', 'updated_at'];
     protected $appends = ['checked'];
 
     public function children()

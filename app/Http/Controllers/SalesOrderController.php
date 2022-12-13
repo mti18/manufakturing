@@ -63,7 +63,7 @@ class SalesOrderController extends Controller
             $data = SalesOrder::create($data);
             $data = SalesOrder::with(['details'])->where('id', $data->id)->first();
 
-            return response()->json(['message' => 'Jabatan berhasil diperbarui', 'data' => $data]);
+            return response()->json(['message' => 'Sales Order berhasil diperbarui', 'data' => $data]);
         } else {
             return abort(404);
         }
@@ -103,7 +103,7 @@ class SalesOrderController extends Controller
             ]);
             SalesOrder::where('uuid', $uuid)->update($data);
 
-            return response()->json(['message' => 'Jabatan berhasil diperbarui']);
+            return response()->json(['message' => 'Sales Order berhasil diperbarui']);
         } else {
             return abort(404);
         }
@@ -121,7 +121,7 @@ class SalesOrderController extends Controller
             ]);
             Position::where('uuid', $uuid)->update($data);
 
-            return response()->json(['message' => 'Jabatan berhasil diperbarui']);
+            return response()->json(['message' => 'Sales Order berhasil diperbarui']);
         } else {
             return abort(404);
         }
@@ -130,7 +130,7 @@ class SalesOrderController extends Controller
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             SalesOrder::where('uuid', $uuid)->delete();
-            return response()->json(['message' => 'Jabatan berhasil dihapus']);
+            return response()->json(['message' => 'Sales Order berhasil dihapus']);
         } else {
             return abort(404);
         }
