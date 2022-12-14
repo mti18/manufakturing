@@ -19,8 +19,8 @@ return new class extends Migration
                 BEFORE INSERT ON `stok_keluars`
                 FOR EACH ROW
                 BEGIN
-                    IF NEW.tipe_barang = "barang_mentah" THEN
-                    UPDATE `barang_mentahs` SET `stok` = stok - NEW.barang_keluar, 
+                     IF NEW.tipe_barang = "barang_mentah" THEN
+                        UPDATE `barang_mentahs` SET `stok` = stok - NEW.barang_keluar, 
                         `updated_at` = NOW()
                         WHERE `id` = NEW.barangmentah_id;
                     ELSE

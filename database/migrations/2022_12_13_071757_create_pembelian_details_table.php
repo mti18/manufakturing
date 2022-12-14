@@ -13,23 +13,20 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sales_order_detail', function (Blueprint $table) {
+        Schema::create('pembelian_details', function (Blueprint $table) {
             $table->id();
+
             $table->uuid('uuid')->unique();
-
-            $table->integer('volume');
-            $table->integer('nm_satuan');
-            $table->decimal('harga', 13, 2)->default(0);
-            $table->decimal('diskon', 13, 2)->default(0);
-            $table->decimal('jumlah', 13, 2)->default(0);
-            $table->integer('keterangan')->nullable();
-
-
-            $table->bigInteger('salesorder_id')->unsigned();
+            $table->bigInteger('salesorder_id')->nullable()->unsigned();
             $table->foreign('salesorder_id')->references('id')->on('sales_orders')
                   ->onDelete('cascade');
 
-            
+            $table->bigInteger('pembelian_id')->nullable()->unsigned();
+            $table->foreign('pembelian_id')->references('id')->on('pembelians')
+                  ->onDelete('cascade');
+
+            $table->integer('jumlah')->default(0);
+            $table->decimal('harga', 13, 2)->default(0);
 
             $table->timestamps();
         });
@@ -42,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sales_order_detail');
+        Schema::dropIfExists('pembelian_details');
     }
 };

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\RestApi;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\SalesOrder;
-
+use App\Models\Supplier;
 
 class SalesOrderController extends Controller
 {
@@ -43,6 +45,8 @@ class SalesOrderController extends Controller
             return abort(404);
         }
     }
+    
+
 
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
@@ -61,8 +65,9 @@ class SalesOrderController extends Controller
             $data['status'] = '1';
             $data['pembayaran'] = ($request->tempo == '0') ? 'yes' : 'no';
             $data = SalesOrder::create($data);
+            $data = SalesOrder::where('id', $data->id)->first();
 
-            return response()->json(['message' => 'Jabatan berhasil diperbarui', 'data' => $data]);
+            return response()->json(['message' => 'Sales Order berhasil diperbarui', 'data' => $data]);
         } else {
             return abort(404);
         }
@@ -79,7 +84,7 @@ class SalesOrderController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = SalesOrder::with('details')->where('uuid', $uuid)->first();
+            $data = SalesOrder::with(['barangjadi', 'barangmentah'])->where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);
@@ -102,7 +107,7 @@ class SalesOrderController extends Controller
             ]);
             SalesOrder::where('uuid', $uuid)->update($data);
 
-            return response()->json(['message' => 'Jabatan berhasil diperbarui']);
+            return response()->json(['message' => 'Sales Order berhasil diperbarui']);
         } else {
             return abort(404);
         }
@@ -120,7 +125,7 @@ class SalesOrderController extends Controller
             ]);
             Position::where('uuid', $uuid)->update($data);
 
-            return response()->json(['message' => 'Jabatan berhasil diperbarui']);
+            return response()->json(['message' => 'Sales Order berhasil diperbarui']);
         } else {
             return abort(404);
         }
@@ -129,7 +134,7 @@ class SalesOrderController extends Controller
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             SalesOrder::where('uuid', $uuid)->delete();
-            return response()->json(['message' => 'Jabatan berhasil dihapus']);
+            return response()->json(['message' => 'Sales Order berhasil dihapus']);
         } else {
             return abort(404);
         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rak;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Supplier;
@@ -70,12 +71,13 @@ class CustomerController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = Supplier::all();
+            $data = Supplier::where('tipe', 'customer')->get();
             return response()->json($data);
         } else {
             return abort(404);
         }
     }
+
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {

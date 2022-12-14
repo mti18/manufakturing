@@ -79,4 +79,30 @@ class PositionController extends Controller
             return abort(404);
         }
     }
+
+    public function getcode()
+    {
+        $data = Position::pluck('code')->toArray();
+        $a = [];
+
+        foreach($data as $item){
+              $exp = explode("-", $item);
+              $a[] = $exp[1];
+        }
+
+
+        if(count($a) > 0){
+            sort($a);
+            $start = 1;
+            for ($i=0; $i < count($a); $i++) { 
+                if((int)$a[$i] != $start){
+                    return ($start);
+                }
+                $start++;
+            }
+            return ($start);
+
+        }
+    }
+
 }

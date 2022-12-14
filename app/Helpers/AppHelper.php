@@ -33,7 +33,59 @@ class AppHelper
 				return RestApi::error('Sesuatu error terjadi.', 500);
 			}
 		} else {
-			return RestApi::error('Silakan login dengan email dan password.', 500);
+			return RestApi::error('Berhasil silahkan lanjut ke langkah berikutnya.', 500);
+		}
+
+		$data = [
+			'ApiKey'    => getEnv('WA_KEY'),
+			'Phone'     => self::parsePhone($phone),
+			'Message'   => str_replace('$DATE$', date('d-m-Y H:i:s', strtotime('+2 minutes')), str_replace('\n', PHP_EOL, str_replace('$OTP$', $otp, getEnv('WA_MESSAGE'))))
+		];
+
+		try {
+			$response = self::request('POST', getEnv('WA_URL') . 'v5/send', $data);
+		} catch (\GuzzleHttp\Exception\ClientException $e) {
+			$response = $e->getResponse();
+		} catch (\GuzzleHttp\Exception\RequestException $e) {
+			$response = $e->getResponse();
+		}
+
+		if ($response->getStatusCode() == 200 && json_decode($response->getBody())->status) {
+			return RestApi::success([
+				'resend_time' => 30,
+				'phone' => $phone,
+				'message' => ((json_decode($response->getBody())->message == 'sent') ? 'Berhasil mengirim Kode OTP.' : 'Gagal mengirim Kode OTP.'),
+				'type' => 'otp',
+			], 200, 'Send OTP success.');
+		} else {
+			return RestApi::error('Gagal mengirim Kode OTP.', $response->getStatusCode());
+		}
+	}
+	static function sendOtpResetPassword($phone)
+	{
+		$otp = self::generateOTP(6);
+		$user = User::where('whatsapp', $phone)->first();
+
+		if (isset($user->id) && $user->active == '0') {
+			return RestApi::error('Akun belum aktif. Silakan selesaikan pendaftaran.', 400);
+		}
+
+		if (!isset($user->id)) {
+			return RestApi::error('Nomor tidak terdaftar.', 400);
+		} else if (isset($user->id)) {
+			if (strtotime('-90 second', $user->otp_expire) >= strtotime('now')) {
+				$wait = (intval(strtotime('-90 second', $user->otp_expire)) - intval(strtotime('now')));
+				return RestApi::error('Tunggu ' . $wait . ' detik.', 400, ['resend_time' => $wait]);
+			}
+
+			$user->otp = $otp;
+			$user->otp_expire = strtotime('+2 minutes');
+
+			if (!$user->update()) {
+				return RestApi::error('Sesuatu error terjadi.', 500);
+			}
+		} else {
+			return RestApi::error('Silakan password baru.', 500);
 		}
 
 		$data = [

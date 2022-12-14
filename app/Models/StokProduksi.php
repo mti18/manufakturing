@@ -9,16 +9,12 @@ class StokProduksi extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['stok_jadi', 'barangjadi_id', 'barang_produksi_id', 'barang_mentah_id', 'stok_digunakan'];
+    protected $fillable = ['barang_produksi_id'];
 
-    public function barangproduksibarangmentahs()
-    {
-        return $this->belongsTo(BarangProduksiBarangMentah::class);
-    }
 
     public function barangproduksi()
     {
-        return $this->hasMany(BarangProduksi::class, 'barangjadi_id', 'id');
+        return $this->belongsTo(BarangProduksi::class, 'barang_produksi_id', 'id');
     }
 
 }

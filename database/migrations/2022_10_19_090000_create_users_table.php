@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->date('birth_date')->nullable();
 
-            $table->enum('level', ['admin', 'user', 'finance', 'marketing'])->default('user');
+            $table->enum('level', ['admin', 'user'])->default('user');
             $table->enum('status', ['tetap', 'kontrak', 'magang'])->default('kontrak');
             $table->boolean('is_active')->default(false);
 

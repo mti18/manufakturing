@@ -59,7 +59,7 @@ class ProfileController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = Profile::all();
+            $data = Profile::with(["kota", "kecamatan", "provinsi", "kelurahan"])->get();
             return response()->json($data);
         } else {
             return abort(404);

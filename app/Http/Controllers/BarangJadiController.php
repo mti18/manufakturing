@@ -104,10 +104,7 @@ class BarangJadiController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = BarangJadi::where('uuid', $uuid)->first();
-
-            $rak = Rak::where('gudang_id', $data->gudang_id)->first();
-            $data->rak_id = $rak->id;
+            $data = BarangJadi::with(["barangjadigudangs", "barangjadigudangs.rak"])->where('uuid', $uuid)->first();
 
             return response()->json($data);
         } else {

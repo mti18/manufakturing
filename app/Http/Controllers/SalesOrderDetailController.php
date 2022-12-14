@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\SalesOrderDetail;
 
+
 class SalesOrderDetailController extends Controller
 {
     public function paginate(Request $request) {
@@ -15,8 +16,8 @@ class SalesOrderDetailController extends Controller
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = SalesOrderDetail::where(function ($q) use ($request) {
-                $q->where('name', 'LIKE', '%' . $request->search . '%');
-                $q->orWhere('code', 'LIKE', '%' . $request->search . '%');
+                $q->where('volume', 'LIKE', '%' . $request->search . '%');
+                $q->orWhere('harga', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
             return response()->json($courses);
@@ -30,6 +31,8 @@ class SalesOrderDetailController extends Controller
             $data = $request->validate([
                 'volume' => 'required|numeric',
                 'nm_satuan' => 'required',
+                'barangmentah_id' => 'required',
+                'barangjadi_id' => 'required',
                 'harga' => 'required|numeric',
                 'diskon' => 'required|numeric',
                 'jumlah' => 'required|numeric',

@@ -9,6 +9,7 @@ use App\Models\BarangProduksiBarangMentah;
 use App\Models\BarangSatuanJadi;
 use App\Models\SatuanChild;
 use App\Models\SatuanJadiChild;
+use App\Models\StokProduksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,7 +21,7 @@ class BarangProduksiController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = BarangProduksi::with(['barangproduksibarangmentahs.barang_mentah' ])->where(function ($q) use ($request) {
+            $courses = BarangProduksi::with(['barangproduksibarangmentahs.barang_mentah'])->where(function ($q) use ($request) {
                 $q->where('barangjadi_id', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
@@ -120,7 +121,6 @@ class BarangProduksiController extends Controller
                 'barangjadi_id' => 'required',
                 'satuan_produksi' => 'required',
                 'barangproduksibarangmentahs' => 'required|array',
-
             ]);
 
             $child = SatuanJadiChild::find($data['satuan_produksi']);
@@ -174,43 +174,13 @@ class BarangProduksiController extends Controller
         }
     }
 
-    public function produce(Request $request, $uuid) {
+    public function produce($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = $request->validate([
-                'stok_jadi' => 'required|numeric',
-                'barangjadi_id' => 'required',
-                'satuan_produksi' => 'required',
-                'barangproduksibarangmentahs' => 'required|array',
-            ]);
+        
+            $barang_produksi_id = BarangProduksi::with(['barangproduksibarangmentahs'])->where('uuid', $uuid)->first()->id;
+            $data['barang_produksi_id'] = $barang_produksi_id;
+            $data = StokProduksi::create($data);
 
-            $child = SatuanJadiChild::find($data['satuan_produksi']);
-            
-            $stok = $data['stok_jadi'];
-
-            $stok = $stok * $child->nilai;
-            
-            $data['stok_jadi'] = $stok;
-            
-            unset($data['satuan_produksi']);
-
-            $data = BarangProduksi::where('uuid', $uuid)->create($data);
-            
-            foreach($request->barangproduksibarangmentahs as $item){
-                $child = SatuanChild::find($item['satuan_id']);
-
-                $stok = $item['stok_digunakan'] * $child->nilai;
-
-                BarangProduksiBarangMentah::where('uuid', $uuid)->create([
-                    'barang_mentah_id' => $item['barang_mentah_id'],
-                    'stok_digunakan' => $stok,
-                    'barang_produksi_id' => $data->id
-                ]);
-            }
-
-
-
-
-            
             return response()->json(['message' => 'Barang Produksi berhasil diperbarui']);
         } else {
             return abort(404);

@@ -32,9 +32,11 @@ import { ref, h } from "vue";
 import { useQueryClient } from "vue-query";
 import { useMutation } from "vue-query";
 import { createColumnHelper } from "@tanstack/vue-table";
+
 const columnHelper = createColumnHelper();
 
 import Form from "./Form.vue";
+import axios from "@/libs/axios";
 import { useDelete } from "@/libs/hooks";
 
 export default {
@@ -52,7 +54,7 @@ export default {
       },
     });
 
-    const genBarangProduksi = (url, data) => {
+    const genBarangProduksi = (data) => {
       const mySwal = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success btn-sm",
@@ -61,27 +63,36 @@ export default {
         buttonsStyling: false,
       });
 
+      // var uuid = data.uuid;
       mySwal
         .fire({
           width: 500,
           title: "Apakah anda yakin ingin memproduksi dengan bahan ini?",
-          text: "Memproduksi akan mengurangi barang mentah dan menambah barang jadi",
-
-          html: `<table type="produce" id="bahan" class="table table-bordered table-responsive " border=1 responsive>
+          html: `<table type="produce" id="bahan" class="table table-bordered table-responsive table-striped " border=1 responsive>
+              <thead> 
+                <tr>
+                  <td>#</td>
+                  <td>Bahan</td>
+                  <td>Volume</td>
+                </tr>
+              </thead>
               <tbody>
                 ${data.barangproduksibarangmentahs
                   .map(
                     (item, i) => `
-                    <tr>
+                    <tr >
                       <td>${i + 1}</td>
-                      <td>${item.barang_mentah?.nm_barangmentah}</td>
-                      <td>${item.stok_digunakan}</td>
+                      <td class="text-start">${
+                        item.barang_mentah?.nm_barangmentah
+                      }</td>
+                      <td class="text-start">${item.stok_digunakan}</td>
                     </tr>
                 `
                   )
                   .join("")}
               </tbody>
             </table>
+            <input type="date" >
             Memproduksi akan mengurangi barang mentah dan menambah barang jadi
             `,
           icon: "question",
@@ -90,9 +101,11 @@ export default {
           cancelButtonText: "Batalkan!",
           reverseButtons: true,
           preConfirm: () => {
-            return axios.post(url).catch((error) => {
-              Swal.showValidationMessage(error.response.data.message);
-            });
+            return axios
+              .post(`/barangproduksi/${data.uuid}/produce`)
+              .catch((error) => {
+                Swal.showValidationMessage(error.response.data.message);
+              });
           },
           confirm: () => {},
         })
@@ -104,29 +117,6 @@ export default {
         });
     };
 
-    const { mutate: produce } = useMutation(
-      (data) =>
-        axios
-          .post(
-            selected
-              ? `/barangproduksi/${selected}/update`
-              : "/barangproduksi/produce",
-            data
-          )
-          .then((res) => res.data),
-      {
-        onMutate: () => {
-          KTApp.block("#form-barangproduksi");
-        },
-        onError: (error) => {
-          toastr.error(error.response.data.message);
-        },
-        onSettled: () => {
-          KTApp.unblock("#form-barangproduksi");
-        },
-      }
-    );
-
     const columns = [
       columnHelper.accessor("nomor", {
         header: "#",
@@ -135,12 +125,12 @@ export default {
         },
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("barangproduksibarangjadi.nm_barang_jadi", {
-        header: "Nama Barang Jadi",
-        cell: (cell) => cell.getValue(),
-      }),
       columnHelper.accessor("barangproduksibarangjadi.kd_barang_jadi", {
         header: "Kode Barang",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("barangproduksibarangjadi.nm_barang_jadi", {
+        header: "Nama Barang Jadi",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("stokbarang", {
@@ -182,11 +172,7 @@ export default {
                   "button",
                   {
                     class: "btn btn-sm btn-icon btn-success",
-                    onClick: () =>
-                      genBarangProduksi(
-                        "/barangproduksi/{uuid}/produce",
-                        cell.row.original
-                      ),
+                    onClick: () => genBarangProduksi(cell.row.original),
                   },
                   h("i", { class: "la la-tools fs-2" })
                 ),
@@ -197,7 +183,7 @@ export default {
     return {
       selected,
       openForm,
-      produce,
+      // produce,
       columns,
     };
   },
