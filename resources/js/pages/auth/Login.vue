@@ -36,9 +36,6 @@
         class="form-control bg-transparent"
         v-model="auth.password"
       />
-      <div class="forget d-inline">
-        <Link :href="route('gantipassword')">Ganti Password</Link>
-      </div>
     </div>
     <div
       v-else-if="auth.type === 'nip'"

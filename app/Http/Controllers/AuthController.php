@@ -252,7 +252,7 @@ class AuthController extends Controller
                 'newpassword' => 'required|confirmed',
             ]);
 
-            $password = User::find(auth()->user)->password;
+            $password = User::find(auth()->user()->id)->password;
             if (password_verify($data['oldpassword'], $password)) {
 
                 $password = $data['newpassword'];

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('sales_order_details', function (Blueprint $table) {
+        Schema::table('sales_order_detail', function (Blueprint $table) {
             $table->enum('status', ['0', '1', '2', '3', '4', '5', '6'])->default('0');
 
             $table->bigInteger('barangjadi_id')->unsigned()->nullable();
@@ -31,7 +31,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('sales_order_details', function (Blueprint $table) {
+        Schema::table('sales_order_detail', function (Blueprint $table) {
             $table->dropColumn('status');
 
             $table->dropForeign(['barangjadi_id']);

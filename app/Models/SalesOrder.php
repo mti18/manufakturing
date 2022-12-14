@@ -16,7 +16,7 @@ class SalesOrder extends Model
         'jenis_pembayaran', 'account_id', 'pembayaran', 'tgl_pesan', 'tgl_pengiriman', 'tempo', 'status', 
         'keterangan', 'total', 'diskon', 'uangmuka', 'pph', 'ppn', 'netto'
     ];
-    protected $with = ['details'];
+    protected $with = ['barangjadi', 'barangmentah'];
 
     public function diketahui_oleh()
     {
@@ -35,13 +35,12 @@ class SalesOrder extends Model
         return $this->belongsTo(Account::class);
     }
 
-    public function details() 
+    public function barangjadi() 
     {
-        return $this->belongsToMany(SalesOrderDetail::class,'sales_order_detail', 'salesorder_id', 'barangjadi_id', 'barangmentah_id');
+        return $this->belongsToMany(BarangJadi::class,'sales_order_detail', 'salesorder_id', 'barangjadi_id');
     }
-
-    public function barangjadikategoris()
+    public function barangmentah() 
     {
-        return $this->belongsToMany(Kategori::class, 'sales_order_detail', 'barang_jadi_id', 'kategori_id');
+        return $this->belongsToMany(BarangJadi::class,'sales_order_detail', 'salesorder_id', 'barangmentah_id');
     }
 }

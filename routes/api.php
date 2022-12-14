@@ -25,6 +25,7 @@ use App\Http\Controllers\AccountController;
 
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\GantiPwController;
 use App\Http\Controllers\ProvinsiController;
 use App\Http\Controllers\KotaController;
 use App\Http\Controllers\KecamatanController;
@@ -57,7 +58,6 @@ Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('login', [AuthController::class, 'login']);
         Route::post('register', [AuthController::class, 'register']);
-        Route::post('gantipassword', [AuthController::class, 'gantipassword']);
 
         Route::middleware('auth:api')->group(function () {
             Route::get('refresh', [AuthController::class, 'refresh']);
@@ -70,6 +70,10 @@ Route::prefix('v1')->group(function () {
         Route::get('dashboard/menu', [DashboardController::class, 'menu']);
         Route::post('dashboard/menu/has-access', [DashboardController::class, 'hasAccess']);
 
+        Route::prefix('gantipassword')->group(function () {
+            Route::post('updatepw', [GantiPwController::class, 'updatepw']);
+        });
+            
         Route::middleware(['level:admin'])->group(function () {
             Route::prefix('dashboard')->group(function () {
                 Route::prefix('menu')->group(function () {
@@ -78,7 +82,6 @@ Route::prefix('v1')->group(function () {
                     Route::post('access/checked', [DashboardController::class, 'menuAccessChecked']);
                 });
             });
-
             Route::prefix('menus')->group(function () {
                 Route::get('get', [MenuController::class, 'get']);
                 Route::post('paginate', [MenuController::class, 'paginate']);
@@ -169,6 +172,7 @@ Route::prefix('v1')->group(function () {
                 Route::post('store', [CustomerController::class, 'store']);
                 Route::get('getcode', [CustomerController::class, 'getcode']);
                 Route::get('{id}/getcode', [CustomerController::class, 'getcodebyid']);
+                Route::get('{id}/customers', [CustomerController::class, 'customers']);
                 Route::get('{uuid}/edit', [CustomerController::class, 'edit']);
                 Route::post('{uuid}/update', [CustomerController::class, 'update']);
                 Route::delete('{uuid}/destroy', [CustomerController::class, 'destroy']);
@@ -323,6 +327,7 @@ Route::prefix('v1')->group(function () {
                 Route::post('paginate', [SalesOrderController::class, 'paginate']);
                 Route::post('store', [SalesOrderController::class, 'store']);
                 Route::get('{uuid}/edit', [SalesOrderController::class, 'edit']);
+                Route::get('{id}/profiles', [SalesOrderController::class, 'profiles']);
                 Route::post('{uuid}/update', [SalesOrderController::class, 'update']);
                 Route::delete('{uuid}/destroy', [SalesOrderController::class, 'destroy']);
             });

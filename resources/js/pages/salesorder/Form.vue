@@ -33,8 +33,9 @@
               required
               autoComplete="off"
               v-model="form.profile_id"
+              @change="perusahaan($event)"
             >
-              <option disabled>Pilih</option>
+              <option value="" disabled>Pilih</option>
               <option
                 v-for="profile in profiles"
                 :value="profile.id"
@@ -44,7 +45,77 @@
               </option>
             </select2>
           </div>
+
+          <div v-if="form.profile_id != ''">
+            <div class="mb-8">
+              <label for="name" class="form-label"> Provinsi : </label>
+              <input
+                type="text"
+                name="perusahaan_provinsi"
+                id="name"
+                class="form-control"
+                autoComplete="off"
+                disabled
+                v-if="!!profile_so.provinsi"
+                v-model="profile_so.provinsi.nm_provinsi"
+              />
+            </div>
+
+            <div class="mb-8">
+              <label for="name" class="form-label"> Kota : </label>
+              <input
+                type="text"
+                name="perusahaan_kota"
+                id="name"
+                class="form-control"
+                autoComplete="off"
+                disabled
+                v-if="!!profile_so.kota"
+                v-model="profile_so.kota.nm_kab_kota"
+              />
+            </div>
+
+            <div class="mb-8">
+              <label for="name" class="form-label"> Kecamatan : </label>
+              <input
+                type="text"
+                name="perusahaan_kecamatan"
+                id="name"
+                class="form-control"
+                autoComplete="off"
+                disabled
+                v-if="!!profile_so.kecamatan"
+                v-model="profile_so.kecamatan.nm_kecamatan"
+              />
+            </div>
+
+            <div class="mb-8">
+              <label for="name" class="form-label"> Keluarahan : </label>
+              <input
+                type="text"
+                name="perusahaan_kelurahan"
+                id="name"
+                class="form-control"
+                autoComplete="off"
+                disabled
+                v-if="!!profile_so.kelurahan"
+                v-model="profile_so.kelurahan.nm_kelurahan"
+              />
+            </div>
+
+            <div class="mb-8">
+              <label for="name" class="form-label"> Alamat : </label>
+              <textarea
+                class="form-control"
+                name="perusahaan_alamat"
+                v-model="profile_so.alamat"
+                placeholder="Alamat Perusahaan"
+                disabled
+              ></textarea>
+            </div>
+          </div>
         </div>
+
         <div class="col-6">
           <div class="mb-8">
             <label for="code" class="form-label required">
@@ -57,8 +128,9 @@
               required
               autoComplete="off"
               v-model="form.supplier_id"
+              @change="customer($event)"
             >
-              <option disabled>Pilih</option>
+              <option value="" disabled>Pilih</option>
               <option
                 v-for="customer in customers"
                 :value="customer.id"
@@ -68,8 +140,50 @@
               </option>
             </select2>
           </div>
+          <div v-if="form.supplier_id != ''">
+            <div class="mb-8">
+              <label for="name" class="form-label"> Nomor Telepon : </label>
+              <input
+                type="text"
+                name="customer_telepon"
+                id="name"
+                class="form-control"
+                autoComplete="off"
+                disabled
+                v-if="!!customer_so"
+                v-model="customer_so.telepon"
+              />
+            </div>
+
+            <div class="mb-8">
+              <label for="name" class="form-label"> NPWP : </label>
+              <input
+                type="text"
+                name="customer_npwp"
+                id="name"
+                class="form-control"
+                autoComplete="off"
+                disabled
+                v-if="!!customer_so"
+                v-model="customer_so.npwp"
+              />
+            </div>
+
+            <div class="mb-8">
+              <label for="name" class="form-label"> Alamat : </label>
+              <textarea
+                class="form-control"
+                name="customer_alamat"
+                v-if="!!customer_so"
+                v-model="customer_so.alamat"
+                placeholder="Alamat Perusahaan"
+                disabled
+              ></textarea>
+            </div>
+          </div>
         </div>
       </div>
+
       <hr style="margin-top: 2rem; margin-bottom: 3rem" />
       <div class="row">
         <div class="col-6">
@@ -153,7 +267,7 @@
               Jumlah Paket :
             </label>
             <input
-              type="text"
+              type="number"
               name="jumlah_paket"
               id="jumlah_paket"
               placeholder="Jumlah Paket"
@@ -206,7 +320,7 @@
             </label>
             <div class="input-group">
               <input
-                type="text"
+                type="number"
                 name="tempo"
                 id="tempo"
                 placeholder="Jatuh Tempo"
@@ -235,7 +349,7 @@
   </form>
 
   <!-- BUTTON LIST -->
-  <div class="card-header">
+  <div class="card-header kedua">
     <div class="card-title w-100">
       <button
         type="button"
@@ -270,7 +384,7 @@
     id="form-salesorderdetail"
     @submit.prevent="onSubmitDetail"
   >
-    <div class="table-responsive">
+    <div class="table-responsive mt-5">
       <table class="table border">
         <thead>
           <tr class="fw-bold fs-6 text-gray-800 border align-middle">
@@ -289,17 +403,24 @@
           </tr>
         </thead>
         <tbody class="border align-middle">
-          <tr v-for="detail in form.details" :key="detail.id">
-            <!-- <td>
-              <select2 name="tipe" id="tipe"
-                class="form-control" required autoComplete="off" v-model="form.tipe" >
+          <tr v-for="detail in form.barangjadi" :key="detail.id">
+            <td>
+              <select2
+                name="tipe"
+                id="tipe"
+                class="form-control"
+                required
+                autoComplete="off"
+                v-model="form.tipe"
+              >
                 <option disabled>Pilih</option>
-                <option value="Barang Mentah">Barang Mentah</option>
-                <option value="Barang Jadi">Barang Jadi</option>
+                <option value="barangmentah">Barang Mentah</option>
+                <option value="barangjadi">Barang Jadi</option>
               </select2>
             </td>
+
             <td>
-              <div v-if="form.tipe=='Barang Mentah'">
+              <!-- <div v-if="form.tipe=='Barang Mentah'">
                 <select2 name="barang_id" id="supplier" 
                   class="form-control" required autoComplete="off" v-model="form.barang_id" >
                   <option disabled>Pilih</option>
@@ -312,8 +433,8 @@
                   <option disabled>Pilih</option>
                   <option v-for="user in users" :value="user.id" :key="user.uuid">{{ user.name }}</option>
                 </select2>
-              </div>
-            </td> -->
+              </div> -->
+            </td>
             <td>
               <input
                 type="text"
@@ -645,6 +766,12 @@ import axios from "@/libs/axios";
 import { useQueryClient } from "vue-query";
 
 export default {
+  data() {
+    return {
+      profile_so: {},
+      customer_so: {},
+    };
+  },
   props: {
     selected: {
       type: String,
@@ -658,49 +785,49 @@ export default {
     });
     const selected = ref(props.selected);
 
-    const { data: profiles } = useQuery(["profiles"], () =>
+    const { data: profiles = [] } = useQuery(["profiles"], () =>
       axios.get("/profile/get").then((res) => res.data)
     );
-
-    const { data: customers } = useQuery(["customer"], () =>
+    const { data: customers = [] } = useQuery(["customer"], () =>
       axios.get("/customer/get").then((res) => res.data)
     );
-    const { data: users } = useQuery(["users"], () =>
-      axios.get("/user/get").then((res) => res.data)
-    );
-    const { data: accounts } = useQuery(["accounts"], () =>
-      axios.get("/account/get").then((res) => res.data)
-    );
-
-    const { data: barangjadis } = useQuery(["barang_jadis"], () =>
+    const { data: barangjadis = [] } = useQuery(["customer"], () =>
       axios.get("/barangjadi/get").then((res) => res.data)
     );
-
-    const { data: barangmentahs } = useQuery(["barang_mentahs"], () =>
-      axios.get("/barangmentah/get").then((res) => res.data)
+    const { data: barangmentahs = [] } = useQuery(["customer"], () =>
+      axios.get("/baranementah/get").then((res) => res.data)
+    );
+    const { data: users = [] } = useQuery(["users"], () =>
+      axios.get("/user/get").then((res) => res.data)
+    );
+    const { data: accounts = [] } = useQuery(["accounts"], () =>
+      axios.get("/account/get").then((res) => res.data)
     );
 
     const { data: salesorder = { details: [] }, refetch } = useQuery(
       ["salesorder", selected, "edit"],
       () => {
-        setTimeout(() => KTApp.block("#form-salesorder"), 100);
+        // setTimeout(() => KTApp.block("#form-salesorder"), 100);
         return axios
           .get(`/salesorder/${selected.value}/edit`)
           .then((res) => res.data);
       },
+
       {
         enabled: !!selected.value,
         cacheTime: 0,
         onSuccess: ({ data }) => {
           const datas = { ...data.data };
           console.log(datas);
-          if (datas.details.length) {
-            datas.details.push({});
+          if (datas.barangjadi.length) {
+            datas.barangjadi.push({});
+          }
+          if (datas.barangmentah.length) {
+            datas.barangmentah.push({});
           }
           form.value = datas;
         },
         onError: (error) => console.log(error),
-        onSettled: () => KTApp.unblock("#form-salesorder"),
       }
     );
 
@@ -719,15 +846,20 @@ export default {
           KTApp.block("#form-salesorder");
         },
         onError: (error) => {
-          toastr.error(error.response.data.message);
+          toastr.error(error);
+          KTApp.unblock("#form-salesorder");
         },
         onSettled: () => {
           KTApp.unblock("#form-salesorder");
         },
         onSuccess: (data) => {
+          KTApp.unblock("#form-salesorder");
           const datas = { ...data.data };
-          if (!datas.details.length) {
-            datas.details.push({});
+          if (!datas.barangjadi.length) {
+            datas.barangjadi.push({});
+          }
+          if (!datas.barangmentah.length) {
+            datas.barangmentah.push({});
           }
           form.value = datas;
         },
@@ -736,12 +868,12 @@ export default {
 
     return {
       salesorder,
+      barangjadis,
+      barangmentahs,
       profiles,
       accounts,
       customers,
       users,
-      barangjadis,
-      barangmentahs,
       submit,
       form,
       queryClient,
@@ -750,6 +882,24 @@ export default {
     };
   },
   methods: {
+    customer(e) {
+      var app = this;
+      if (!app.customers) return;
+
+      var index = app.customers.findIndex((cat) => cat.id == e);
+
+      app.customer_so = app.customers[index];
+    },
+
+    perusahaan(e) {
+      var app = this;
+      if (!app.profiles) return;
+
+      var index = app.profiles.findIndex((cat) => cat.id == e);
+
+      app.profile_so = app.profiles[index];
+    },
+
     clearFormData() {
       this.form = {
         profile_id: "",
@@ -839,7 +989,11 @@ export default {
 
 <style scoped>
 .pojok {
-  margin-left: 540px;
+  margin-left: 630px;
+}
+
+.kedua {
+  border-bottom: 0px solid #e2e8f0;
 }
 
 .table {

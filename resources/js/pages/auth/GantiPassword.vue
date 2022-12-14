@@ -8,12 +8,12 @@
     </div>
 
     <div class="fv-row mb-8 fv-plugins-icon-container">
-      <label for="identity" class="form-label">Masukkan Password Lama</label>
+      <label for="oldpassword" class="form-label">Masukkan Password Lama</label>
       <input
         type="text"
         placeholder="Password Lama"
-        name="identity"
-        id="identity"
+        name="oldpassword"
+        id="oldpassword"
         autocomplete="off"
         class="form-control bg-transparent"
         v-model="auth.oldpassword"
@@ -21,12 +21,12 @@
     </div>
 
     <div class="fv-row mb-8 fv-plugins-icon-container">
-      <label for="identity" class="form-label">Masukkan Password Baru</label>
+      <label for="newpassword" class="form-label">Masukkan Password Baru</label>
       <input
         type="text"
         placeholder="Password Baru"
-        name="identity"
-        id="identity"
+        name="newpassword"
+        id="newpassword"
         autocomplete="off"
         class="form-control bg-transparent"
         v-model="auth.newpassword"
@@ -34,12 +34,14 @@
     </div>
 
     <div class="fv-row mb-8 fv-plugins-icon-container">
-      <label for="identity" class="form-label">Konfirmasi Password</label>
+      <label for="newpassword_confirmation" class="form-label"
+        >Konfirmasi Password</label
+      >
       <input
         type="text"
         placeholder="Konfirmasi Password"
-        name="identity"
-        id="identity"
+        name="newpassword_confirmation"
+        id="newpassword_confirmation"
         autocomplete="off"
         class="form-control bg-transparent"
         v-model="auth.newpassword_confirmation"
@@ -74,24 +76,20 @@ import { Inertia } from "@inertiajs/inertia";
 export default {
   setup() {
     const queryClient = useQueryClient();
-    const auth = ref({
-      otp: "",
-    });
+    const auth = ref({});
     const status = ref("idle");
     return { auth, status, queryClient };
   },
   methods: {
-    onCompleteOtp(value) {
-      this.auth.otp = value;
-    },
     onSubmit() {
       if (this.auth.type) this.login();
       else this.changePassword();
     },
     changePassword() {
       const vm = this;
+
       vm.status = "loading";
-      vm.axios.post("/auth/gantipassword").catch((error) => {
+      vm.axios.post("/auth/gantipassword", vm.auth).catch((error) => {
         toastr.error(error.response.data.message);
         vm.status = "error";
       });
