@@ -37,6 +37,8 @@ use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\SalesOrderDetailController;
 use App\Http\Controllers\StokKeluarController;
 use App\Http\Controllers\StokMasukController;
+use App\Http\Controllers\KonfirmasiOrderController;
+use App\Http\Controllers\PembelianController;
 
 /*
 |--------------------------------------------------------------------------
@@ -370,5 +372,18 @@ Route::prefix('v1')->group(function () {
             });
         });
 
+        Route::prefix('konfirmasiorder')->group(function () {
+            Route::post('paginate', [KonfirmasiOrderController::class, 'paginate']);
+        });
+        Route::prefix('pembelian')->group(function () {
+            Route::get('get', [PembelianController::class, 'get']);
+            Route::post('paginate', [PembelianController::class, 'paginate']);
+            Route::post('store', [PembelianController::class, 'store']);
+            Route::get('{uuid}/edit', [PembelianController::class, 'edit']);
+            Route::post('{uuid}/update', [PembelianController::class, 'update']);
+            Route::delete('{uuid}/destroy', [PembelianController::class, 'destroy']);
+            Route::get('getcode', [PembelianController::class, 'getcode']);
+            Route::get('{id}/getcode', [PembelianController::class, 'getcodebyid']);
+        });
     });
 });
