@@ -20,7 +20,7 @@ return new class extends Migration
                 FOR EACH ROW
                 BEGIN
                     IF NEW.tipe_barang = "barang_mentah" THEN
-                        UPDATE `barang_mentahs` SET `stok` = stok - NEW.barang_keluar, 
+                    UPDATE `barang_mentahs` SET `stok` = stok - NEW.barang_keluar, 
                         `updated_at` = NOW()
                         WHERE `id` = NEW.barangmentah_id;
                     ELSE

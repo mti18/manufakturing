@@ -322,10 +322,13 @@ Route::prefix('v1')->group(function () {
             Route::post('store', [MasterJurnalController::class, 'store']);
             Route::post('getCode', [MasterJurnalController::class, 'getCode']);
             Route::get('child', [AccountController::class, 'child']);
+            Route::get('{id}/jurnal_item', [MasterJurnalController::class, 'jurnal_item']);
             Route::get('{uuid}/edit', [MasterJurnalController::class, 'edit']);
+            Route::get('{uuid}/detail', [MasterJurnalController::class, 'detail']);
             Route::post('{uuid}/update', [MasterJurnalController::class, 'update']);
             Route::delete('{uuid}/destroy', [MasterJurnalController::class, 'destroy']);
         });
+       
 
         Route::prefix('stokmasuk')->group(function () {
             Route::get('get', [StokMasukController::class, 'get']);

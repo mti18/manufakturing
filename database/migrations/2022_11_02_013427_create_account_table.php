@@ -26,7 +26,7 @@ return new class extends Migration
 
 
             $table->Integer('parent_id')->unsigned()->nullable();
-            $table->foreign('parent_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->foreign('parent_id')->references('id')->on('accounts')->onDelete('restrict');
 
 
 
