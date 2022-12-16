@@ -19,7 +19,13 @@ class UserMenuSeeder extends Seeder
         DB::table('user_menus')->delete();
 
         $usermenus = [
-            // ['user_group_id' => 1, 'menu_id' => 2],
+            ['user_group_id' => 1, 'menu_id' => 2],
+            ['user_group_id' => 2, 'menu_id' => 2],
+            ['user_group_id' => 3, 'menu_id' => 2],
+            ['user_group_id' => 4, 'menu_id' => 2],
+            ['user_group_id' => 5, 'menu_id' => 2],
+            ['user_group_id' => 6, 'menu_id' => 2],
+            ['user_group_id' => 7, 'menu_id' => 2],
             ['user_group_id' => 1, 'menu_id' => 3],
             ['user_group_id' => 1, 'menu_id' => 4],
             ['user_group_id' => 1, 'menu_id' => 5],
@@ -60,6 +66,8 @@ class UserMenuSeeder extends Seeder
             ['user_group_id' => 1, 'menu_id' => 40],
             ['user_group_id' => 1, 'menu_id' => 41],
             ['user_group_id' => 1, 'menu_id' => 42],
+            ['user_group_id' => 1, 'menu_id' => 43],
+            ['user_group_id' => 1, 'menu_id' => 44],
         ];
 
         foreach($usermenus as $usermenu){

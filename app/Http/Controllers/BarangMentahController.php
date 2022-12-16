@@ -46,6 +46,9 @@ class BarangMentahController extends Controller
                 
                 $a->nm_rak = $a->rakbarangmentah->nm_rak;
 
+                $a->harga = $a->harga . ",00";
+
+
             });
             
 
@@ -55,15 +58,10 @@ class BarangMentahController extends Controller
         }
     }
     
-    public function child($id)
+    public function getharga(Request $request)
     {
-        $data = SatuanChild::where('barangsatuan_id', $id)->get();
+        $data = BarangMentah::find($request->barangmentah_id);
         return RestApi::success($data);
-    }
-
-    public function stok($id)
-    {
-        
     }
 
     public function store(Request $request) {
@@ -75,13 +73,17 @@ class BarangMentahController extends Controller
                 'rak_id' => 'required',
                 'barangmentahkategoris' => 'required|array',
                 'kd_barang_mentah' => 'required|string',    
-                // 'harga' => 'required|decimal',   
                 'foto' => 'required|image',
+                'harga' => 'nullable',   
  
             ]); 
 
             $data['foto'] = 'storage/' . $request->foto->store('barangmentah', 'public');
 
+            $harga = $data['harga'];
+            $harga = str_replace('.', '', $harga);
+            $harga = (double)str_replace(',', '.', $harga);
+            $data['harga'] = $harga;
 
             $data = BarangMentah::create($data);
             
@@ -131,6 +133,7 @@ class BarangMentahController extends Controller
                 'barangmentahkategoris' => 'required|array',
                 'kd_barang_mentah' => 'required|string',
                 'foto' => 'required|image',
+                'harga' => 'nullable',   
     
             ]);
                         
@@ -139,10 +142,14 @@ class BarangMentahController extends Controller
                 unlink(storage_path('app/public/' . str_replace('storage/', '', $bm->foto)));
             }
 
-           
             $barangm =  BarangMentah::where('uuid', $uuid)->first();
-            $data = $request->only(['stok', 'barangsatuan_id', 'nm_barangmentah', 'gudang_id', 'kd_barang_mentah', 'rak_id']);
+            $data = $request->only(['stok', 'barangsatuan_id', 'nm_barangmentah', 'gudang_id', 'kd_barang_mentah', 'rak_id', 'harga']);
             $data['foto'] = 'storage/' . $request->foto->store('barangmentah', 'public');
+
+            $harga = $data['harga'];
+            $harga = str_replace('.', '', $harga);
+            $harga = (double)str_replace(',', '.', $harga);
+            $data['harga'] = $harga;
 
             if ($barangm->update($data)) {
 
