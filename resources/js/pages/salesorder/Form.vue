@@ -291,7 +291,6 @@
               <option value="Tunai">Tunai</option>
               <option value="Cek">Cek</option>
               <option value="Transfer">Transfer</option>
-              <option value="Free">Free</option>
             </select2>
           </div>
           <div class="mb-8" v-if="form.jenis_pembayaran == 'Transfer'">
@@ -384,18 +383,37 @@
     id="form-salesorderdetail"
     @submit.prevent="onSubmitDetail"
   >
+    <div class="col">
+      <button
+        type="submit"
+        class="btn btn-primary btn-sm me-auto mt-8 ms-4"
+        @click.prevent="tambahBarangJadi()"
+      >
+        <i class="la la-arrow-circle-right"></i>
+        Tambah Barang Jadi
+      </button>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-sm me-auto mt-8 ms-4"
+        @click.prevent="tambahBarangMentah()"
+      >
+        <i class="la la-arrow-circle-right"></i>
+        Tambah Barang Mentah
+      </button>
+    </div>
     <div class="table-responsive mt-5">
       <table class="table border">
         <thead>
           <tr class="fw-bold fs-6 text-gray-800 border align-middle">
-            <!-- <th rowspan="2">Tipe Barang</th>
-              <th rowspan="2">Nama Barang</th> -->
+            <!-- <th rowspan="2">Tipe Barang</th>-->
+            <th rowspan="2" class="ps-13 pe-13">Nama Barang</th>
             <th colspan="2">Qty</th>
             <th rowspan="2">Harga</th>
             <th rowspan="2">Diskon</th>
             <th rowspan="2">Jumlah</th>
             <th rowspan="2">Keterangan</th>
-            <th rowspan="2">Aksi</th>
+            <th rowspan="2" class="pe-4 ps-3">Aksi</th>
           </tr>
           <tr class="fw-bold fs-6 text-gray-800 border">
             <th>Volume</th>
@@ -403,95 +421,100 @@
           </tr>
         </thead>
         <tbody class="border align-middle">
-          <tr v-for="detail in form.barangjadi" :key="detail.id">
+          <tr v-for="(item, index) in form.barangjadi">
             <td>
               <select2
-                name="tipe"
-                id="tipe"
-                class="form-control"
+                name="barangjadi_id"
+                :id="'barangjadi_id' + index"
+                class="form-control ms-2"
                 required
                 autoComplete="off"
-                v-model="form.tipe"
+                @change="getSatuanJadi(index, $event), getHargaBJ(index)"
+                v-model="item.barangjadi_id"
               >
-                <option disabled>Pilih</option>
-                <option value="barangmentah">Barang Mentah</option>
-                <option value="barangjadi">Barang Jadi</option>
+                <option disabled value="">Pilih</option>
+                <option
+                  v-for="item in barangjadis"
+                  :value="item.id"
+                  :key="item.id"
+                  :disabled="
+                    form.barangjadi.findIndex(
+                      (cat) => cat.barangjadi_id == item.id
+                    ) == -1
+                      ? false
+                      : true
+                  "
+                >
+                  {{ item.nm_barang_jadi }}
+                </option>
               </select2>
             </td>
 
-            <td>
-              <!-- <div v-if="form.tipe=='Barang Mentah'">
-                <select2 name="barang_id" id="supplier" 
-                  class="form-control" required autoComplete="off" v-model="form.barang_id" >
-                  <option disabled>Pilih</option>
-                  <option v-for="supplier in suppliers" :value="supplier.id" :key="supplier.uuid">{{ supplier.nama }}</option>
-                </select2>
-              </div>
-              <div v-if="form.tipe=='Barang Jadi'">
-                <select2 name="supplier_id" id="supplier"
-                  class="form-control" required autoComplete="off" v-model="form.supplier_id" >
-                  <option disabled>Pilih</option>
-                  <option v-for="user in users" :value="user.id" :key="user.uuid">{{ user.name }}</option>
-                </select2>
-              </div> -->
-            </td>
             <td>
               <input
                 type="text"
                 name="volume"
                 id="volume"
-                @input.prevent="hitungbarang()"
+                style="width: 100px"
                 class="form-control"
+                placeholder="Volume"
                 required
                 autoComplete="off"
-                v-model="detail.volume"
+                v-model="item.volume"
               />
             </td>
             <td>
-              <input
-                type="text"
-                name="nm_satuan"
-                id="nm_satuan"
+              <select2
                 class="form-control"
+                name="satuan"
+                :id="'nm_satuan_jadi' + index"
+                placeholder="Pilih"
+                v-model="item.satuan"
                 required
-                autoComplete="off"
-                v-model="detail.nm_satuan"
-              />
+              >
+                <option value="" disabled>Pilih</option>
+                <option
+                  v-for="satuan in item.satuanjadi"
+                  :value="satuan.id"
+                  :key="satuan.id"
+                >
+                  {{ satuan.nm_satuan_jadi_children }}
+                </option>
+              </select2>
             </td>
             <td>
-              <input
+              <money3
+                v-model="item.harga"
+                id="harga"
+                class="form-control"
                 type="text"
                 name="harga"
-                id="harga"
-                @input.prevent="hitungbarang()"
-                class="form-control"
+                v-bind="config"
                 required
-                autoComplete="off"
-                v-model="detail.harga"
-              />
+              ></money3>
             </td>
             <td>
-              <input
+              <money3
+                v-model="item.diskon"
+                id="diskon"
+                class="form-control"
                 type="text"
                 name="diskon"
-                id="diskon"
-                @input.prevent="hitungbarang()"
-                class="form-control"
+                v-bind="config"
                 required
-                autoComplete="off"
-                v-model="detail.diskon"
-              />
+              ></money3>
             </td>
             <td>
-              <input
-                type="text"
-                name="jumlah"
+              <money3
+                v-model="item.jumlah"
                 id="jumlah"
                 class="form-control"
+                type="text"
+                name="jumlah"
+                v-bind="config"
+                disabled
                 required
-                autoComplete="off"
-                v-model="detail.jumlah"
-              />
+              ></money3>
             </td>
             <td>
               <textarea
@@ -499,23 +522,154 @@
                 name="keterangan"
                 id="keterangan"
                 class="form-control"
+                placeholder="Keterangan"
                 autoComplete="off"
-                v-model="detail.keterangan"
+                v-model="item.keterangan"
               />
             </td>
-            <td></td>
+            <td class="pe-6 ps-1">
+              <a href="javascript:void(0)" class="d-inline-block">
+                <i
+                  class="la la-check-square icon-lg text-success ms-5"
+                  @click.prevent="onSubmitBarangJadi(index)"
+                  style="font-size: 22px"
+                ></i>
+              </a>
+              <a href="javascript:void(0)">
+                <i
+                  class="la la-trash icon-lg text-danger ms-5"
+                  @click.prevent="hapusBarangJadi(index)"
+                  style="font-size: 22px"
+                ></i>
+              </a>
+            </td>
+          </tr>
+
+          <tr v-for="(item, index) in form.barangmentah">
+            <td>
+              <select2
+                name="barangmentah_id"
+                :id="'barangmentah_id' + index"
+                class="form-control ms-2"
+                required
+                autoComplete="off"
+                @change="getSatuanMentah(index, $event), getHargaBM(index)"
+                v-model="item.barangmentah_id"
+              >
+                <option value="" disabled>Pilih</option>
+                <option
+                  v-for="item in barangmentahs"
+                  :value="item.id"
+                  :key="item.id"
+                  :disabled="
+                    form.barangmentah.findIndex(
+                      (cat) => cat.barangmentah_id == item.id
+                    ) == -1
+                      ? false
+                      : true
+                  "
+                >
+                  {{ item.nm_barangmentah }}
+                </option>
+              </select2>
+            </td>
+
+            <td>
+              <input
+                type="text"
+                name="volume"
+                id="volume"
+                class="form-control"
+                style="width: 100px"
+                placeholder="Volume"
+                required
+                autoComplete="off"
+                v-model="item.volume"
+              />
+            </td>
+            <td>
+              <select2
+                class="form-control"
+                name="satuan"
+                placeholder="Pilih Satuan Jadi"
+                :id="'nm_satuan_mentah' + index"
+                v-model="item.satuan"
+                required
+              >
+                <option value="" disabled>Pilih</option>
+                <option
+                  v-for="satuan in item.satuanmentah"
+                  :value="satuan.id"
+                  :key="satuan.id"
+                >
+                  {{ satuan.nm_satuan_children }}
+                </option>
+              </select2>
+            </td>
+            <td>
+              <money3
+                v-model="item.harga"
+                id="harga"
+                class="form-control"
+                type="text"
+                name="harga"
+                v-bind="config"
+                required
+              ></money3>
+            </td>
+            <td>
+              <money3
+                v-model="item.diskon"
+                id="diskon"
+                class="form-control"
+                type="text"
+                name="diskon"
+                v-bind="config"
+                required
+              ></money3>
+            </td>
+            <td>
+              <money3
+                v-model="item.jumlah"
+                id="jumlah"
+                class="form-control"
+                type="text"
+                name="jumlah"
+                v-bind="config"
+                disabled
+                required
+              ></money3>
+            </td>
+            <td>
+              <textarea
+                type="text"
+                name="keterangan"
+                id="keterangan"
+                class="form-control"
+                placeholder="Keterangan"
+                autoComplete="off"
+                v-model="item.keterangan"
+              />
+            </td>
+            <td class="pe-6 ps-1">
+              <a href="javascript:void(0)" class="d-inline-block">
+                <i
+                  class="la la-check-square icon-lg text-success ms-5"
+                  @click.prevent="onSubmitBarangMentah(index)"
+                  style="font-size: 22px"
+                ></i>
+              </a>
+              <a href="javascript:void(0)" class="d-inline-block">
+                <i
+                  @click.prevent="hapusBarangMentah(index)"
+                  class="la la-trash icon-lg text-danger ms-5"
+                  style="font-size: 22px"
+                ></i>
+              </a>
+            </td>
           </tr>
         </tbody>
       </table>
-      <div class="col-12">
-        <button
-          type="submit"
-          class="btn btn-primary btn-sm me-auto mt-8 d-block"
-        >
-          <i class="la la-arrow-circle-right"></i>
-          Tambah Barang
-        </button>
-      </div>
     </div>
   </form>
 
@@ -555,16 +709,16 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text">Rp</span>
                     </div>
-                    <input
+                    <money3
+                      v-model="form.total"
+                      id="total"
+                      class="form-control"
                       type="text"
                       name="total"
-                      id="total"
-                      @input.prevent="hitungdiskon()"
-                      class="form-control"
+                      v-bind="config"
+                      readonly
                       required
-                      autoComplete="off"
-                      v-model="form.total"
-                    />
+                    ></money3>
                   </div>
                 </div>
               </div>
@@ -629,19 +783,32 @@
                       <span class="input-group-text">%</span>
                     </div>
                   </div>
-                  <div class="input-group" v-if="form.tipe_diskon == 'rupiah'">
+                  <div
+                    class="input-group"
+                    v-else-if="form.tipe_diskon == 'rupiah'"
+                  >
                     <div class="input-group-prepend">
                       <span class="input-group-text">Rp</span>
                     </div>
+                    <money3
+                      v-model="form.diskon2"
+                      id="diskon2"
+                      class="form-control"
+                      type="text"
+                      name="diskon2"
+                      v-bind="config"
+                      readonly
+                      required
+                    ></money3>
+                  </div>
+                  <div class="input-group" v-else>
                     <input
                       type="text"
                       name="diskon2"
                       id="diskon2"
-                      @input.prevent="hitungdiskon()"
                       class="form-control"
                       required
                       autoComplete="off"
-                      v-model="form.diskon2"
                     />
                   </div>
                 </div>
@@ -657,16 +824,15 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text">Rp</span>
                     </div>
-                    <input
+                    <money3
+                      v-model="form.uang_muka"
+                      id="uang_muka"
+                      class="form-control"
                       type="text"
                       name="uang_muka"
-                      id="uang_muka"
-                      @input.prevent="uangmuka()"
-                      class="form-control"
+                      v-bind="config"
                       required
-                      autoComplete="off"
-                      v-model="form.uang_muka"
-                    />
+                    ></money3>
                   </div>
                 </div>
               </div>
@@ -728,15 +894,15 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text">Rp</span>
                     </div>
-                    <input
-                      type="text"
-                      name="netto"
+                    <money3
+                      v-model="form.netto"
                       id="netto"
                       class="form-control"
+                      type="text"
+                      name="netto"
+                      v-bind="config"
                       required
-                      autoComplete="off"
-                      v-model="form.netto"
-                    />
+                    ></money3>
                   </div>
                 </div>
               </div>
@@ -764,12 +930,29 @@ import { ref } from "vue";
 import { useQuery, useMutation } from "vue-query";
 import axios from "@/libs/axios";
 import { useQueryClient } from "vue-query";
+import { Money3Component } from "v-money3";
+import { Money3Directive } from "v-money3";
 
 export default {
+  components: { money3: Money3Component },
+  directives: { money3: Money3Directive },
   data() {
     return {
       profile_so: {},
       customer_so: {},
+      config: {
+        prefix: "",
+        suffix: "",
+        thousands: ".",
+        decimal: ",",
+        precision: 2,
+        disableNegative: false,
+        disabled: false,
+        min: null,
+        max: null,
+        allowBlank: false,
+        minimumNumberOfCharacters: 0,
+      },
     };
   },
   props: {
@@ -780,9 +963,7 @@ export default {
   },
   setup(props) {
     const queryClient = useQueryClient();
-    const form = ref({
-      details: [{}],
-    });
+    const form = ref({});
     const selected = ref(props.selected);
 
     const { data: profiles = [] } = useQuery(["profiles"], () =>
@@ -791,11 +972,11 @@ export default {
     const { data: customers = [] } = useQuery(["customer"], () =>
       axios.get("/customer/get").then((res) => res.data)
     );
-    const { data: barangjadis = [] } = useQuery(["customer"], () =>
+    const { data: barangjadis = [] } = useQuery(["barang_jadis"], () =>
       axios.get("/barangjadi/get").then((res) => res.data)
     );
-    const { data: barangmentahs = [] } = useQuery(["customer"], () =>
-      axios.get("/baranementah/get").then((res) => res.data)
+    const { data: barangmentahs = [] } = useQuery(["barang_mentahs"], () =>
+      axios.get("/barangmentah/get").then((res) => res.data)
     );
     const { data: users = [] } = useQuery(["users"], () =>
       axios.get("/user/get").then((res) => res.data)
@@ -820,10 +1001,10 @@ export default {
           const datas = { ...data.data };
           console.log(datas);
           if (datas.barangjadi.length) {
-            datas.barangjadi.push({});
+            datas.barangjadi.push();
           }
           if (datas.barangmentah.length) {
-            datas.barangmentah.push({});
+            datas.barangmentah.push();
           }
           form.value = datas;
         },
@@ -856,12 +1037,35 @@ export default {
           KTApp.unblock("#form-salesorder");
           const datas = { ...data.data };
           if (!datas.barangjadi.length) {
-            datas.barangjadi.push({});
+            datas.barangjadi.push();
           }
           if (!datas.barangmentah.length) {
-            datas.barangmentah.push({});
+            datas.barangmentah.push();
           }
           form.value = datas;
+        },
+      }
+    );
+
+    const { mutate: submitdetail } = useMutation(
+      (data) =>
+        axios
+          .post(
+            selected
+              ? `/salesorderdetail/${selected.value}/update`
+              : "/salesorderdetail/store",
+            data
+          )
+          .then((res) => res.data),
+      {
+        onMutate: () => {
+          KTApp.block("#form-salesorderdetail");
+        },
+        onError: (error) => {
+          toastr.error(error.response.data.message);
+        },
+        onSettled: () => {
+          KTApp.unblock("#form-salesorderdetail");
         },
       }
     );
@@ -875,6 +1079,7 @@ export default {
       customers,
       users,
       submit,
+      submitdetail,
       form,
       queryClient,
       selected,
@@ -914,15 +1119,15 @@ export default {
       };
     },
 
-    hitungbarang() {
-      var app = this;
+    // hitungbarang() {
+    //   var app = this;
 
-      var jumlah = app.detail.volume * app.detail.harga;
-      var diskon = (jumlah * app.detail.diskon) / 100;
-      var total = jumlah - diskon || 0;
-      app.detail.jumlah = total;
-      app.form.total = app.form.jumlah;
-    },
+    //   var jumlah = app.detail.volume * app.detail.harga;
+    //   var diskon = (jumlah * app.detail.diskon) / 100;
+    //   var total = jumlah - diskon || 0;
+    //   app.detail.jumlah = total;
+    //   app.form.total = app.form.jumlah;
+    // },
 
     hitungdiskon() {
       var app = this;
@@ -944,6 +1149,97 @@ export default {
 
       var netto = app.form.netto - app.form.uang_muka || 0;
       app.form.netto = netto;
+    },
+
+    tambahBarangJadi() {
+      this.form.barangjadi.push({});
+    },
+    tambahBarangMentah() {
+      this.form.barangmentah.push({});
+    },
+
+    hapusBarangJadi(index) {
+      this.form.barangjadi.splice(index, 1);
+    },
+
+    hapusBarangMentah(index) {
+      this.form.barangmentah.splice(index, 1);
+    },
+
+    onSubmitBarangJadi(index) {
+      const vm = this;
+      const data = this.form.barangjadi[index];
+      this.submitdetail(data, {
+        onSuccess: (data) => {
+          toastr.success(data.message);
+          vm.selected = data.data.uuid;
+          vm.$parent.selected = undefined;
+          vm.refetch();
+          vm.queryClient.invalidateQueries(["/salesorder/paginate"], {
+            exact: true,
+          });
+        },
+      });
+    },
+
+    onSubmitBarangMentah(index) {
+      const vm = this;
+      const data = this.form.barangmentah[index];
+      this.submitdetail(data, {
+        onSuccess: (data) => {
+          toastr.success(data.message);
+          vm.selected = data.data.uuid;
+          vm.$parent.selected = undefined;
+          vm.refetch();
+          vm.queryClient.invalidateQueries(["/salesorder/paginate"], {
+            exact: true,
+          });
+        },
+      });
+    },
+
+    getSatuanMentah(index, satuan_id) {
+      setTimeout(() => {
+        var app = this;
+        var i = app.barangmentahs.findIndex((cat) => cat.id == satuan_id);
+
+        satuan_id = app.barangmentahs[i]?.barangsatuan_id;
+
+        var app = this;
+        axios.get(`barangsatuan/${satuan_id}/child`).then((res) => {
+          app.form.barangmentah[index].satuanmentah = res.data.data;
+        });
+      }, 100);
+    },
+
+    getSatuanJadi(index, satuan_id) {
+      setTimeout(() => {
+        var app = this;
+        var i = app.barangjadis.findIndex((cat) => cat.id == satuan_id);
+
+        satuan_id = app.barangjadis[i]?.barangsatuanjadi_id;
+
+        var app = this;
+        axios.get(`barangsatuanjadi/${satuan_id}/child`).then((res) => {
+          app.form.barangjadi[index].satuanjadi = res.data.data;
+        });
+      }, 100);
+    },
+
+    getHargaBJ(index) {
+      setTimeout(() => {
+        var app = this;
+
+        app.form.barangjadi[index].harga = app.barangjadis[index].harga;
+      }, 100);
+    },
+
+    getHargaBM(index) {
+      setTimeout(() => {
+        var app = this;
+
+        app.form.barangmentah[index].harga = app.barangmentahs[index].harga;
+      }, 100);
     },
 
     onUpdateFiles(files) {

@@ -12,7 +12,7 @@ class BarangJadi extends Model
     use Uuid;
     
 
-    protected $fillable = ['uuid', 'nm_barang_jadi', 'barangsatuanjadi_id', 'gudang_id', 'kd_barang_jadi', 'foto', 'rak_id'];
+    protected $fillable = ['uuid', 'nm_barang_jadi', 'barangsatuanjadi_id', 'gudang_id', 'kd_barang_jadi', 'foto', 'rak_id', 'harga'];
     protected $with = ['barangjadikategoris'];
     protected $appends = ['stok'];
 

@@ -43,4 +43,9 @@ class SalesOrder extends Model
     {
         return $this->belongsToMany(BarangJadi::class,'sales_order_detail', 'salesorder_id', 'barangmentah_id');
     }
+
+    public function detail()
+    {
+        return $this->hasMany(SalesOrderDetail::class, 'salesorder_id', 'id');
+    }
 }

@@ -95,6 +95,26 @@
           </div>
         </div>
       </div>
+      <div class="col-6">
+        <div class="mb-8">
+          <label for="nm_account" class="form-label required"> Harga : </label>
+
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Rp</span>
+            </div>
+            <money3
+              v-model="form.harga"
+              id="harga"
+              class="form-control"
+              type="text"
+              name="harga"
+              v-bind="config"
+              required
+            ></money3>
+          </div>
+        </div>
+      </div>
       <div class="row">
         <div class="col-6">
           <div class="mb-8">
@@ -118,7 +138,7 @@
           </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-6" v-if="!selected || form.rak_id">
           <div class="mb-8">
             <label for="nm_satuan_child" class="form-label required">
               Rak :
@@ -168,26 +188,6 @@
           </div>
         </div>
 
-        <!-- <div class="col-6">
-          <div class="mb-8">
-            <label>Harga Barang</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Rp</span>
-              </div>
-              <input
-                type="text"
-                class="form-control"
-                name="harga"
-                placeholder="Harga Barang"
-              />
-               required 
-               oninput="this.value = this.value.rupiah(true)" 
-               v-model="formData.harga" 
-            </div>
-          </div>
-        </div> -->
-
         <div class="col-12">
           <button
             type="submit"
@@ -207,8 +207,12 @@ import { ref } from "vue";
 import { useQuery, useMutation } from "vue-query";
 import axios from "@/libs/axios";
 import { useQueryClient } from "vue-query";
+import { Money3Component } from "v-money3";
+import { Money3Directive } from "v-money3";
 
 export default {
+  components: { money3: Money3Component },
+  directives: { money3: Money3Directive },
   props: {
     selected: {
       type: String,
@@ -219,6 +223,19 @@ export default {
     return {
       code: null,
       satuan_jadi_child: [],
+      config: {
+        prefix: "",
+        suffix: "",
+        thousands: ".",
+        decimal: ",",
+        precision: 2,
+        disableNegative: false,
+        disabled: false,
+        min: null,
+        max: null,
+        allowBlank: false,
+        minimumNumberOfCharacters: 0,
+      },
     };
   },
   setup({ selected }) {
@@ -258,6 +275,26 @@ export default {
     );
 
     const { mutate: submit } = useMutation(
+      (data) =>
+        axios
+          .post(
+            selected ? `/barangjadi/${selected}/update` : "/barangjadi/store",
+            data
+          )
+          .then((res) => res.data),
+      {
+        onMutate: () => {
+          KTApp.block("#form-barangjadi");
+        },
+        onError: (error) => {
+          toastr.error(error.response.data.message);
+        },
+        onSettled: () => {
+          KTApp.unblock("#form-barangjadi");
+        },
+      }
+    );
+    const { mutate: submitdetail } = useMutation(
       (data) =>
         axios
           .post(

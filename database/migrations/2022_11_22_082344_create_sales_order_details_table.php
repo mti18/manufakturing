@@ -15,15 +15,12 @@ return new class extends Migration
     {
         Schema::create('sales_order_detail', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
 
-            $table->integer('volume');
-            $table->integer('nm_satuan');
+            $table->bigInteger('volume');
             $table->decimal('harga', 13, 2)->default(0);
             $table->decimal('diskon', 13, 2)->default(0);
             $table->decimal('jumlah', 13, 2)->default(0);
             $table->integer('keterangan')->nullable();
-
 
             $table->bigInteger('salesorder_id')->unsigned();
             $table->foreign('salesorder_id')->references('id')->on('sales_orders')

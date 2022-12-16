@@ -272,6 +272,7 @@ Route::prefix('v1')->group(function () {
                 Route::post('paginate', [BarangMentahController::class, 'paginate']);
                 Route::post('store', [BarangMentahController::class, 'store']);
                 Route::get('getcode', [BarangMentahController::class, 'getcode']);
+                Route::get('{id}/getharga', [BarangMentahController::class, 'getharga']);
                 Route::get('{id}/getcode', [BarangMentahController::class, 'getcodebyid']);
                 Route::get('{uuid}/edit', [BarangMentahController::class, 'edit']);
                 Route::post('{uuid}/update', [BarangMentahController::class, 'update']);
@@ -284,6 +285,7 @@ Route::prefix('v1')->group(function () {
                 Route::post('paginate', [BarangJadiController::class, 'paginate']);
                 Route::post('store', [BarangJadiController::class, 'store']);
                 Route::get('getcode', [BarangJadiController::class, 'getcode']);
+                Route::get('{id}/getharga', [BarangJadiController::class, 'getharga']);
                 Route::get('{id}/getcode', [BarangJadiController::class, 'getcodebyid']);
                 Route::get('{uuid}/edit', [BarangJadiController::class, 'edit']);
                 Route::post('{uuid}/update', [BarangJadiController::class, 'update']);
