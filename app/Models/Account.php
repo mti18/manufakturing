@@ -15,7 +15,7 @@ class Account extends Model
     	'uuid', 'nm_account', 'kode_account', 'account_type', 'type', 'parent_id',
     ];
     protected $with = ['nodes'];
-    protected $appends = ['text', 'state'];
+    protected $appends = ['text', 'state', 'saldo_berjalan'];
     
 
     // public function children()
@@ -61,5 +61,14 @@ class Account extends Model
     {
         return ['checked'=> false, 'selected'=> false, 'expanded'=> false];
     }
-    
+
+    public function getSaldoBerjalanAttribute()
+    {
+        $debit = JurnalItem::where('account_id', $this->id)->sum('debit');
+        $kredit = JurnalItem::where('account_id', $this->id)->sum('kredit');
+
+        
+
+        return $debit - $kredit;
+    }
 }

@@ -10,7 +10,7 @@ class JurnalItem extends Model
 {
     use HasFactory;
     use Uuid;
-    protected $fillable = ["account_id", "masterjurnal_id", "debit", "kredit", "uuid",  "keterangan"];
+    protected $fillable = ["account_id", "masterjurnal_id", "debit", "kredit", "uuid",  "keterangan" ];
 
     public function account()
     {

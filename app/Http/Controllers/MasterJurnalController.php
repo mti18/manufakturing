@@ -27,8 +27,8 @@ class MasterJurnalController extends Controller
             // Add Columns
             $courses->map(function ($a) {
                 $a->tanggal = AppHelper::tanggal_indo($a->tanggal);
-                $a->debit = ($a->jurnal_item->where('kredit')->sum('debit'));
-                $a->kredit = ($a->jurnal_item->where('debit')->sum('kredit'));
+                $a->debit = AppHelper::rupiah($a->jurnal_item->where('kredit', 0)->sum('debit'));
+                $a->kredit = AppHelper::rupiah($a->jurnal_item->where('debit', 0)->sum('kredit'));
 
 
             return $a;
@@ -235,23 +235,5 @@ class MasterJurnalController extends Controller
 
         return response()->json($data);
     }
-    // public function send(Request $request) {
-    //     if (request()->wantsJson() && request()->ajax()) {
-    //         $data = $request->validate([
-    //             'tahun' => 'required|string',
-    //             'bulan' => 'required|string'
-                
-    //         ]);
-           
-    //         $data = Bulan::create($data);
-    //         $data = Tahun::create($data);
-
-
-
-    //         return response()->json(['message' => ' MasterJurnal berhasil ditambahkan']);
-    //     } else {
-    //         return abort(404);
-    //     }
-    // }
-
+   
 }

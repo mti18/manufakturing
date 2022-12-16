@@ -139,7 +139,21 @@
         toastr.error('seuatu error sedang terjadi', "Error");
       });
     },
-    }
+    getAccount(){
+        var app = this;
+        app.axios.get('account/show').then((res) => {
+        app.account = res.data.data
+      }).catch((err) => {
+        toastr.error('sesuatu error terjadi', 'error');
+      })
+    },
+      
+    },
+     mounted() {
+    var app = this;
+    
+    app.getAccount();
+  }
   }
   </script>
   

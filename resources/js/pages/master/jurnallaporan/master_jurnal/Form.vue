@@ -150,7 +150,7 @@
                   </div>
 
 
-                  <div :class="item.type != 'edit' ? 'col-md-3' : 'col-md-5'">
+                  <div class=" col-md-3">
                 <div class="mb-4">
                   <label class="required form-label">Keterangan :</label>
                   <input
@@ -163,7 +163,7 @@
                   />
                 </div>
               </div>
-              <div class="col-md-2" v-if="item.type != 'edit'">
+              <div class="col-md-2">
                 <div class="mb-4">
                   <label class="form-label">Saldo :</label>
                   <input
@@ -171,7 +171,7 @@
                     disabled
                     class="form-control"
                     placeholder="Saldo"
-                    name="saldo"
+                    name="saldo_berjalan"
                     v-model="item.saldo"
                   />
                 </div>
@@ -205,11 +205,11 @@
             <hr />
             <div class="row">
               <div class="col-md-3">Debit: {{ debit.toFixed(2)
-                        .replace(/\d(?=(\d{})+\.)/g, "$&,") }}</div>
+                        .replace(/\d(?=(\d{3})+\,)/g, "$&.") }}</div>
               <div class="col-md-3">Kredit: {{ kredit.toFixed(2)
-                        .replace(/\d(?=(\d{})+\.)/g, "$&,") }}</div>
+                        .replace(/\d(?=(\d{3})+\,)/g, "$&.") }}</div>
               <div class="col-md-3">Selisih: {{ (debit - kredit).toFixed(2)
-                        .replace(/\d(?=(\d{})+\.)/g, "$&,") }}</div>
+                        .replace(/\d(?=(\d{3})+\,)/g, "$&.") }}</div>
               <div class="col-md-3">
                 status: {{ debit == kredit ? "balance" : "tidak balance" }}
               </div>
@@ -246,7 +246,6 @@
       },
       data(){
       return{
-        jurnal_item: {},
         config: {
           prefix: '',
           suffix: '',
@@ -260,15 +259,12 @@
           allowBlank: false,
           minimumNumberOfCharacters: 0,
         },
-        formRequest: {
-          saldo: '',
-        }
       }
     },
     setup({ selected }) {
       const queryClient = useQueryClient();
       const form = ref({
-        jurnal_item: selected ? [] : [{}]
+        jurnal_item: selected ? [] : [ {},]
       });
       const debit = ref(0.00);
       const kredit = ref(0.00);
@@ -342,6 +338,7 @@
           data.append(`jurnal_item[${i}][debit]`, item.debit);
           data.append(`jurnal_item[${i}][kredit]`, item.kredit);
           data.append(`jurnal_item[${i}][keterangan]`, item.keterangan);
+          // data.append(`jurnal_item[${i}][saldo]`, item.saldo);
           // data.append('jurnal_item[].keterangan', item.saldo);
         });
         this.submit(data, {
@@ -443,7 +440,7 @@
     },
     changeSaldo(i, ic) {
       var app = this;
-      app.form.jurnal_item[i].saldo = app.account[ic].saldo;
+      app.form.jurnal_item[i].saldo = app.account[ic].saldo_berjalan;
     },
     // getAccount() {
     //   setTimeout(() => { 
@@ -464,6 +461,7 @@
 
     
     mounted() {
+    this.hitungSaldo();
     this.loadDate();
     this.loaDDate();
 
