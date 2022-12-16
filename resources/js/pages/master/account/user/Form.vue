@@ -105,6 +105,7 @@
     methods: {
       onUpdateFiles(files) {
         this.file = files;
+        
       },
       onSubmit() {
         const vm = this;

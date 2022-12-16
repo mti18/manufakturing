@@ -35,19 +35,19 @@ class Account extends Model
 
     public function jurnal_item()
     {
-        return $this->hasMany('\App\Models\JurnalItem', 'acount_id');
+        return $this->hasMany('\App\Models\JurnalItem', 'account_id');
     }
 
     public function umum()
     {
-        return $this->hasMany('\App\Models\JurnalItem', 'acount_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {
+        return $this->hasMany('\App\Models\JurnalItem', 'account_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {
             $query->where('type', 'umum');
         });
     }
 
     public function penyesuaian()
     {
-        return $this->hasMany('\App\Models\JurnalItem', 'acount_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {
+        return $this->hasMany('\App\Models\JurnalItem', 'account_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {
             $query->where('type', 'penyesuaian');
         });
     }

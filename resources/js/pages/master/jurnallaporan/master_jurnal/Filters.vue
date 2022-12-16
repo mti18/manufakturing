@@ -29,8 +29,8 @@
               </option>
             </select2>
           </div>
-          <div class="row mt-3">
-            <div class="col">
+          <div class="row mt-10">
+            <div class="d-grid gap-2">
               <button
               id="btnSearch"
                 @click="sendFilter"
@@ -110,17 +110,17 @@
         }
       },
       
-      loadJs() {
-        var vm = this;
-        $("#kt_daterangepicker_1")
-          .daterangepicker()
-          .val(vm.$parent.formFilter.date)
-          .on("apply.daterangepicker", function (val, picker) {
-            vm.$parent.formFilter.date = $("#kt_daterangepicker_1").val();
-            vm.$parent.formFilter.start_date = picker.startDate.format("YYYY-MM");
-            vm.$parent.formFilter.end_date = picker.endDate.format("YYYY-MM-DD");
-          });
-      },
+      // loadJs() {
+      //   var vm = this;
+      //   $("#kt_daterangepicker_1")
+      //     .daterangepicker()
+      //     .val(vm.$parent.formFilter.date)
+      //     .on("apply.daterangepicker", function (val, picker) {
+      //       vm.$parent.formFilter.date = $("#kt_daterangepicker_1").val();
+      //       vm.$parent.formFilter.start_date = picker.startDate.format("YYYY-MM");
+      //       vm.$parent.formFilter.end_date = picker.endDate.format("YYYY-MM-DD");
+      //     });
+      // },
       getTahun(){
         var app = this;
         app.tahuns = _.range(new Date().getFullYear(), 1999);

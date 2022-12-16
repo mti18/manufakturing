@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\AppHelper;
 use App\Models\Account;
+use App\Models\BuktiMaster;
 use App\Models\MasterJurnal;
 // use App\Models\Bulan;
 use App\Models\JurnalItem;
@@ -26,8 +27,8 @@ class MasterJurnalController extends Controller
             // Add Columns
             $courses->map(function ($a) {
                 $a->tanggal = AppHelper::tanggal_indo($a->tanggal);
-                $a->debit = AppHelper::rupiah($a->jurnal_item->where('kredit', 0)->sum('debit'));
-                $a->kredit = AppHelper::rupiah($a->jurnal_item->where('debit', 0)->sum('kredit'));
+                $a->debit = ($a->jurnal_item->where('kredit')->sum('debit'));
+                $a->kredit = ($a->jurnal_item->where('debit')->sum('kredit'));
 
 
             return $a;
@@ -40,36 +41,71 @@ class MasterJurnalController extends Controller
             return abort(404);
         }
     }
+    public function jurnal_item($id) {
+        if (request()->wantsJson( ) && request()->ajax()) {
+        
+        $MasterJurnal = MasterJurnal::where('masterjurnal_id', $id)->get();
+            
+            return response()->json([
+                'status'    => true,
+                'data'      => $MasterJurnal
+            ], 200);
+        } else {
+            return abort(404);
+        }
+    }
+    public function detail($uuid)
+    {  if (request()->wantsJson( ) && request()->ajax()) {
+        $data = MasterJurnal::with(["jurnal_item", "jurnal_item.account"])->where('uuid', $uuid)->first();
 
+        $data->kredit = $data->jurnal_item->sum('kredit');
+        $data->debit = $data->jurnal_item->sum('debit');
+        return response()->json([
+            'status'    => true,
+            'data'      => $data
+        ], 200);
+    } else {
+        return abort(404);
+    }
+    }
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'kd_jurnal' => 'required|string',
                 'tanggal'  => 'required|string',
                 'type'  => 'required|string',
-                'upload'  => 'required|image',
-                'jurnal_items'  => 'required|array',
+                'file'  => 'required|array',
+                'file.*' => 'file',
+                'jurnal_item'  => 'required|array',
 
             ]);
-            $data['upload'] = 'storage/' . $request->upload->store('bukti', 'public');
             $data = MasterJurnal::create($data);
+            foreach ($request->file as $file) {
+                $bukti['masterjurnal_id'] = $data->id;
+                $bukti['file'] = 'storage/' . $file->store('bukti', 'public');
+                BuktiMaster::create($bukti);
+                # code...
+            }
 
             
     
-            foreach($request->jurnal_items as $item){
-                $account_id = $item['account_id'];
-                $debit = $item['debit'];
-                $kredit = $item['kredit'];
-                $keterangan = $item['keterangan'];
+            for ($i = 0; $i < count($request->jurnal_item); $i++){
+                $acc = Account::find($request->jurnal_item[$i]["account_id"]);
+                $debit =  $request ->jurnal_item[$i]["debit"];
+                $kredit =  $request->jurnal_item[$i]["kredit"];
+    
 
-                    JurnalItem::create([
+                $data->jurnal_item()->create([
                         "masterjurnal_id" => $data->id,
-                        "account_id" => $account_id,
+                        "account_id" => $request->jurnal_item[$i]["account_id"],
                         "debit" => $debit,
                         "kredit" => $kredit,
-                        "keterangan" => $keterangan,
+                        "keterangan" => $request->jurnal_item[$i]["keterangan"],
                     ]);
             }
+           
+
+         
             
 
 
@@ -82,7 +118,7 @@ class MasterJurnalController extends Controller
 
     public function get() {
         if (request()->wantsJson( ) && request()->ajax()) {
-            $MasterJurnal = MasterJurnal::get();
+            $MasterJurnal = MasterJurnal::with(['jurnal_item'])->get();
             
             return response()->json([
                 'status'    => true,
@@ -93,9 +129,14 @@ class MasterJurnalController extends Controller
         }
     }
 
-    public function edit($uuid) {
+    public function edit($uuid ) {
         if (request()->wantsJson() && request()->ajax()) {
-            $MasterJurnal = MasterJurnal::findByUuid($uuid);
+            $MasterJurnal = MasterJurnal::with(['jurnal_item', 'BuktiMaster'])->where('uuid', $uuid)->first();
+            $MasterJurnal->jurnal_item->map(function ($a) {
+                $a->debit = number_format($a->debit, 2, ',', '.');
+                $a->kredit = number_format($a->kredit, 2, ',', '.');
+                return $a;
+            });
             return response()->json($MasterJurnal);
         } else {
             return abort(404);
@@ -108,20 +149,44 @@ class MasterJurnalController extends Controller
                 'kd_jurnal' => 'required|string',
                 'tanggal'  => 'required|string',
                 'type'  => 'required|string',
-                'upload'  => 'required|image',
+                'file'  => 'required|array',
+                'file.*' => 'file',
+                'jurnal_item'  => 'required|array',
 
 
             ]);
-            
-            $profile = MasterJurnal::where('uuid', $uuid)->first();
-            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $profile->upload)))) {
-                unlink(storage_path('app/public/' . str_replace('storage/', '', $profile->upload)));
-            }
+            $master = MasterJurnal::where('uuid', $uuid)->first();
           
-            $data['upload'] = 'storage/' . $request->upload->store('bukti', 'public');
-            
-         
-            $data->update($request->all());
+            $data = $request->only(['kd_jurnal','tanggal','type']);;
+
+            if ($master->update($data)) {
+                JurnalItem::where('masterjurnal_id', $master->id)->delete();
+                for ($i = 0; $i < count($request->jurnal_item); $i++) {
+                    $debit =  $request->jurnal_item[$i]["debit"];
+                    $kredit =  $request->jurnal_item[$i]["kredit"];
+                    $data = JurnalItem::create([
+                        "masterjurnal_id" => $master->id,
+                        "account_id" => $request->jurnal_item[$i]["account_id"],
+                        "debit" => $debit,
+                        "kredit" =>  $kredit,
+                        "keterangan" => $request->jurnal_item[$i]["keterangan"],
+                    ]);
+                }
+
+                $buktis = BuktiMaster::where('masterjurnal_id', $master->id)->get();
+                foreach ($buktis as $bukti) {
+                    if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $bukti->file)))) {
+                        unlink(storage_path('app/public/' . str_replace('storage/', '', $bukti->file)));
+                    }
+                    $bukti->delete();
+                }
+                foreach ($request->file as $file) {
+                    $bukti['masterjurnal_id'] = $data->id;
+                    $bukti['file'] = 'storage/' . $file->store('bukti', 'public');
+                    BuktiMaster::create($bukti);
+                }
+            }
+
      
 
             return response()->json(['message' => ' MasterJurnal berhasil diperbarui']);
@@ -132,7 +197,12 @@ class MasterJurnalController extends Controller
 
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            MasterJurnal::where('uuid', $uuid)->delete();
+            $master = MasterJurnal::where('uuid', $uuid)->first();
+            $buktis = BuktiMaster::where('masterjurnal_id', $master->id)->get();
+            foreach ($buktis as $bukti) {
+                $bukti->delete();
+            }
+            $master->delete();
             return response()->json(['message' => ' MasterJurnal berhasil dihapus']);
         } else {
             return abort(404);

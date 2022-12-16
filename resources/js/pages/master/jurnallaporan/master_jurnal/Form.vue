@@ -101,9 +101,9 @@
               placeholder="Pilih Account"
               :id="'account_id' + index"
               @change="saldo($event, index)"
-              v-model="form.jurnal_items[index].account_id"
+              v-model="item.account_id"
               required
-            >
+            > 
               <option value="" disabled>Pilih Account</option>
               <option
                 v-for="item in account"
@@ -448,7 +448,7 @@ export default {
       );
 
       setTimeout(function () {
-        $(".input-date").flatpickr({
+        $(" .input-date").flatpickr({
           enableTime: false,
           dateFormat: "Y-m-d",
           minDate: `${min.getFullYear()}-${
@@ -459,7 +459,7 @@ export default {
           }-${max.getDate()}`,
         });
 
-        $(".input-date")
+        $(" .input-date")
           .val(vm.form.tanggal)
           .on("change", function (val) {
             vm.form.tanggal = val;
@@ -496,7 +496,7 @@ export default {
       this.form.jurnal_items.push({});
     },
     delJurnalItems(index) {
-      this.form.jurnal_items.splice(index, 1);
+      this.form.jurnal_item.splice(index, 1);
     },
     hitungSaldo() {
       var app = this;
@@ -513,6 +513,9 @@ export default {
           element.kredit.replaceAll(".", "").replaceAll(",", ".")
         );
       }
+
+     
+      // console.log(debit , kredit);
       app.debit = debit;
       app.kredit = kredit;
     },
@@ -527,7 +530,7 @@ export default {
     },
     changeSaldo(i, ic) {
       var app = this;
-      app.form.jurnal_items[i].saldo = app.account[ic].saldo;
+      app.form.jurnal_item[i].saldo = app.account[ic].saldo;
     },
     // getAccount() {
     //   setTimeout(() => {

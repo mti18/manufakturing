@@ -57,18 +57,10 @@ class AccountController extends Controller
             return abort(404);
         }
     }
-    public function child() {
-        if (request()->wantsJson()) {
-            $data = Account::with('parent')->get();
-            return response()->json($data);
-        } else {
-            return abort(404);
-        }
-    }
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = Account::with('child')->where('uuid', $uuid)->first();
+            $data = Account::where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);
@@ -87,8 +79,8 @@ class AccountController extends Controller
             $data = Account::findByUuid($uuid);
 
 
-             Account::where('nm_account_id', $data->id)->delete();
-            
+            //  Account::where('account_id', $data->id)->delete();
+            // 
          
             $data->update($request->all());
      
