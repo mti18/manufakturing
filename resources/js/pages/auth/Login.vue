@@ -37,7 +37,6 @@
         v-model="auth.password"
       />
       <div class="forget d-inline">
-        <Link :href="route('gantipassword')">Ganti Password</Link>
       </div>
     </div>
     <div

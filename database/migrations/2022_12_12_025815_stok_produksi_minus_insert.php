@@ -15,7 +15,7 @@ return new class extends Migration
     public function up()
     {
         DB::unprepared('
-            CREATE TRIGGER stok_produksi_plus_insert
+            CREATE TRIGGER stok_produksi_minus_insert
                 BEFORE INSERT ON `stok_produksis`
                 FOR EACH ROW
                 BEGIN

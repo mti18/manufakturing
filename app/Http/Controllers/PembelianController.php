@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pembelian;
-
+use Carbon\Carbon;
+use App\Helpers\AppHelper;
 
 class PembelianController extends Controller
 {
@@ -46,6 +47,7 @@ class PembelianController extends Controller
             $data = $request->validate([
                 'profile_id' => 'required|numeric',
                 'supplier_id' => 'required|numeric', 
+                'nomor' => 'nullable|string',
                 'no_surat' => 'required|string', 
                 'tgl_permintaan' => 'required|string', 
                 'bukti_permintaan' => 'required|string', 
@@ -59,9 +61,10 @@ class PembelianController extends Controller
                 'tempo' => 'required|numeric',
                 'keterangan' => 'string|nullable',
             ]);
-            Pembelian::create($request->all());
+            $data = Pembelian::create($request->all());
+            $data = Pembelian::with(['details'])->where('id', $data->id)->first();
 
-            return response()->json(['message' => 'Data supplier berhasil diperbarui']);
+            return response()->json(['message' => 'Data pembelian berhasil diperbarui', 'data' => $data]);
         } else {
             return abort(404);
         }
@@ -90,6 +93,7 @@ class PembelianController extends Controller
             $data = $request->validate([
                 'profile_id' => 'required|numeric',
                 'supplier_id' => 'required|numeric', 
+                'nomor' => 'nullable|string',
                 'no_surat' => 'required|string', 
                 'tgl_permintaan' => 'required|string', 
                 'bukti_permintaan' => 'required|string', 
@@ -112,6 +116,26 @@ class PembelianController extends Controller
         }
     }
 
+    public function gettahun() {
+        if (request()->wantsJson()) {
+            $data = Pembelian::all();
+            $tahun = Carbon::now()->format('Y');
+            return $tahun;
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function getbulan() {
+        if (request()->wantsJson()) {
+            $bulan= Carbon::now()->format('m');
+            $bulanromawi = AppHelper::BulanToRomawi($bulan);
+            return $bulanromawi;
+        } else {
+            return abort(404);
+        }
+    }
+
 
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
@@ -122,13 +146,7 @@ class PembelianController extends Controller
         }
     }
 
-    public function getcodebyid($id)
-    {
-        $data = Pembelian::findByUuid($id)->kode;
-        $exp = explode("-",$data);
-        return $exp[1];
-    }
-
+    
     public function getnomor()
     {
         $data = Pembelian::pluck('nomor')->toArray();
@@ -139,7 +157,6 @@ class PembelianController extends Controller
               $a[] = $exp[1];
         }
 
-        
         if(count($a) > 0){
             sort($a);
             $start = 1;
@@ -153,5 +170,12 @@ class PembelianController extends Controller
             
         }
         return str_pad('1',4,"0",STR_PAD_LEFT);
+    }
+
+    public function getnomorbyid($id)
+    {
+        $data = Pembelian::findByUuid($id)->nomor;
+        $exp = explode("-",$data);
+        return $exp[1];
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetGroupController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BulanController;
@@ -38,7 +39,8 @@ use App\Http\Controllers\StokKeluarController;
 use App\Http\Controllers\StokMasukController;
 use App\Http\Controllers\KonfirmasiOrderController;
 use App\Http\Controllers\PembelianController;
-
+use App\Http\Controllers\PermintaanBarangController;
+use App\Http\Controllers\PermintaanInternalController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -377,8 +379,29 @@ Route::prefix('v1')->group(function () {
             Route::get('{uuid}/edit', [PembelianController::class, 'edit']);
             Route::post('{uuid}/update', [PembelianController::class, 'update']);
             Route::delete('{uuid}/destroy', [PembelianController::class, 'destroy']);
-            Route::get('getcode', [PembelianController::class, 'getcode']);
-            Route::get('{id}/getcode', [PembelianController::class, 'getcodebyid']);
+            Route::get('getnomor', [PembelianController::class, 'getnomor']);
+            Route::get('{id}/getnomor', [PembelianController::class, 'getnomorbyid']);
+            Route::get('gettahun', [PembelianController::class, 'gettahun']);
+            Route::get('getbulan', [PembelianController::class, 'getbulan']);
+        });
+
+    
+        Route::prefix('permintaan')->group(function () {
+            Route::get('get', [PermintaanBarangController::class, 'get']);
+            Route::post('paginate', [PermintaanBarangController::class, 'paginate']);
+            Route::post('store', [PermintaanBarangController::class, 'store']);
+            Route::get('{uuid}/edit', [PermintaanBarangController::class, 'edit']);
+            Route::post('{uuid}/update', [PermintaanBarangController::class, 'update']);
+            Route::delete('{uuid}/destroy', [PermintaanBarangController::class, 'destroy']);
+        });
+
+        Route::prefix('permintaaninternal')->group(function () {
+            Route::get('get', [PermintaanInternalController::class, 'get']);
+            Route::post('paginate', [PermintaanInternalController::class, 'paginate']);
+            Route::post('store', [PermintaanInternalController::class, 'store']);
+            Route::get('{uuid}/edit', [PermintaanInternalController::class, 'edit']);
+            Route::post('{uuid}/update', [PermintaanInternalController::class, 'update']);
+            Route::delete('{uuid}/destroy', [PermintaanInternalController::class, 'destroy']);
         });
     });
 });

@@ -5,14 +5,12 @@
       <div class="card-header">
         <div class="card-title w-100">
           <h1>Assets</h1>
-          <h3>
-          {{
-            profile?.uuid ? `Edit Gudang : ${profile.nama}` : "Tambah Gudang"
-          }}
-        </h3>
+          <button v-if="!openForm" type="button" class="btn btn-primary btn-sm ms-auto me-5" @click="openDetail = true" >
+              <i class="las la-eye" style="margin-left: 0;"></i>
+              Detail</button>
           <button
             type="button"
-            class="btn btn-light-danger btn-sm ms-auto"
+            class="btn btn-light-danger btn-sm"
             @click="($parent.openAsset = false), ($parent.selected = undefined)"
           >
             <i class="las la-times-circle"></i>

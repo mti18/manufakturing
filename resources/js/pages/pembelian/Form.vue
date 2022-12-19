@@ -22,7 +22,7 @@
               <label class="form-label required"> Nama Perusahaan : </label>
               <select2 name="profile_id" id="profile" @change="perusahaan($event)"
                 class="form-control" required autoComplete="off" v-model="form.profile_id" >
-                <option disabled>Pilih</option>
+                <option value="" disabled>Pilih</option>
                 <option v-for="profile in profiles" :value="profile.id" :key="profile.uuid">{{ profile.nama }}</option>
               </select2>
             </div>
@@ -44,7 +44,7 @@
               <label class="form-label required"> Nama Supplier : </label>
               <select2 name="supplier_id" id="supplier"  @change="supplier($event)"
                 class="form-control" required autoComplete="off" v-model="form.supplier_id" >
-                <option disabled>Pilih</option>
+                <option value="" disabled>Pilih</option>
                 <option v-for="supplier in suppliers" :value="supplier.id" :key="supplier.uuid">{{ supplier.nama }}</option>
               </select2>
             </div>
@@ -74,13 +74,10 @@
               <label class="form-label required"> No Surat : </label>
               <div class="input-group">
                 <div class="input-group-prepend">
-                  <span class="input-group-text">NO</span>
+                  <span class="input-group-text" @change="nomor($event)">{{ nomor }}</span>
                 </div>
                 <input type="text" class="form-control" name="no_surat" required v-model="form.no_surat" placeholder="No Surat">
               </div>
-              <label class="form-label required"> No Surat : </label>
-              <input type="text" name="no_surat" id="no_surat" placeholder="No Surat"
-                class="form-control" autoComplete="off" v-model="form.no_surat" />
             </div>
           </div>
           <div class="col-6">
@@ -262,7 +259,7 @@
         <div class="row">
           <div class="col-6">
             <div class="mb-8">
-              <label for="code" class="form-label required"> Keterangan : </label>
+              <label class="form-label required"> Keterangan : </label>
               <textarea rows="10" name="keterangan" id="keterangan" placeholder="Keterangan"
                 class="form-control" required autoComplete="off" v-model="form.ketarangan" >
               </textarea>
@@ -273,7 +270,7 @@
               <div class="mb-8">
                 <div class="row">
                   <div class="col-md-2">
-                    <label for="code" class="form-label">Jumlah Penjualan</label>
+                    <label class="form-label">Jumlah Penjualan</label>
                   </div>
                   <div class="col-md-10">
                     <div class="input-group">
@@ -290,7 +287,7 @@
                   </div>
                   <div class="col-md-3">
                     <div class="input-group">
-                      <label for="code" class="form-label">
+                      <label class="form-label">
                         <input type="radio" name="tipe_diskon" id="tipe_diskon" @input.prevent="hitungdiskon()"
                         required autoComplete="off" value="persen" v-model="form.tipe_diskon" />
                         Persen (%)
@@ -299,7 +296,7 @@
                   </div>
                   <div class="col-md-5">
                     <div class="input-group">
-                      <label for="code" class="form-label">
+                      <label class="form-label">
                         <input type="radio" name="tipe_diskon" id="tipe_diskon" @input.prevent="hitungdiskon()"
                         required autoComplete="off" value="rupiah" v-model="form.tipe_diskon" />
                         Rupiah (Rp)
@@ -311,7 +308,7 @@
               <div class="mb-8">
                 <div class="row">
                   <div class="col-md-2">
-                    <label for="code" class="form-label"  v-if="form.tipe_diskon != null">Diskon</label>
+                    <label class="form-label"  v-if="form.tipe_diskon != null">Diskon</label>
                   </div>
                   <div class="col-md-10">
                     <div class="input-group" v-if="form.tipe_diskon=='persen'">
@@ -347,7 +344,7 @@
                   </div>
                   <div class="col-md-3">
                     <div class="input-group">
-                      <label for="code" class="form-label">
+                      <label class="form-label">
                         <input type="radio" name="tipe_pajak" id="tipe_pajak" @input.prevent="hitungdiskon()"
                         required autoComplete="off" value="persen"  v-model="form.tipe_pajak" />
                         Persen (%)
@@ -356,7 +353,7 @@
                   </div>
                   <div class="col-md-5">
                     <div class="input-group">
-                      <label for="code" class="form-label">
+                      <label class="form-label">
                         <input type="radio" name="tipe_pajak" id="tipe_pajak" @input.prevent="hitungdiskon()"
                         required autoComplete="off" value="rupiah" v-model="form.tipe_pajak" />
                         Rupiah (Rp)
@@ -368,7 +365,7 @@
               <div class="mb-8">
                 <div class="row">
                   <div class="col-md-2" v-if="form.tipe_pajak != null">
-                    <label for="code" class="form-label" style="font-size: small;">Dasar Pengenaan Pajak</label>
+                    <label class="form-label" style="font-size: small;">Dasar Pengenaan Pajak</label>
                   </div>
                   <div class="col-md-10">
                     <div class="input-group" v-if="form.tipe_pajak=='persen'">
@@ -387,7 +384,7 @@
               <div class="mb-8">
                 <div class="row">
                   <div class="col-md-2">
-                    <label for="code" class="form-label"> PPN : </label>
+                    <label class="form-label"> PPN : </label>
                   </div>
                   <div class="col-md-10">
                     <div class="input-group">
@@ -401,7 +398,7 @@
               <div class="mb-8">
                 <div class="row">
                   <div class="col-md-2">
-                    <label for="code" class="form-label"> Netto : </label>
+                    <label class="form-label"> Netto : </label>
                   </div>
                   <div class="col-md-10">
                     <div class="input-group">
@@ -440,6 +437,13 @@
         default: null,
       }
     },
+
+    data() {
+      return {
+        nomor: null,
+      };
+    },
+
     setup(props) {
       const queryClient = useQueryClient();
       const form = ref({
@@ -450,7 +454,7 @@
       const { data: pembelian = {details: []}, refetch } = useQuery(
         ["pembelian", selected, "edit"],
         () => {
-          setTimeout(() => KTApp.block("#form-pembelian"), 100);
+          // setTimeout(() => KTApp.block("#form-pembelian"), 100);
           return axios.get(`/pembelian/${selected.value}/edit`).then((res) => res.data);
         },
         {
@@ -510,7 +514,9 @@
         users,
         submit,
         form,
-        queryClient
+        queryClient,
+        selected,
+        refetch,
       }
     },
     methods: {
@@ -559,7 +565,7 @@
           }
         });
       },
-
+      
       kd: _.debounce(function () {
       var vm = this;
       var myString = this.form.bukti_permintaan;
@@ -573,7 +579,7 @@
       if (this.type == "store") {
         if (codes != "") {
           vm.kode =
-            "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.code;
+            "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.bulan + "/" + vm.tahun;
           vm.form.no_surat = vm.kode;
           $(".codes").val(vm.kode);
         } else {
@@ -584,7 +590,7 @@
       } else {
         if (codes != "") {
           vm.kode =
-            "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.code;
+            "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.bulan + "/" + vm.tahun;
           vm.form.no_surat = vm.kode;
             $(".codes").val(vm.kode);
           } else {
@@ -595,9 +601,33 @@
         }
       }, 1000),
 
+      gettahun() {
+        this.$http
+          .get("pembelian/gettahun")
+          .then((res) => {
+            console.log(res.data)
+            this.tahun = res.data;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
+
+      getbulan() {
+        this.$http
+          .get("pembelian/getbulan")
+          .then((res) => {
+            console.log(res.data)
+            this.bulan = res.data;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
+      
       getnomor() {
         this.$http
-          .get("pembelian/getnomer")
+          .get("pembelian/getnomor")
           .then((res) => {
             console.log(res.data)
             this.nomor = res.data;
@@ -607,18 +637,27 @@
           });
       },
 
-      // editGetcode() {
-      //   this.$http
-      //     .get("pembelian/" + this.selected + "/getcode")
-      //     .then((res) => {
-      //       console.log(res.data);
-      //       this.code = res.data;
-      //     })
-      //     .catch((err) => {
-      //       console.log(err);
-      //     });
-      // },
-    }
+      editGetnomor() {
+        this.$http
+          .get("pembelian/" + this.selected + "/getnomor")
+          .then((res) => {
+            console.log(res.data);
+            this.nomor = res.data;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
+    },
+    mounted() {
+      if (!this.selected) {
+        this.getnomor();
+        this.getbulan();
+        this.gettahun();
+        return;
+      }
+      this.editGetnomor();
+    },
   };
   </script>
   
