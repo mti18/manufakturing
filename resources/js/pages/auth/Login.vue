@@ -36,8 +36,6 @@
         class="form-control bg-transparent"
         v-model="auth.password"
       />
-      <div class="forget d-inline">
-      </div>
     </div>
     <div
       v-else-if="auth.type === 'nip'"

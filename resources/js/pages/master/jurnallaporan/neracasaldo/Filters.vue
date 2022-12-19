@@ -2,7 +2,7 @@
     <div class="card card-custom mb-4 card-create">
       <div class="card-body">
         <form @submit.prevent="getDataMonth" class="row">
-          <div class="form-group col-md-6">
+          <div class="form-group col-md-4">
             <label>Bulan</label>
             <select2 class="form-control" v-model="$parent.formRequest.bulan">
               <option value="" disabled selected>Bulan</option>
@@ -16,7 +16,7 @@
               </option>
             </select2>
           </div>
-          <div class="form-group col-md-6">
+          <div class="form-group col-md-4">
             <label>Tahun</label>
             <select2 class="form-control" v-model="$parent.formRequest.tahun">
               <option value="" disabled selected>Tahun</option>
@@ -29,6 +29,17 @@
               </option>
             </select2>
           </div>
+          <div class="form-group col-md-4">
+          <label>Type</label>
+          <select2
+            class="form-control"
+            v-model="formRequest.type"
+          >
+            <option value="" disabled selected>Tahun</option>
+            <option value="0">Belum disesuaikan</option>
+            <option value="1">Sudah disesuaikan</option>
+          </select2>
+        </div>
           <div class="row mt-10">
             <div class="d-grid gap-2">
               <button
@@ -67,69 +78,33 @@
           { id: 11, name: "November" },
           { id: 12, name: "Desember" },
         ],
-        tahuns: [],
+        tahuns: _.range(new Date().getFullYear(), 2013),
+        account: [],
         formRequest: {
           bulan: "",
           tahun: "",
+          type: "",
         },
       };
     },
     methods: {
-      
-      
-      // reload(){
-      //     var app = this;
-
-      //       if(app.formRequest.bulan != '' && app.formRequest.tahun != ''){
-      //          $('#btnSearch').prop('disabled', true);
-      //               KTApp.progress($('#btnSearch'))
-      //               app.showList = true;
-      //               setTimeout(function(){
-      //                   app.$refs.keluar.reload();
-      //                   $('#btnSearch').prop('disabled', false);
-      //                   KTApp.unprogress($('#btnSearch'))
-      //               }, 1500);
-      //           }else{
-      //               $('.form-control').addClass('error-filter');
-      //               setTimeout(function(){
-      //                   $('.form-control').removeClass('error-filter');
-      //               }, 2000);
-      //           }
-      //       },
       sendFilter() {
         var app = this;
-        if (app.$parent.formRequest.bulan == "" || app.$parent.formRequest.tahun == "") {
-          app.$toast.error("Bulan dan Tahun harus diisi");
+        if (app.$parent.formRequest.bulan == "" || app.$parent.formRequest.tahun == "" ||  app.$parent.formRequest.type == "") {
+          app.$toast.error("Bulan , Tahun , dan Type harus diisi");
         } else {
-          app.$parent.openFilters = false;(
-            app.formRequest.bulan,
-            app.formRequest.tahun
-          );
-          app.$parent.checkTambah();
+          app.$parent.formRequest.bulan,
+          app.$parent.formRequest.tahun
+          app.$parent.formRequest.type
+          app.$parent.openFilters = false;
+       
   
         }
       },
-      
-      // loadJs() {
-      //   var vm = this;
-      //   $("#kt_daterangepicker_1")
-      //     .daterangepicker()
-      //     .val(vm.$parent.formFilter.date)
-      //     .on("apply.daterangepicker", function (val, picker) {
-      //       vm.$parent.formFilter.date = $("#kt_daterangepicker_1").val();
-      //       vm.$parent.formFilter.start_date = picker.startDate.format("YYYY-MM");
-      //       vm.$parent.formFilter.end_date = picker.endDate.format("YYYY-MM-DD");
-      //     });
-      // },
-      getTahun(){
-        var app = this;
-        app.tahuns = _.range(new Date().getFullYear(), 1999);
-        
-      },
+    
     },
     mounted() {
-      var app = this;
-      app.getTahun();
+      
     },
   };
   </script>

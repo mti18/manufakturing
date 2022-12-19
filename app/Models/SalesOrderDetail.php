@@ -11,8 +11,12 @@ class SalesOrderDetail extends Model
     use HasFactory;
     use Uuid;
 
-    protected $fillable = ['uuid', 'barangmentah_id', 'barangjadi_id', 'volume', 'nm_satuan', 'harga', 'diskon', 
+    protected $table = 'sales_order_detail';
+
+    protected $fillable = ['uuid', 'barangmentah_id', 'barangjadi_id', 'volume', 'harga', 'diskon', 
         'jumlah', 'keterangan', 'salesorder_id'
     ];
+
+
 
 }

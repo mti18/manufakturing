@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SalesOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\SalesOrderDetail;
@@ -30,14 +31,31 @@ class SalesOrderDetailController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'volume' => 'required|numeric',
-                'nm_satuan' => 'required',
-                'barangmentah_id' => 'required',
-                'barangjadi_id' => 'required',
+                'satuan' => 'required',
+                'barangmentah_id' => 'nullable',
+                'barangjadi_id' => 'nullable',
                 'harga' => 'required|numeric',
                 'diskon' => 'required|numeric',
                 'jumlah' => 'required|numeric',
                 'keterangan' => 'nullable',
             ]);
+
+            $harga = $data['harga'];
+            $diskon = $data['diskon'];
+            $jumlah = $data['jumlah'];
+
+            $harga = str_replace('.', '', $harga);
+            $harga = (double)str_replace(',', '.', $harga);
+            $data['harga'] = $harga;
+            $diskon = str_replace('.', '', $diskon);
+            $diskon = (double)str_replace(',', '.', $diskon);
+            $data['diskon'] = $diskon;
+            $jumlah = str_replace('.', '', $jumlah);
+            $jumlah = (double)str_replace(',', '.', $jumlah);
+            $data['jumlah'] = $jumlah;
+            
+            unset($data['satuan']);
+
             SalesOrderDetail::create($data);
 
             return response()->json(['message' => 'Detail berhasil ditambahkan']);
@@ -68,13 +86,36 @@ class SalesOrderDetailController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'volume' => 'required|numeric',
-                'nm_satuan' => 'required',
+                'satuan' => 'required',
+                'barangmentah_id' => 'nullable',
+                'barangjadi_id' => 'nullable',
                 'harga' => 'required|numeric',
                 'diskon' => 'required|numeric',
                 'jumlah' => 'required|numeric',
                 'keterangan' => 'nullable',
             ]);
-            SalesOrderDetail::where('uuid', $uuid)->update($data);
+
+            $harga = $data['harga'];
+            $diskon = $data['diskon'];
+            $jumlah = $data['jumlah'];
+
+            $harga = str_replace('.', '', $harga);
+            $harga = (double)str_replace(',', '.', $harga);
+            $data['harga'] = $harga;
+            $diskon = str_replace('.', '', $diskon);
+            $diskon = (double)str_replace(',', '.', $diskon);
+            $data['diskon'] = $diskon;
+            $jumlah = str_replace('.', '', $jumlah);
+            $jumlah = (double)str_replace(',', '.', $jumlah);
+            $data['jumlah'] = $jumlah;
+
+            unset($data['satuan']);
+            
+            if (!isset($data['uuid'])) {
+                SalesOrder::where('uuid',$uuid)->first()->detail()->create($data);
+            } else {
+                SalesOrderDetail::where('uuid', $uuid)->update($data);
+            }
 
             return response()->json(['message' => 'DetBarangil berhasil diedit']);
         } else {

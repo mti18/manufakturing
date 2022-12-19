@@ -10,24 +10,28 @@
               Account Baru
             </button>
           </div>
-        </div>
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        </div> 
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" > 
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="nm_account">Tambahkan</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h1 class="modal-title fs-5" id=""> {{(formRequest.uuid == undefined) ? `Tambah`: 'Edit'}}  Account </h1>
+                
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" >
+                  
+                </button>
               </div>
               <div class="modal-body">
                 <div class="mb-8">
-                  <label for="nm_account" class="form-label required">Tambah</label>
+                  <label for="nm_account" class="form-label required">Name</label>
                   <input type="text" name="nm_account" id="nm_account" placeholder="Add"
                     class="form-control" required autoComplete="off"  v-model="formRequest.nm_account" />
             </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button  type="submit" class="btn btn-primary" @click="send()" >Tambah</button>
+                <button v-if="type == 'create'" type="submit" class="btn btn-primary" @click="send()" >Tambah</button>
+                <button v-else type="submit" class="btn btn-primary" @click="send()" >Update</button>
               </div>
             </div>
           </div>
@@ -68,6 +72,7 @@
       return {
         treeDisplayData: [],
         formRequest: {},
+        type: 'create'
       };
     },
     computed: {
@@ -149,7 +154,10 @@
             fn: this.addNodeFunction,
             appearOnHover: false,
           },
-          editNode: { state: false, fn: null, appearOnHover: false },
+          editNode: { 
+            state: true,
+            fn: this.editNodeFunction,
+            appearOnHover: false },
           deleteNode: {
             state: true,
             fn: this.deleteNodeFunction,
@@ -176,32 +184,23 @@
     },
     send(){
       var app = this;
-      app.axios.post('account/send', app.formRequest).then((res) => {
-        toastr.success(`sukses data`, 'success');
+                var data = 'account/send';
+                var type = 'create';
+                if(app.formRequest.uuid != undefined){
+                    data = `account/${app.formRequest.uuid}/update`;
+                    type = 'update';
+                }
+                app.axios.post(data, app.formRequest).then((res) => {
+                    toastr.success(`sukses ${type} data`, 'success');
+                    app.getData();
                     $('#exampleModal').modal('hide');
-                    KTApp.block("#nm_account",{
-						overlayColor:"#000000",
-						type:"v2",
-						state:"primary",
-						message:"Processing...",
-						opacity: 0.2
-        
-					});
-          app.getData();
-          
-      }).catch((err) => {
-        toastr.error('sesuatu error terjadi', 'error');
-      })
+                }).catch((err) => {
+                    toastr.error('sesuatu error terjadi', 'error');
+                });
+
+      
     },
-  
-    // send(){
-    //   var app = this;
-    //   app.axios.get('account/getData', app.formRequest).then((res) => {
-    //     app.treeDisplayData = res.data.data
-    //   }).catch((err) => {
-    //     toastr.error('sesuatu error terjadi', 'error');
-    //   })
-    // },
+   
       myCheckedFunction: function (nodeId, state) {
         console.log(`is ${nodeId} checked ? ${state}`);
         console.log(this.$refs["my-tree"].getCheckedNodes("id"));
@@ -247,76 +246,43 @@
           });
        
 
-        // const nodePath = this.$refs["my-tree"].findNodePath(node.id);
-        // const parentNodeId = nodePath.slice(-2, -1)[0];
-        // if (parentNodeId === undefined) {
-        //   // 'root' node
-        //   const nodeIndex =
-        //     this.$refs["my-tree"].nodes.findIndex((x) => x.id !== node.id) - 1;
-        //   this.$refs["my-tree"].nodes.splice(nodeIndex, 1);
-        // } else {
-        //   // child node
-        //   const parentNode = this.$refs["my-tree"].findNode(parentNodeId);
-        //   const nodeIndex =
-        //     parentNode.nodes.findIndex((x) => x.id !== node.id) - 1;
-        //   parentNode.nodes.splice(nodeIndex, 1);
-        // }
-        // console.log("example: remove node", node.id);
+     
       },
       addNodeFunction: function (node) {
+        this.formRequest = {}
         this.formRequest.parent_id = node.id
+        this.type = 'create';
         $('#exampleModal').modal('show')
-        
-      //   const newNode = useMutation((data) => axios.post(selected ? `/account/${selected}/update` : '/account/store', data).then(res => res.data), {
-      //   onMutate: () => {
-      //     KTApp.block("#index-account");
-      //   },
-      //   onError: (error) => {
-      //     toastr.error(error.response.data.message);
-      //   },
-      //   onSettled: () => {
-      //     KTApp.unblock("#index-account");
-      //   }
-      // });
-      //   console.log("example: add node",newNode);
-      //   if (node.nodes === undefined) {
-      //     node.nodes = [newNode];
-      //   } else {
-      //     node.nodes.push(newNode);
-      //   }
-      // },
     },
-  },
-
-    setup() {
-    const selected = ref();
-    const openForm = ref(false);
-    const columns = [
-      columnHelper.accessor("nomor", {
-        header: "#",
-        style: {
-          width: "25px",
-        },
-        cell: (cell) => cell.getValue(),
-      }),
-      columnHelper.accessor("uuid", {
-        header: "Aksi",
-        cell: (cell) => h('div', { class: 'd-flex gap-2' }, [
-            h('button', { class: 'btn btn-sm btn-icon btn-warning', onClick: () => {
-              selected.value = cell.getValue();
-              openForm.value = true;
-            }}, h('i', { class: 'la la-pencil fs-2' })), 
-            h('button', { class: 'btn btn-sm btn-icon btn-danger' }, h('i', { class: 'la la-trash fs-2' }))
-          ]),
-      }),
-    ]
-
-    return {
-    
-      selected,
-      openForm,
-      columns,
+    editNodeFunction: function (node){
+      var app = this;
+      app.axios.get( `account/${node.uuid}/edit`).then((res) => {
+        app.formRequest =  res.data
+        this.type = 'update';
+        $('#exampleModal').modal('show')
+      }).catch((err) => {
+        toastr.error('sesuatu error terjadi', 'error');
+      })
+     
+      
+      
+      
     }
-  }
+  },
+  setup() {
+      const selected = ref();
+      const openForm = ref(false);
+      
+     
+     
+      return {
+    
+        selected,
+        openForm,
+    
+      }
+    },
   };
+
+ 
   </script>

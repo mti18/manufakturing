@@ -47,6 +47,8 @@ class BarangJadiController extends Controller
                 }
 
                 $a->nm_rak = $a->rakbarangjadi->nm_rak;
+
+                $a->harga = $a->harga . ",00";
             });
 
             return response()->json($courses);
@@ -57,9 +59,10 @@ class BarangJadiController extends Controller
 
 
 
-    public function stok($id)
+    public function getharga(Request $request)
     {
-        
+        $data = BarangJadi::find($request->barangjadi_id);
+        return RestApi::success($data);
     }
 
     public function store(Request $request) {
@@ -72,10 +75,18 @@ class BarangJadiController extends Controller
                 'barangjadikategoris' => 'required|array',
                 'kd_barang_jadi' => 'required|string',
                 'foto' => 'required|image',
+                'harga' => 'nullable',
+
             ]);
 
 
             $data['foto'] = 'storage/' . $request->foto->store('barangjadi', 'public');
+
+            $harga = $data['harga'];
+            $harga = str_replace('.', '', $harga);
+            $harga = (double)str_replace(',', '.', $harga);
+            $data['harga'] = $harga;
+
 
             $data = BarangJadi::create($data);
             
@@ -116,30 +127,30 @@ class BarangJadiController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'nm_barang_jadi' => 'required|string',
-                'stok' => 'required|numeric',
                 'barangsatuanjadi_id' => 'required',
-                'satuan' => 'required',
                 'gudang_id' => 'required',
                 'rak_id' => 'required',
                 'barangjadikategoris' => 'required|array',
                 'kd_barang_jadi' => 'required|string',
                 'foto' => 'required|image',
+                'harga' => 'nullable',
 
             ]);
-
             
-
-    
-
+            
             $bj = BarangJadi::where('uuid', $uuid)->first();
             if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $bj->foto)))) {
                 unlink(storage_path('app/public/' . str_replace('storage/', '', $bj->foto)));
             }
-
-
+            
             $barangj = BarangJadi::where('uuid', $uuid)->first();
-            $data = $request->only(['stok', 'barangsatuanjadi_id', 'nm_barangjadi', 'gudang_id', 'kd_barang_jadi', 'rak_id']);
+            $data = $request->only(['stok', 'barangsatuanjadi_id', 'nm_barangjadi', 'gudang_id', 'kd_barang_jadi', 'rak_id', 'harga']);
             $data['foto'] = 'storage/' . $request->foto->store('barangjadi', 'public');
+            
+            $harga = $data['harga'];
+            $harga = str_replace('.', '', $harga);
+            $harga = (double)str_replace(',', '.', $harga);
+            $data['harga'] = $harga;
 
             if ($barangj->update($data)) {
 
@@ -150,7 +161,6 @@ class BarangJadiController extends Controller
                         'barang_jadi_id' => $barangj->id,
                         'kategori_id' => $item
                     ]); 
-                    // return RestApi::error('err',400,$item) ;
                 }
         }
 

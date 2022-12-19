@@ -2,10 +2,11 @@
     <section>
       <Filters v-if="openFilters" />
       <template v-else>
-          <Form v-if="openForm" :selected="selected" />
+        <Form v-if="openForm" :selected="selected" />
+        <Detail ref="detail" v-if="openDetail" :selected="selected" />
           <div class="card">
             <div class="card-header">
-                <h1 >Master Jurnal</h1>
+                <h1 class="mt-6">Master Jurnal</h1>
               <div class="card-title ">
                 <button v-if="!openFilters" type="button" class="back btn btn btn-danger btn-sm ms-auto " @click="openFilters = true">
                   <i class="fas fa-angle-left"></i>
@@ -22,7 +23,7 @@
               <mti-paginate id="table-masterjurnal" 
               :url="`/masterjurnal/paginate/${formRequest.bulan}/${formRequest.tahun}`" 
               :columns="columns"
-               :callback="callback"></mti-paginate>
+             ></mti-paginate>
             </div>
           </div>
       </template>
@@ -35,13 +36,14 @@
   import { createColumnHelper } from "@tanstack/vue-table";
   const columnHelper = createColumnHelper();
   
+  import Detail from "./Detail.vue";
   import Form from "./Form.vue";
   import Filters from "./Filters.vue";
   import { useDelete } from "@/libs/hooks";
   
   export default {
     components: {
-      Form, Filters
+      Form, Filters, Detail
     },
     data(){
       return{
@@ -55,6 +57,7 @@
       const queryClient = useQueryClient();
       const selected = ref();
       const openForm = ref(false);
+      const openDetail = ref(false);
       const openFilters = ref(true);
       
      
@@ -84,10 +87,15 @@
           header: "Tanggal",
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("upload", {
-          header: "Bukti",
+        columnHelper.accessor("debit", {
+          header: "Debit",
           cell: (cell) => cell.getValue(),
         }),
+        columnHelper.accessor("kredit", {
+          header: "Kredit",
+          cell: (cell) => cell.getValue(),
+        }),
+        
         columnHelper.accessor("uuid", {
           header: "Aksi",
           cell: (cell) => openForm.value ? null : h('div', { class: 'd-flex gap-2' }, [
@@ -98,13 +106,18 @@
               }}, h('i', { class: 'la la-pencil fs-2' })), 
               h('button', { class: 'btn btn-sm btn-icon btn-danger', onClick: () => {
                 deletemasterjurnal(`/masterjurnal/${cell.getValue()}/destroy`);
-              }}, h('i', { class: 'la la-trash fs-2' }))
+              }}, h('i', { class: 'la la-trash fs-2' })),
+              h('button', { class: 'btn btn-sm btn-icon btn-primary', onClick: () => {
+                KTUtil.scrollTop();
+                selected.value = cell.getValue();
+                openDetail.value = true;
+              }}, h('i', { class: 'la la-pencil-alt fs-2' }))
             ]),
         }),
       ]
   
       return {
-      
+        openDetail,
         selected,
         openForm,
         openFilters,
@@ -112,6 +125,7 @@
       }
     },
     methods:{
+    
       checkTambah(){
       var app = this;
       app.axios.get('masterjurnal/checkTambah/'+ app.formRequest.tahun).then((res) => {
@@ -125,7 +139,21 @@
         toastr.error('seuatu error sedang terjadi', "Error");
       });
     },
-    }
+    getAccount(){
+        var app = this;
+        app.axios.get('account/show').then((res) => {
+        app.account = res.data.data
+      }).catch((err) => {
+        toastr.error('sesuatu error terjadi', 'error');
+      })
+    },
+      
+    },
+     mounted() {
+    var app = this;
+    
+    app.getAccount();
+  }
   }
   </script>
   

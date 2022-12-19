@@ -20,10 +20,10 @@
           <div class="aside-logo flex-column-auto" id="kt_aside_logo">
             <Link href="/">
               <img
-                  alt="Logo"
-                  :src="$page.props.setting.logo_dark_url"
-                  class="h-25px logo"
-                />
+                alt="Logo"
+                :src="$page.props.setting.logo_dark_url"
+                class="h-25px logo"
+              />
             </Link>
             <div
               id="kt_aside_toggle"
@@ -74,7 +74,10 @@
               >
                 <template v-for="menu in menus">
                   <template v-if="!!menu.children.length">
-                    <menu-accordion :menu="menu" :key="`accordion-${menu.uuid}`" />
+                    <menu-accordion
+                      :menu="menu"
+                      :key="`accordion-${menu.uuid}`"
+                    />
                   </template>
                   <template v-else>
                     <menu-item :menu="menu" :key="`item-${menu.uuid}`" />
@@ -116,8 +119,16 @@
                   <ol
                     class="breadcrumb breadcrumb-line text-muted fs-6 fw-semibold"
                   >
-                    <li class="breadcrumb-item pe-3" v-for="(breadcrumb, i) in $page.props.breadcrumb" :key="breadcrumb">
-                      <a href="" v-if="i !== ($page.props.breadcrumb.length - 1)">{{ breadcrumb }}</a>
+                    <li
+                      class="breadcrumb-item pe-3"
+                      v-for="(breadcrumb, i) in $page.props.breadcrumb"
+                      :key="breadcrumb"
+                    >
+                      <a
+                        href=""
+                        v-if="i !== $page.props.breadcrumb.length - 1"
+                        >{{ breadcrumb }}</a
+                      >
                       <span v-else class="text-muted">{{ breadcrumb }}</span>
                     </li>
                   </ol>
@@ -154,12 +165,18 @@
                             <img alt="User" :src="asset(user?.avatar)" />
                           </div>
                           <div class="d-flex flex-column">
-                            <div class="fw-bolder d-flex align-items-center fs-5">
+                            <div
+                              class="fw-bolder d-flex align-items-center fs-5"
+                            >
                               {{ user && user.name }}
-                              <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2">
+                              <span
+                                class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2"
+                              >
                               </span>
                             </div>
-                            <span class="fw-bold text-muted text-hover-primary fs-7">
+                            <span
+                              class="fw-bold text-muted text-hover-primary fs-7"
+                            >
                               {{ user && user.email }}
                             </span>
                           </div>
@@ -170,7 +187,14 @@
                         <Link class="menu-link px-5"> Akun Saya </Link>
                       </div>
                       <div class="menu-item px-5">
-                        <span @click="logout" class="menu-link px-5 text-danger">Logout</span>
+                        <Link class="menu-link px-5" :href="route('updatepw')">
+                          Ganti Password
+                        </Link>
+                      </div>
+                      <div class="menu-item px-5">
+                        <span @click="logout" class="menu-link px-5 text-danger"
+                          >Logout</span
+                        >
                       </div>
                     </div>
                   </div>
@@ -187,7 +211,11 @@
               class="post d-flex flex-column-fluid"
               id="kt_post mt-6 mt-lg-0"
             >
-              <div v-if="statusAccess === 'success'" id="kt_content_container" class="container-xxl">
+              <div
+                v-if="statusAccess === 'success'"
+                id="kt_content_container"
+                class="container-xxl"
+              >
                 <slot />
               </div>
             </div>
@@ -203,56 +231,69 @@ import { useQuery, useMutation } from "vue-query";
 import axios from "@/libs/axios";
 import { asset } from "@/libs/utils";
 import { Inertia } from "@inertiajs/inertia";
-import { usePage } from '@inertiajs/inertia-vue3';
+import { usePage } from "@inertiajs/inertia-vue3";
 
 export default {
   setup() {
-    const { data: user = {} } = useQuery(["user"], () =>
-      axios.get("/auth/user").then((res) => res.data.data),
+    const { data: user = {} } = useQuery(
+      ["user"],
+      () => axios.get("/auth/user").then((res) => res.data.data),
       {
-        onError: () => Inertia.visit('/login')
+        onError: () => Inertia.visit("/login"),
       }
     );
-    const { data: menus = [] } = useQuery(["dashboard", 'menus'], () => axios.get('/dashboard/menu').then(res => res.data), {
-      onSuccess: () => {
-        const script = document.createElement("script");
-        script.src = asset("assets/js/loader.bundle.js");
-        script.async = true;
+    const { data: menus = [] } = useQuery(
+      ["dashboard", "menus"],
+      () => axios.get("/dashboard/menu").then((res) => res.data),
+      {
+        onSuccess: () => {
+          const script = document.createElement("script");
+          script.src = asset("assets/js/loader.bundle.js");
+          script.async = true;
 
-        document.body.appendChild(script);
+          document.body.appendChild(script);
+        },
       }
+    );
+
+    const { mutate: logout } = useMutation(() => axios.post("/auth/logout"), {
+      onMutate: () => KTApp.block("body"),
+      onSettled: () => window.location.reload(),
     });
 
-    const { mutate: logout } = useMutation(() => axios.post('/auth/logout'), {
-      onMutate: () => KTApp.block('body'),
-      onSettled: () => window.location.reload()
-    });
-
-    const { data: hasAccess, status: statusAccess, refetch } = useQuery(["has-access"], () =>
-      axios.post("/dashboard/menu/has-access", { menu_uuid: usePage().props.value.menu.uuid }).then((res) => res.data.status),
+    const {
+      data: hasAccess,
+      status: statusAccess,
+      refetch,
+    } = useQuery(
+      ["has-access"],
+      () =>
+        axios
+          .post("/dashboard/menu/has-access", {
+            menu_uuid: usePage().props.value.menu.uuid,
+          })
+          .then((res) => res.data.status),
       {
         cacheTime: 0,
         onError: (error) => {
           if (error.response?.status === 403) {
             toastr.error("Anda tidak memiliki akses ke halaman ini");
-            Inertia.visit('/');
+            Inertia.visit("/");
           }
-        }
+        },
       }
     );
     return { user, menus, logout, hasAccess, statusAccess, refetch };
   },
   watch: {
-    '$page.props.menu.uuid': {
+    "$page.props.menu.uuid": {
       handler: function (val, oldVal) {
         this.refetch();
       },
-      deep: true
-    }
-  }
+      deep: true,
+    },
+  },
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

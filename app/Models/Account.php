@@ -15,7 +15,7 @@ class Account extends Model
     	'uuid', 'nm_account', 'kode_account', 'account_type', 'type', 'parent_id',
     ];
     protected $with = ['nodes'];
-    protected $appends = ['text', 'state'];
+    protected $appends = ['text', 'state', 'saldo_berjalan'];
     
 
     // public function children()
@@ -35,19 +35,19 @@ class Account extends Model
 
     public function jurnal_item()
     {
-        return $this->hasMany('\App\Models\JurnalItem', 'acount_id');
+        return $this->hasMany('\App\Models\JurnalItem', 'account_id');
     }
 
     public function umum()
     {
-        return $this->hasMany('\App\Models\JurnalItem', 'acount_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {
+        return $this->hasMany('\App\Models\JurnalItem', 'account_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {
             $query->where('type', 'umum');
         });
     }
 
     public function penyesuaian()
     {
-        return $this->hasMany('\App\Models\JurnalItem', 'acount_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {
+        return $this->hasMany('\App\Models\JurnalItem', 'account_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {
             $query->where('type', 'penyesuaian');
         });
     }
@@ -61,5 +61,14 @@ class Account extends Model
     {
         return ['checked'=> false, 'selected'=> false, 'expanded'=> false];
     }
-    
+
+    public function getSaldoBerjalanAttribute()
+    {
+        $debit = JurnalItem::where('account_id', $this->id)->sum('debit');
+        $kredit = JurnalItem::where('account_id', $this->id)->sum('kredit');
+
+        
+
+        return $debit - $kredit;
+    }
 }

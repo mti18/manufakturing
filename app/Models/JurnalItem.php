@@ -10,11 +10,11 @@ class JurnalItem extends Model
 {
     use HasFactory;
     use Uuid;
-    protected $fillable = ["account_id", "masterjurnal_id", "debit", "kredit", "uuid",  "keterangan"];
+    protected $fillable = ["account_id", "masterjurnal_id", "debit", "kredit", "uuid",  "keterangan" ];
 
-    public function acount()
+    public function account()
     {
-        return $this->belongsTo('\App\Models\Acount', 'acount_id');
+        return $this->belongsTo('\App\Models\Account', 'account_id');
     }
     public function masterjurnal()
     {
