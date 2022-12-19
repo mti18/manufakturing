@@ -157,14 +157,14 @@ class MasterJurnalController extends Controller
             ]);
             $master = MasterJurnal::where('uuid', $uuid)->first();
           
-            $data = $request->only(['kd_jurnal','tanggal','type']);;
+            $data = $request->only(['kd_jurnal','tanggal','type']);
 
             if ($master->update($data)) {
                 JurnalItem::where('masterjurnal_id', $master->id)->delete();
                 for ($i = 0; $i < count($request->jurnal_item); $i++) {
                     $debit =  $request->jurnal_item[$i]["debit"];
                     $kredit =  $request->jurnal_item[$i]["kredit"];
-                    $data = JurnalItem::create([
+                    $item = JurnalItem::create([
                         "masterjurnal_id" => $master->id,
                         "account_id" => $request->jurnal_item[$i]["account_id"],
                         "debit" => $debit,
@@ -180,10 +180,12 @@ class MasterJurnalController extends Controller
                     }
                     $bukti->delete();
                 }
-                foreach ($request->file as $file) {
-                    $bukti['masterjurnal_id'] = $data->id;
-                    $bukti['file'] = 'storage/' . $file->store('bukti', 'public');
-                    BuktiMaster::create($bukti);
+                if ($request->file('file')) {
+                    foreach ($request->file('file') as $file) {
+                        $bukti['masterjurnal_id'] = $master->id;
+                        $bukti['file'] = 'storage/' . $file->store('bukti', 'public');
+                        BuktiMaster::create($bukti);
+                    }
                 }
             }
 

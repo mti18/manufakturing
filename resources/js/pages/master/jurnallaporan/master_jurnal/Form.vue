@@ -54,42 +54,40 @@
         </div>
         <div class="col-6">
           <div class="mb-8">
-            <label for="tanggal" class="form-label required input-date">
+            <label for="" class="form-label required input-date">
               Tanggal :
             </label>
             <input
-              type="date"
+            
               name="tanggal"
-              id="tanggal"
+              id="kt_datepicker_1"
               placeholder="Pilih Tanggal"
               @change.prevent="getCode()"
-              :disabled="form.type == 'edit' ? true : false"
-              class="form-control"
+              class="form-control input-date"
               required
-              autoComplete="off"
               v-model="form.tanggal"
             />
           </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-12">
           <label for="upload" class="form-label required">
             Upload Bukti :
           </label>
           <file-upload
-            :files="selected && form?.upload ? `/${form.upload}` : fileUpload"
+            :files="fileUpload"
             :allow-multiple="true"
             v-on:updatefiles="onUpdateFilesUpload"
             labelIdle='Drag & Drop your files or <span class ="filepond-label-action">Browse</span>'
             required
-            :accepted-file-types="['image/*']"
-          ></file-upload>
+            :accepted-file-types="['image/*', 'application/pdf' ,'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ]"></file-upload>
+  
         </div>
       </div>
 
       <hr />
 
-      <div class="row" v-for="(item, index) in form.jurnal_items">
+      <div class="row" v-for="(item, index) in form.jurnal_item" :key="item.id">
         <div class="col-2">
           <div class="mb-8">
             <label for="nm_account" class="form-label required">
@@ -108,7 +106,7 @@
               <option
                 v-for="item in account"
                 :disabled="
-                  form.jurnal_items.findIndex(
+                  form.jurnal_item.findIndex(
                     (el) => el.account_id == item.id
                   ) != -1
                 "
@@ -122,7 +120,36 @@
             </select2>
           </div>
         </div>
-                  <div class="col-2" v-if="item.account_id == null">
+        <div class="col-2" v-if="item.account_id == null">
+                <div class="mb-8">
+                <label for="nm_account" class="form-label required">
+                        Debit :
+                      </label>
+                    
+                    <div class="input-group">
+                      <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
+                      <money3 v-model="item.debit" class="form-control" type="text" id="debit" name="debit" @change="hitungSaldo()" v-bind="config" required disabled ></money3>
+                   
+                    </div>
+                  </div>
+                  </div>
+
+              <div class="col-2"  v-else>
+                <div class="mb-8">
+                <label for="nm_account" class="form-label required">
+                        Debit :
+                      </label>
+                     
+                      
+                      <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
+                         <money3 v-model="item.debit" class="form-control" type="text" id="debit" name="debit" @change="hitungSaldo()" v-bind="config" required ></money3>
+                     
+                    </div>
+                  </div>
+                  </div>
+            
+            <div class="col-2" v-if="item.account_id == null">
                 <div class="mb-8">
                 <label for="nm_account" class="form-label required">
                         Kredit :
@@ -207,11 +234,11 @@
             <hr />
             <div class="row">
               <div class="col-md-3">Debit: {{ debit.toFixed(2)
-                        .replace(/\d(?=(\d{3})+\,)/g, "$&.") }}</div>
+                        .replace(/\d(?=(\d{})+\,)/g, "$&.") }}</div>
               <div class="col-md-3">Kredit: {{ kredit.toFixed(2)
-                        .replace(/\d(?=(\d{3})+\,)/g, "$&.") }}</div>
+                        .replace(/\d(?=(\d{})+\,)/g, "$&.") }}</div>
               <div class="col-md-3">Selisih: {{ (debit - kredit).toFixed(2)
-                        .replace(/\d(?=(\d{3})+\,)/g, "$&.") }}</div>
+                        .replace(/\d(?=(\d{})+\,)/g, "$&.") }}</div>
               <div class="col-md-3">
                 status: {{ debit == kredit ? "balance" : "tidak balance" }}
               </div>
@@ -266,11 +293,13 @@
     setup({ selected }) {
       const queryClient = useQueryClient();
       const form = ref({
-        jurnal_item: selected ? [] : [ {},]
+        jurnal_item: selected ? [] : [ {},{}]
       });
       const debit = ref(0.00);
       const kredit = ref(0.00);
       const fileUpload = ref([]);
+
+
 
     const { data: account } = useQuery(["accounts"], () =>
       axios.get("/masterjurnal/child").then((res) => res.data)
@@ -287,7 +316,12 @@
       {
         enabled: !!selected,
         cacheTime: 0,
-        onSuccess: (data) => (form.value = data),
+        onSuccess: (data) => {
+            form.value = data;
+            fileUpload.value = data.file_bukti_master;
+          },
+
+        
         onSettled: () => KTApp.unblock("#form-masterjurnal"),
       }
     );
@@ -317,11 +351,14 @@
 
     return {
       account,
-      fileUpload,
-      masterjurnal,
-      submit,
-      form,
-      queryClient,
+        fileUpload,
+        masterjurnal,
+        submit,
+        form,
+        queryClient,
+        debit, 
+        kredit,
+
     };
   },
   methods: {
@@ -329,36 +366,6 @@
       this.file = files;
     },
     onUpdateFilesUpload(filesUpload) {
-      this.fileUpload = filesUpload;
-    },
-    onSubmit() {
-      const vm = this;
-      const data = new FormData(document.getElementById("form-masterjurnal"));
-      data.append("upload", this.fileUpload[0].file);
-      vm.form.jurnal_items.forEach((item, i) => {
-        data.append(`jurnal_items[${i}][account_id]`, item.account_id);
-        data.append(`jurnal_items[${i}][debit]`, item.debit);
-        data.append(`jurnal_items[${i}][kredit]`, item.kredit);
-        data.append(`jurnal_items[${i}][keterangan]`, item.keterangan);
-        // data.append('jurnal_items[].keterangan', item.saldo);
-      });
-      this.submit(data, {
-        onSuccess: (data) => {
-          toastr.success(data.message);
-          vm.$parent.openForm = false;
-          vm.$parent.selected = undefined;
-          vm.queryClient.invalidateQueries(["/masterjurnal/paginate"], {
-            exact: true,
-          });
-        },
-      });
-    },
-
-      loaDDate(){
-        $("#kt_datepicker_1").flatpickr();
-      },
-
-      onUpdateFilesUpload(filesUpload) {
         this.fileUpload = filesUpload;
       },
       onSubmit() {
@@ -382,6 +389,10 @@
           }
         });
       },
+      loaDDate(){
+        $("#kt_datepicker_1").flatpickr();
+      },
+
       
     loadDate() {
       var vm = this;
@@ -398,7 +409,7 @@
       );
 
       setTimeout(function () {
-        $(" .input-date").flatpickr({
+        $(".input-date").flatpickr({
           enableTime: false,
           dateFormat: "Y-m-d",
           minDate: `${min.getFullYear()}-${
@@ -409,7 +420,7 @@
           }-${max.getDate()}`,
         });
 
-        $(" .input-date")
+        $(".input-date")
           .val(vm.form.tanggal)
           .on("change", function (val) {
             vm.form.tanggal = val;
@@ -443,7 +454,7 @@
       }
     },
     addJurnalItems() {
-      this.form.jurnal_items.push({});
+      this.form.jurnal_item.push({});
     },
     delJurnalItems(index) {
       this.form.jurnal_item.splice(index, 1);
@@ -453,18 +464,12 @@
 
       var debit = 0;
       var kredit = 0;
+        for (let index = 0; index < app.form.jurnal_item.length; index ++) {
+        const element = app.form.jurnal_item[index];
+          debit += parseFloat(element.debit);
+          kredit += parseFloat(element.kredit);
 
-      for (let index = 0; index < app.form.jurnal_itemsL.length; index++) {
-        const element = app.form.jurnal_items[index];
-        debit += parseFloat(
-          element.debit.replaceAll(".", "").replaceAll(",", ".")
-        );
-        kredit += parseFloat(
-          element.kredit.replaceAll(".", "").replaceAll(",", ".")
-        );
       }
-
-     
       // console.log(debit , kredit);
       app.debit = debit;
       app.kredit = kredit;
@@ -482,38 +487,29 @@
       var app = this;
       app.form.jurnal_item[i].saldo = app.account[ic].saldo_berjalan;
     },
-    // getAccount() {
-    //   setTimeout(() => {
-    //     var app = this;
-    //     var app = app.form.account_id;
-    //     axios
-    //       .get(`masterjurnal/child`)
-    //       .then((res) => {
-    //         app.child= res.data;
-    //       })
-    //       .catch((err) => {
-    //         toastr.error("sesuatu error terjadi", "gagal");
-    //       });
-    //   }, 500);
-    // },
+    getAccount() {
+      setTimeout(() => {
+        var app = this;
+        var app = app.form.account_id;
+        axios
+          .get(`masterjurnal/child`)
+          .then((res) => {
+            app.child= res.data;
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
     },
-    
-
-    
+    },
     mounted() {
     this.hitungSaldo();
     this.loadDate();
     this.loaDDate();
-
+  },
     
+  };
   
-    
-  },
-
-  mounted() {
-    this.loadDate();
-  },
-};
 </script>
 
 <style></style>

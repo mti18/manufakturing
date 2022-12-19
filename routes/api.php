@@ -5,7 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\BulanController;
 use App\Http\Controllers\GolonganController;
+use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\MasterJurnalController;
+use App\Http\Controllers\NeracaSaldoController;
 use App\Http\Controllers\TahunController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -387,7 +389,16 @@ Route::prefix('v1')->group(function () {
             );
             Route::prefix('bukubesar')->group(function () {
                 Route::post('paginate/{bulan}/{tahun}', [BukuBesarController::class, 'paginate']);
-
+            }
+            
+            );
+            Route::prefix('neraca')->group(function () {
+                Route::get('neraca/{bulan}/{tahun}/{type}', [NeracaSaldoController::class, 'neraca']);
+            }
+            
+            );
+            Route::prefix('jurnal')->group(function () {
+                Route::get('jurnal/{bulan}/{tahun}/{type}', [JurnalController::class, 'jurnal']);
             }
             
             );

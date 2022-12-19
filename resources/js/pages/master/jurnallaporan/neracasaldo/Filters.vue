@@ -64,6 +64,7 @@
   export default {
     data() {
       return {
+        data: [],
         bulans: [
           { id: 1, name: "Januari" },
           { id: 2, name: "Februari" },
@@ -78,7 +79,8 @@
           { id: 11, name: "November" },
           { id: 12, name: "Desember" },
         ],
-        tahuns: _.range(new Date().getFullYear(), 2013),
+        url: "",
+        tahuns: _.range(new Date().getFullYear(), 1999),
         account: [],
         formRequest: {
           bulan: "",
@@ -90,16 +92,42 @@
     methods: {
       sendFilter() {
         var app = this;
-        if (app.$parent.formRequest.bulan == "" || app.$parent.formRequest.tahun == "" ||  app.$parent.formRequest.type == "") {
+        if (app.$parent.formRequest.bulan == "" || app.$parent.formRequest.tahun == "" ||  app.formRequest.type == "") {
           app.$toast.error("Bulan , Tahun , dan Type harus diisi");
+           return;
         } else {
-          app.$parent.formRequest.bulan,
-          app.$parent.formRequest.tahun
-          app.$parent.formRequest.type
-          app.$parent.openFilters = false;
-       
-  
-        }
+          app.url =
+          "/neraca/neraca/" +
+          app.$parent.formRequest.bulan +
+          "/" +
+          app.$parent.formRequest.tahun +
+          "/" +
+          app.formRequest.type;
+
+        app.axios
+          .get(app.url)
+          .then(function (response) {
+            app.$parent.data = response.data;
+            app.$parent.debit = 0;
+            app.$parent.kredit = 0;
+
+            for (let index = 0; index < response.data.length; index++) {
+              const element = response.data[index];
+
+              if (element.sum > 0) {
+                app.debit += element.sum;
+              } else {
+                app.kredit += Math.abs(element.sum);
+              }
+            }
+
+            app.$parent.showneraca = true;
+            app.$parent.openFilters = false;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
       },
     
     },
