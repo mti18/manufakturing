@@ -6,11 +6,11 @@
         <div class="card-header">
           <div class="card-title w-100">
             <h1>Pembelian</h1>
-            <button v-if="!openForm" type="button" class="btn btn-primary btn-sm ms-auto" @click="openDetail = true" >
+            <button v-if="!openForm" type="button" class="btn btn-primary btn-sm ms-auto me-5" @click="openDetail = true" >
               <i class="las la-eye" style="margin-left: 0;"></i>
               Detail
             </button>
-            <button v-if="!openForm" type="button" class="btn btn-success btn-sm ms-auto" @click="openForm = true" style="margin-left: -1000px;">
+            <button v-if="!openForm" type="button" class="btn btn-success btn-sm " @click="openForm = true" style="margin-left: 0;">
               <i class="las la-plus"></i>
               Pembelian
             </button>
@@ -42,6 +42,7 @@
       const queryClient = useQueryClient();
       const selected = ref();
       const openForm = ref(false);
+      const openDetail = ref(false);
       
       const { delete: deletepembelian } = useDelete({
         onSuccess: () => {
@@ -100,6 +101,7 @@
   
       return {
         selected,
+        openDetail,
         openForm,
         columns,
       }

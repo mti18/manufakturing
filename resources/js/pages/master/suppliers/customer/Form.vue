@@ -27,28 +27,28 @@
         </div>
         <div class="col-6">
           <!-- <div class="mb-3">
-            <label for="code" class="form-label required"> Account : </label>
+            <label class="form-label required"> Account : </label>
             <select name="provinsi" id="alamat" placeholder="Alamat"
               class="form-control" required autoComplete="off" v-model="form.alamat" />
               <option></option>
           </div> -->
           <div class="mb-8">
-            <label for="code" class="form-label required"> Telepon : </label>
+            <label class="form-label required"> Telepon : </label>
             <input type="text" name="telepon" id="telepon" placeholder="Telepon  Supplier"
               class="form-control" required autoComplete="off" v-model="form.telepon" />
           </div>
           <div class="mb-8">
-            <label for="code" class="form-label required"> Kode : </label>
+            <label class="form-label required"> Kode : </label>
             <input type="text" name="kode" id="kode" placeholder="Kode"
               class="form-control" readonly required autoComplete="off" v-model="form.kode" />
           </div>
           <div class="mb-8">
-            <label for="code" class="form-label required"> NPWP : </label>
+            <label class="form-label required"> NPWP : </label>
             <input type="text" name="npwp" id="npwp" placeholder="NPWP"
               class="form-control" oninput="this.value = this.value.replace(/\D/g, '')" v-mask="'99.999.999.9-999.999'" v-model="form.npwp" />
           </div>
           <div class="mb-8">
-            <label for="code" class="form-label required"> NPPKP : </label>
+            <label class="form-label required"> NPPKP : </label>
             <input type="text" name="nppkp" id="nppkp" placeholder="NPPKP"
               class="form-control"  v-model="form.nppkp" />
           </div>
@@ -76,19 +76,19 @@
             </select2>
           </div>
           <div class="mb-8">
-            <label for="code" class="form-label required"> Nama Kontak Person : </label>
+            <label class="form-label required"> Nama Kontak Person : </label>
             <input type="text" name="nama_kontak" id="nama_kontak" placeholder="Nama Kontak Person"
               class="form-control"  v-model="form.namakontak" />
           </div>
           <div class="mb-8">
-            <label for="code" class="form-label required"> Telepon Kontak Person : </label>
+            <label class="form-label required"> Telepon Kontak Person : </label>
             <input type="text" name="telp_kontak" id="telp_kontak" placeholder="Telepon Kontak Person"
               class="form-control"  v-model="form.telpkontak" />
           </div>
         </div>
         <div class="col-12">
           <div class="mb-8">
-            <label for="code" class="form-label required"> Alamat : </label>
+            <label class="form-label required"> Alamat : </label>
             <textarea name="alamat" id="alamat" placeholder="Alamat"
               class="form-control" required autoComplete="off" v-model="form.alamat" />
           </div>

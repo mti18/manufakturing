@@ -15,7 +15,7 @@ class Pembelian extends Model
         'no_surat_pembelian', 'diketahui_oleh', 'tgl_po', 'jenis_pembayaran', 'no_po_pembelian', 'account_id', 'no_surat_jalan',
         'tempo', 'keterangan', 'jml_penjualan', 'diskon', 'uangmuka', 'pajak', 'ppn', 'netto', 'nomor'
     ];
-    protected $hidden = ['createded_at', 'updated_at'];
+    protected $hidden = ['updated_at'];
 
     protected $with = ['details'];
 
