@@ -7,6 +7,8 @@ use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\SalesOrder;
+use App\Models\SalesOrderDetail;
+use App\Models\SatuanJadiChild;
 use App\Models\Supplier;
 
 class SalesOrderController extends Controller
@@ -51,21 +53,64 @@ class SalesOrderController extends Controller
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
-                'profile_id' => 'required|numeric', 
-                'supplier_id' => 'required|numeric', 
-                'diketahui_oleh' => 'nullable|numeric', 
-                'jumlah_paket' => 'nullable|string', 
+                'profile_id' => 'required', 
+                'supplier_id' => 'required', 
+                'diketahui_oleh' => 'nullable', 
+                'jumlah_paket' => 'nullable|numeric', 
                 'bukti_pesan' => 'nullable|string', 
                 'jenis_pembayaran' => 'required|in:Tunai,Cek,Transfer,Free', 
                 'account_id' => 'nullable|numeric',  
                 'tgl_pesan' => 'required|string', 
                 'tgl_pengiriman' => 'required|string', 
+                'detail' => 'required|array',
                 'tempo' => 'nullable|numeric',
+                'keterangan' => 'nullable', 
+                'total' => 'nullable|numeric', 
+                'diskon' => 'nullable|numeric', 
+                'uangmuka' => 'nullable|numeric', 
+                'pph' => 'nullable', 
+                'ppn' => 'nullable', 
+                'netto' => 'nullable|numeric',
             ]);
+
+
             $data['status'] = '1';
             $data['pembayaran'] = ($request->tempo == '0') ? 'yes' : 'no';
             $data = SalesOrder::create($data);
             $data = SalesOrder::where('id', $data->id)->first();
+
+            // foreach($request->detail as $item){
+            //     // $volume = $item['volume'];
+            //     // $barangmentah_id = $item['barangmentah_id'];
+            //     // $barangjadi_id = $item['barangjadi_id'];
+            //     $harga = $item['harga'];
+            //     $diskon = $item['diskon'];
+            //     $jumlah = $item['jumlah'];
+            //     // $keterangan = isset($item['keterangan']) ? $item['keterangan'] : null;
+                
+            //     $harga = str_replace('.', '', $harga);
+            //     $harga = (double)str_replace(',', '.', $harga);
+            //     $data['harga'] = $harga;
+            //     $diskon = str_replace('.', '', $diskon);
+            //     $diskon = (double)str_replace(',', '.', $diskon);
+            //     $data['diskon'] = $diskon;
+            //     $jumlah = str_replace('.', '', $jumlah);
+            //     $jumlah = (double)str_replace(',', '.', $jumlah);
+            //     $data['jumlah'] = $jumlah;
+            
+
+            //         SalesOrderDetail::create([
+            //             'volume' => $item['volume'],
+            //             'barangmentah_id' => $item['barangmentah_id'],
+            //             'barangjadi_id' => $item['barangjadi_id'],
+            //             'harga' => $harga,
+            //             'diskon' => $diskon,
+            //             'jumlah' => $jumlah,
+            //             'keterangan' =>  isset($item['keterangan']) ? $item['keterangan'] : null,
+            //             'salesorder_id' => $data->id,
+
+            //         ]);
+            // }
 
             return response()->json(['message' => 'Sales Order berhasil diperbarui', 'data' => $data]);
         } else {
@@ -75,7 +120,7 @@ class SalesOrderController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = SalesOrder::all();
+            $data = SalesOrder::with(['barangjadi', 'barangmentah'])->get();
             return response()->json($data);
         } else {
             return abort(404);
@@ -84,7 +129,7 @@ class SalesOrderController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = SalesOrder::where('uuid', $uuid)->first();
+            $data = SalesOrder::with(['barangjadi', 'barangmentah'])->where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);
@@ -97,39 +142,141 @@ class SalesOrderController extends Controller
                 'profile_id' => 'required|numeric', 
                 'supplier_id' => 'required|numeric', 
                 'diketahui_oleh' => 'nullable|numeric', 
-                'jumlah_paket' => 'nullable|string', 
+                'jumlah_paket' => 'nullable|numeric', 
                 'bukti_pesan' => 'required|string', 
                 'jenis_pembayaran' => 'required|in:Tunai,Cek,Transfer', 
                 'account_id' => 'nullable|numeric',  
                 'tgl_pesan' => 'required|string', 
                 'tgl_pengiriman' => 'required|string', 
                 'tempo' => 'nullable|numeric',
+                'keterangan' => 'required', 
+                'total' => 'required|numeric', 
+                'diskon' => 'required|numeric', 
+                'uangmuka' => 'required|numeric', 
+                'pph' => 'required', 
+                'ppn' => 'required', 
+                'netto' => 'required|numeric'
+
             ]);
-            SalesOrder::where('uuid', $uuid)->update($data);
+
+            $total = $data['total'];
+            $diskon = $data['diskon'];
+            $uangmuka = $data['uangmuka'];
+            $netto = $data['netto'];
+
+            $total = str_replace('.', '', $total);
+            $total = (double)str_replace(',', '.', $total);
+            $data['total'] = $total;
+            $diskon = str_replace('.', '', $diskon);
+            $diskon = (double)str_replace(',', '.', $diskon);
+            $data['diskon'] = $diskon;
+            $uangmuka = str_replace('.', '', $uangmuka);
+            $uangmuka = (double)str_replace(',', '.', $uangmuka);
+            $data['uangmuka'] = $uangmuka;
+            $netto = str_replace('.', '', $netto);
+            $netto = (double)str_replace(',', '.', $netto);
+            $data['netto'] = $netto;
+
+            $salesorder = SalesOrder::where('uuid', $uuid)->first();
+            $data = $request->only(['profile_id', 'supplier_id', 'diketahui_oleh', 'jumlah_paket', 'bukti_pesan', 'jenix_pembayaran', 'account_id', 'tgl_pesan', 'tgl_pengiriman', 'tempo', 'keterangan', 'total', 'diskon', 'uangmuka', 'pph', 'ppn', 'netto']);
+
+            if ($salesorder->update($data)) {
+                SalesOrderDetail::where('salesorder_id', $salesorder->id)->delete();
+
+                foreach ($request->detail['barangmentah'] as $item) {
+                    $harga = $item['harga'];
+                    $diskon = $item['diskon'];
+                    $jumlah = $item['jumlah'];
+                    
+                    $harga = str_replace('.', '', $harga);
+                    $harga = (double)str_replace(',', '.', $harga);
+                    $item['harga'] = $harga;
+                    $diskon = str_replace('.', '', $diskon);
+                    $diskon = (double)str_replace(',', '.', $diskon);
+                    $item['diskon'] = $diskon;
+                    $jumlah = str_replace('.', '', $jumlah);
+                    $jumlah = (double)str_replace(',', '.', $jumlah);
+                    $item['jumlah'] = $jumlah;
+    
+                        SalesOrderDetail::create([
+                            'volume' => $item['volume'],
+                            'barangjadi_id' => $item['barangmentah_id'],
+                            'harga' => $item['harga'],
+                            'diskon' => $item['diskon'],
+                            'jumlah' => $item['jumlah'],
+                            'keterangan' => isset($item['keterangan']) ? $item['keterangan'] : null,
+                            'salesorder_id' => $salesorder->id,
+    
+                        ]);
+                }
+
+                foreach ($request->detail['barangjadi'] as $item) {
+                    $harga = $item['harga'];
+                    $diskon = $item['diskon'];
+                    $jumlah = $item['jumlah'];
+                    
+                    $harga = str_replace('.', '', $harga);
+                    $harga = (double)str_replace(',', '.', $harga);
+                    $item['harga'] = $harga;
+                    $diskon = str_replace('.', '', $diskon);
+                    $diskon = (double)str_replace(',', '.', $diskon);
+                    $item['diskon'] = $diskon;
+                    $jumlah = str_replace('.', '', $jumlah);
+                    $jumlah = (double)str_replace(',', '.', $jumlah);
+                    $item['jumlah'] = $jumlah;
+
+    
+                        SalesOrderDetail::create([
+                            'volume' => $item['volume'],
+                            'barangjadi_id' => $item['barangjadi_id'],
+                            'harga' => $item['harga'],
+                            'diskon' => $item['diskon'],
+                            'jumlah' => $item['jumlah'],
+                            'keterangan' => isset($item['keterangan']) ? $item['keterangan'] : null,
+                            'salesorder_id' => $salesorder->id,
+    
+                        ]);
+                }
+            //     foreach($request->detail as $item){
+            //         $volume = $item['volume'];
+            //         $barangmentah_id = $item['barangmentah_id'];
+            //         $barangjadi_id = $item['barangjadi_id'];
+            //         $harga = $item['harga'];
+            //         $diskon = $item['diskon'];
+            //         $jumlah = $item['jumlah'];
+            //         $keterangan = isset($item['keterangan']) ? $item['keterangan'] : null;
+                    
+            //         $harga = str_replace('.', '', $harga);
+            //         $harga = (double)str_replace(',', '.', $harga);
+            //         $data['harga'] = $harga;
+            //         $diskon = str_replace('.', '', $diskon);
+            //         $diskon = (double)str_replace(',', '.', $diskon);
+            //         $data['diskon'] = $diskon;
+            //         $jumlah = str_replace('.', '', $jumlah);
+            //         $jumlah = (double)str_replace(',', '.', $jumlah);
+            //         $data['jumlah'] = $jumlah;
+
+            //         unset($data['satuan']);
+    
+            //             SalesOrderDetail::create([
+            //                 'volume' => $volume,
+            //                 'barangmentah_id' => $barangmentah_id,
+            //                 'barangjadi_id' => $barangjadi_id,
+            //                 'harga' => $harga,
+            //                 'diskon' => $diskon,
+            //                 'jumlah' => $jumlah,
+            //                 'keterangan' => $keterangan,
+            //                 'salesorder_id' => $salesorder->id,
+    
+            //             ]);
+            // }
 
             return response()->json(['message' => 'Sales Order berhasil diperbarui']);
         } else {
             return abort(404);
         }
     }
-
-    public function updateMore(Request $request, $uuid) {
-        if (request()->wantsJson() && request()->ajax()) {
-            $data = $request->validate([
-                'total' => 'required',
-                'diskon' => 'nullable',
-                'uang_muka' => 'nullable',
-                'pph' => 'nullable',
-                'ppn' => 'nullable',
-                'netto' => 'required',
-            ]);
-            Position::where('uuid', $uuid)->update($data);
-
-            return response()->json(['message' => 'Sales Order berhasil diperbarui']);
-        } else {
-            return abort(404);
-        }
-    }
+}
 
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {

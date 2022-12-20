@@ -359,12 +359,12 @@ Route::prefix('v1')->group(function () {
             Route::delete('{uuid}/destroy', [StokMasukController::class, 'destroy']);
         });
         Route::prefix('salesorderdetail')->group(function () {
-            Route::get('get', [SalesOrderDetail::class, 'get']);
-            Route::post('paginate', [SalesOrderDetail::class, 'paginate']);
-            Route::post('store', [SalesOrderDetail::class, 'store']);
-            Route::get('{uuid}/edit', [SalesOrderDetail::class, 'edit']);
-            Route::post('{uuid}/update', [SalesOrderDetail::class, 'update']);
-            Route::delete('{uuid}/destroy', [SalesOrderDetail::class, 'destroy']);
+            Route::get('get', [SalesOrderDetailController::class, 'get']);
+            Route::post('paginate', [SalesOrderDetailController::class, 'paginate']);
+            Route::post('store', [SalesOrderDetailController::class, 'store']);
+            Route::get('{uuid}/edit', [SalesOrderDetailController::class, 'edit']);
+            Route::post('{uuid}/update', [SalesOrderDetailController::class, 'update']);
+            Route::delete('{uuid}/destroy', [SalesOrderDetailController::class, 'destroy']);
         });
 
         Route::prefix('stokkeluar')->group(function () {
@@ -390,4 +390,6 @@ Route::prefix('v1')->group(function () {
             Route::get('{id}/getcode', [PembelianController::class, 'getcodebyid']);
         });
     });
+});
+
 });

@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('sales_order_detail', function (Blueprint $table) {
-            $table->uuid('uuid')->unique();
+            $table->dropColumn('uuid');
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *
@@ -26,8 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('sales_order_detail', function (Blueprint $table) {
-            $table->dropColumn('uuid');
-
+            $table->uuid('uuid')->unique();
         });
     }
 };
