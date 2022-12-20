@@ -3,7 +3,7 @@
       <div class="card-header">
         <div class="card-title w-100">
           <h3>
-            {{ `Detail Jurnal :` }}
+            {{ `Detail Jurnal ` }}
           </h3>
           <button
             type="button"
@@ -95,9 +95,66 @@
                       </tr>
                     </tfoot>
                   </table>
-                
         </div>
       </div>
+      <div class="card-body">
+            <div class="card-title ">
+              <h1>
+                Bukti
+              </h1>
+              <h3 class="text-gray-400 mt-1 fw-semibold fs-6">
+                Bukti MasterJurnal
+              </h3>
+            </div>
+            <hr>
+              <div class="mt-5">
+                <div
+                  v-for="item in form.bukti_master"
+                  class="
+                    border border-dashed border-gray-300
+                    rounded
+                    px-7
+                    py-3
+                    mb-6
+                  "
+                >
+                  <div
+                    class="d-flex flex-stack mb-3"
+                    v-if="item.file.split('.')[1] != 'xlsx', 'pdf'"
+                  >
+                    <div class="me-3">
+                      <img
+                        :src="item.file"
+                        class="w-50px ms-n1 me-1"
+                        :alt="item.file"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="d-flex flex-stack mb-3"
+                    v-if="item.file.split('.')[1] == 'xlsx', 'pdf'"
+                  >
+                    <div class="me-3">
+                      <i
+                        class="fas fa-file-excel"
+                        style="font-size: xx-large; color: darkseagreen"
+                      ></i>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-stack">
+                    <span class="text-gray-400 fw-bold"
+                      >Nama Bukti:
+                      <a
+                        :href="item.bukti_masters"
+                        target="_blank"
+                        class="text-gray-800 text-hover-primary fw-bold"
+                        >{{ item.file }}</a
+                      ></span
+                    >
+                  </div>
+                </div>
+          </div>
+        </div>
     </form>
   </template>
   
@@ -116,6 +173,9 @@
       },
       data(){
       return{
+        form: {
+        bukti_master: [],
+      },
        
       }
     },

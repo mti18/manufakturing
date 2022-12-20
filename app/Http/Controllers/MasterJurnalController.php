@@ -27,8 +27,8 @@ class MasterJurnalController extends Controller
             // Add Columns
             $courses->map(function ($a) {
                 $a->tanggal = AppHelper::tanggal_indo($a->tanggal);
-                $a->debit = ($a->jurnal_item->where('kredit')->sum('debit'));
-                $a->kredit = ($a->jurnal_item->where('debit')->sum('kredit'));
+                $a->debit = AppHelper::rupiah($a->jurnal_item->where('kredit', 0)->sum('debit'));
+                $a->kredit = AppHelper::rupiah($a->jurnal_item->where('debit', 0)->sum('kredit'));
 
 
             return $a;
@@ -157,14 +157,14 @@ class MasterJurnalController extends Controller
             ]);
             $master = MasterJurnal::where('uuid', $uuid)->first();
           
-            $data = $request->only(['kd_jurnal','tanggal','type']);;
+            $data = $request->only(['kd_jurnal','tanggal','type']);
 
             if ($master->update($data)) {
                 JurnalItem::where('masterjurnal_id', $master->id)->delete();
                 for ($i = 0; $i < count($request->jurnal_item); $i++) {
                     $debit =  $request->jurnal_item[$i]["debit"];
                     $kredit =  $request->jurnal_item[$i]["kredit"];
-                    $data = JurnalItem::create([
+                    $item = JurnalItem::create([
                         "masterjurnal_id" => $master->id,
                         "account_id" => $request->jurnal_item[$i]["account_id"],
                         "debit" => $debit,
@@ -180,10 +180,12 @@ class MasterJurnalController extends Controller
                     }
                     $bukti->delete();
                 }
-                foreach ($request->file as $file) {
-                    $bukti['masterjurnal_id'] = $data->id;
-                    $bukti['file'] = 'storage/' . $file->store('bukti', 'public');
-                    BuktiMaster::create($bukti);
+                if ($request->file('file')) {
+                    foreach ($request->file('file') as $file) {
+                        $bukti['masterjurnal_id'] = $master->id;
+                        $bukti['file'] = 'storage/' . $file->store('bukti', 'public');
+                        BuktiMaster::create($bukti);
+                    }
                 }
             }
 
@@ -235,23 +237,5 @@ class MasterJurnalController extends Controller
 
         return response()->json($data);
     }
-    // public function send(Request $request) {
-    //     if (request()->wantsJson() && request()->ajax()) {
-    //         $data = $request->validate([
-    //             'tahun' => 'required|string',
-    //             'bulan' => 'required|string'
-                
-    //         ]);
-           
-    //         $data = Bulan::create($data);
-    //         $data = Tahun::create($data);
-
-
-
-    //         return response()->json(['message' => ' MasterJurnal berhasil ditambahkan']);
-    //     } else {
-    //         return abort(404);
-    //     }
-    // }
-
+   
 }

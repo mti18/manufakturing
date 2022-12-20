@@ -4,7 +4,7 @@
       <template v-else>
           <div class="card">
             <div class="card-header">
-                <h1 class="mt-6">Jurnal</h1>
+                <h1 class="mt-6">Neraca Saldo</h1>
               <div class="card-title ">
                 <button v-if="!openFilters" type="button" class="back btn btn btn-danger btn-sm ms-auto " @click="openFilters = true">
                   <i class="fas fa-angle-left"></i>
@@ -21,7 +21,7 @@
               enter-active-class="animated slideInDown"
               leave-active-class="animated slideOutRight"
             >
-              <div  class="card card-custom">
+              <div v-if="showneraca" class="card card-custom">
                 <div class="table-responsive">
                   <table
                     class="
@@ -40,54 +40,32 @@
                           border-bottom-2 border-gray-200
                         "
                       >
-                        <th class="text-left" style="width: 150px">Tanggal</th>
-                        <th class="text-left">Akun</th>
-                        <th class="text-left">Keterangan</th>
-                        <th class="text-left">Debit</th>
-                        <th class="text-left">Kredit</th>
+                        <th class="text-center" style="width: 150px">Kode Akun</th>
+                        <th class="text-center">Nama Akun</th>
+                        <th class="text-center">Debit</th>
+                        <th class="text-center">Kredit</th>
                       </tr>
                     </thead>
                     <tbody>
-                       <template v-for="item in masterjurnal">
-                                <tr v-for="(kitem, index) in item.jurnal_item">
-                                <td v-if="index == 0" :rowspan="item.jurnal_item.length">
-                                    {{ item.tanggal.indo() }}
-                                </td>
-                                <td>{{ kitem.account.nm_account }}</td>
-                                <td>{{ kitem.keterangan }}</td>
-                                <td>
-                                    Rp.
-                                    {{
-                                    kitem.debit
-                                        .toFixed(2)
-                                        .replace(/\d(?=(\d{3})+\.)/g, "$&,")
-                                    }}
-                                </td>
-                                <td>
-                                    Rp.
-                                    {{
-                                    kitem.kredit
-                                        .toFixed(2)
-                                        .replace(/\d(?=(\d{3})+\.)/g, "$&,")
-                                    }}
-                                </td>
-                                </tr>
-                            </template>
-                            <tr>
-                                <td colspan="3"><h3>Total</h3></td>
-                                <td>
-                                <h4>
-                                    Rp.
-                                    {{ debit.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,") }}
-                                </h4>
-                                </td>
-                                <td>
-                                <h4>
-                                    Rp.
-                                    {{ kredit.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,") }}
-                                </h4>
-                                </td>
-                            </tr>
+                      <tr v-for="item in data">
+                        <td class="text-center">{{ item.kode_account.rupiah() }}</td>
+                        <td>{{ item.nm_account }}</td>
+                        <td class="text-center">
+                          {{ item.sum > 0 ? item.sum.rupiah() : "-" }}
+                        </td>
+                        <td class="text-center">
+                          {{ item.sum > 0 ? "-" : Math.abs(item.sum).rupiah() }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2"><h4 class="text-end">Total</h4></td>
+                        <td class="font-weight-bold text-center">
+                          {{ debit.rupiah() }}
+                        </td>
+                        <td class="font-weight-bold text-center">
+                          {{ kredit.rupiah() }}
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -115,7 +93,8 @@
     },
     data(){
       return{
-        masterjurnal: [],
+        data: [],
+        showneraca: false,
         debit: 0,
         kredit: 0,
         account: [],

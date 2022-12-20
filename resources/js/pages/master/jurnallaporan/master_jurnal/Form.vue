@@ -54,42 +54,40 @@
         </div>
         <div class="col-6">
           <div class="mb-8">
-            <label for="tanggal" class="form-label required input-date">
+            <label for="" class="form-label required input-date">
               Tanggal :
             </label>
             <input
-              type="date"
+            
               name="tanggal"
-              id="tanggal"
+              id="kt_datepicker_1"
               placeholder="Pilih Tanggal"
               @change.prevent="getCode()"
-              :disabled="form.type == 'edit' ? true : false"
-              class="form-control"
+              class="form-control input-date"
               required
-              autoComplete="off"
               v-model="form.tanggal"
             />
           </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-12">
           <label for="upload" class="form-label required">
             Upload Bukti :
           </label>
           <file-upload
-            :files="selected && form?.upload ? `/${form.upload}` : fileUpload"
+            :files="fileUpload"
             :allow-multiple="true"
             v-on:updatefiles="onUpdateFilesUpload"
             labelIdle='Drag & Drop your files or <span class ="filepond-label-action">Browse</span>'
             required
-            :accepted-file-types="['image/*']"
-          ></file-upload>
+            :accepted-file-types="['image/*', 'application/pdf' ,'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ]"></file-upload>
+  
         </div>
       </div>
 
       <hr />
 
-      <div class="row" v-for="(item, index) in form.jurnal_items">
+      <div class="row" v-for="(item, index) in form.jurnal_item" :key="item.id">
         <div class="col-2">
           <div class="mb-8">
             <label for="nm_account" class="form-label required">
@@ -108,7 +106,7 @@
               <option
                 v-for="item in account"
                 :disabled="
-                  form.jurnal_items.findIndex(
+                  form.jurnal_item.findIndex(
                     (el) => el.account_id == item.id
                   ) != -1
                 "
@@ -122,234 +120,186 @@
             </select2>
           </div>
         </div>
-
         <div class="col-2" v-if="item.account_id == null">
-          <div class="mb-8">
-            <label for="nm_account" class="form-label required">
-              Debit :
-            </label>
+                <div class="mb-8">
+                <label for="nm_account" class="form-label required">
+                        Debit :
+                      </label>
+                    
+                    <div class="input-group">
+                      <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
+                      <money3 v-model="item.debit" class="form-control" type="text" id="debit" name="debit" @change="hitungSaldo()" v-bind="config" required disabled ></money3>
+                   
+                    </div>
+                  </div>
+                  </div>
 
-            <div class="input-group">
-              <input
-                type="text"
-                placeholder="Isi Nominal"
-                v-money3="{
-                  thousands: '.',
-                  decimal: ',',
-                  precision: 2,
-                }"
-                class="form-control"
-                @change="hitungSaldo()"
-                oninput="this.value = this.value.rupiah()"
-                name="debit"
-                disabled
-                v-model="form.jurnal_items[index].debit"
-                required
-              />
-            </div>
-          </div>
-        </div>
+              <div class="col-2"  v-else>
+                <div class="mb-8">
+                <label for="nm_account" class="form-label required">
+                        Debit :
+                      </label>
+                     
+                      
+                      <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
+                         <money3 v-model="item.debit" class="form-control" type="text" id="debit" name="debit" @change="hitungSaldo()" v-bind="config" required ></money3>
+                     
+                    </div>
+                  </div>
+                  </div>
+            
+            <div class="col-2" v-if="item.account_id == null">
+                <div class="mb-8">
+                <label for="nm_account" class="form-label required">
+                        Kredit :
+                      </label>
+                    
+                    <div class="input-group">
+                      <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
+                      <money3 v-model="item.kredit" class="form-control" type="text" id="kredit" name="kredit" @change="hitungSaldo()" v-bind="config" required disabled ></money3>
+                   
+                    </div>
+                  </div>
+                  </div>
 
-        <div class="col-2" v-else>
-          <div class="mb-8">
-            <label for="nm_account" class="form-label required">
-              Debit :
-            </label>
+                  <div class="col-2"  v-else>
+                <div class="mb-8">
+                <label for="nm_account" class="form-label required">
+                        Kredit :
+                      </label>
+                     
+                      
+                      <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
+                         <money3 v-model="item.kredit" class="form-control" type="text" id="kredit" name="kredit" @change="hitungSaldo()" v-bind="config" required ></money3>
+                     
+                    </div>
+                  </div>
+                  </div>
 
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Rp</span>
+
+                  <div class=" col-md-3">
+                <div class="mb-4">
+                  <label class="required form-label">Keterangan :</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Keterangan/narasi"
+                    name="keterangan"
+                    v-model="item.keterangan"
+                    required
+                  />
+                </div>
               </div>
-              <input
-                type="text"
-                placeholder="Isi Nominal"
-                class="form-control"
-                v-money3="{
-                  thousands: '.',
-                  decimal: ',',
-                  precision: 2,
-                }"
-                @change="hitungSaldo()"
-                oninput="this.value = this.value.rupiah()"
-                name="debit"
-                v-model="form.jurnal_items[index].debit"
-                required
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="col-2" v-if="item.account_id == null">
-          <div class="mb-8">
-            <label for="nm_account" class="form-label required">
-              Kredit :
-            </label>
-
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Rp</span>
+              <div class="col-md-2">
+                <div class="mb-4">
+                  <label class="form-label">Saldo :</label>
+                  <input
+                    type="text"
+                    disabled
+                    class="form-control"
+                    placeholder="Saldo"
+                    name="saldo_berjalan"
+                    v-model="item.saldo"
+                  />
+                </div>
               </div>
-              <input
-                type="text"
-                id="kredit"
-                placeholder="Isi Nominal"
-                oninput="this.value = this.value.rupiah()"
-                v-money3="{
-                  thousands: '.',
-                  decimal: ',',
-                  precision: 2,
-                }"
-                @change="hitungSaldo()"
-                name="kredit"
-                disabled
-                class="form-control"
-                required
-                v-model="form.jurnal_items[index].kredit"
-              />
-            </div>
-          </div>
-        </div>
 
-        <div class="col-2" v-else>
-          <div class="mb-8">
-            <label for="nm_account" class="form-label required">
-              Kredit :
-            </label>
-
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Rp</span>
+              <div class="col-1">
+                <div class="mt-9 mb-8">
+                    
+                <div class="delete btn btn-sm btn-icon btn-danger ">
+                  <i class="la la-trash fs-2" 
+                  @click.prevent="delJurnalItems(index)"
+                  ></i>
+                </div>
+              
+                </div>
               </div>
-              <input
-                type="text"
-                placeholder="Isi Nominal"
-                oninput="this.value = this.value.rupiah()"
-                v-money3="{
-                  thousands: '.',
-                  decimal: ',',
-                  precision: 2,
-                }"
-                @change="hitungSaldo()"
-                name="kredit"
-                class="form-control"
-                required
-                v-model="form.jurnal_items[index].kredit"
-              />
+        </div>
+        <div class="row">
+              <div class="col-md-11"></div>
+              <div class="col-md-1">
+                <button
+                  class="btn btn-block btn-light-success"
+                  type="button"
+                  title="tambah aksi"
+                  @click.prevent="addJurnalItems()"
+                >
+                  <i class="fa fa-plus"></i>
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-
-        <div :class="item.type != 'edit' ? 'col-md-3' : 'col-md-5'">
-          <div class="mb-4">
-            <label class="required form-label">Keterangan :</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Keterangan/narasi"
-              name="keterangan"
-              v-model="form.jurnal_items[index].keterangan"
-            />
-          </div>
-        </div>
-        <div class="col-md-2" v-if="form.jurnal_items[index].type != 'edit'">
-          <div class="mb-4">
-            <label class="form-label">Saldo :</label>
-            <input
-              type="text"
-              disabled
-              class="form-control"
-              placeholder="Saldo"
-              name="saldo"
-              v-model="form.jurnal_items[index].saldo"
-            />
-          </div>
-        </div>
-
-        <div class="col-1">
-          <div class="mt-9 mb-8">
-            <div class="delete btn btn-sm btn-icon btn-danger">
-              <i
-                class="la la-trash fs-2"
-                @click.prevent="delJurnalItems(index)"
-              ></i>
+            <hr />
+            <div class="row">
+              <div class="col-md-3">Debit: {{ debit.toFixed(2)
+                        .replace(/\d(?=(\d{})+\,)/g, "$&.") }}</div>
+              <div class="col-md-3">Kredit: {{ kredit.toFixed(2)
+                        .replace(/\d(?=(\d{})+\,)/g, "$&.") }}</div>
+              <div class="col-md-3">Selisih: {{ (debit - kredit).toFixed(2)
+                        .replace(/\d(?=(\d{})+\,)/g, "$&.") }}</div>
+              <div class="col-md-3">
+                status: {{ debit == kredit ? "balance" : "tidak balance" }}
+              </div>
             </div>
+            <hr />
+            
+           
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-sm ms-auto mt-8 d-block">
+              <i class="las la-save"></i>
+              Simpan
+            </button>
           </div>
-        </div>
       </div>
-      <div class="row">
-        <div class="col-md-11"></div>
-        <div class="col-md-1">
-          <button
-            class="btn btn-block btn-light-success"
-            type="button"
-            title="tambah aksi"
-            @click.prevent="addJurnalItems()"
-          >
-            <i class="fa fa-plus"></i>
-          </button>
-        </div>
-      </div>
-      <hr />
-      <div class="row">
-        <div class="col-md-3">
-          Debit: {{ debit.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,") }}
-        </div>
-        <div class="col-md-3">
-          Kredit: {{ kredit.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,") }}
-        </div>
-        <div class="col-md-3">
-          Selisih:
-          {{ (debit - kredit).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,") }}
-        </div>
-        <div class="col-md-3">
-          status: {{ debit == kredit ? "balance" : "tidak balance" }}
-        </div>
-      </div>
-      <hr />
-
-      <div class="col-12">
-        <button
-          type="submit"
-          class="btn btn-primary btn-sm ms-auto mt-8 d-block"
-        >
-          <i class="las la-save"></i>
-          Simpan
-        </button>
-      </div>
-    </div>
-  </form>
-</template>
-
-<script>
-import { Money3Directive } from "v-money3";
-import { ref } from "vue";
-import { useQuery, useMutation } from "vue-query";
-import axios from "@/libs/axios";
-import { useQueryClient } from "vue-query";
-
-export default {
-  directives: { money3: Money3Directive },
-  props: {
-    selected: {
-      type: String,
-      default: null,
-    },
-  },
-  data() {
-    return {
-      debit: 0,
-      kredit: 0,
-      formRequest: {
-        saldo: "",
+    </form>
+  </template>
+  
+  <script>
+  import { Money3Component } from 'v-money3'
+  import { Money3Directive } from 'v-money3';
+  import { ref } from "vue";
+  import { useQuery, useMutation } from "vue-query";
+  import axios from "@/libs/axios";
+  import { useQueryClient } from "vue-query";
+  
+  export default {
+    components: { money3: Money3Component },
+    directives: { money3: Money3Directive },
+    props: {
+      selected: {
+        type: String,
+        default: null,
+      }
       },
-    };
-  },
-  setup({ selected }) {
-    const queryClient = useQueryClient();
-    const form = ref({
-      jurnal_items: [{}],
-    });
-    const fileUpload = ref([]);
+      data(){
+      return{
+        config: {
+          prefix: '',
+          suffix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          disableNegative: false,
+          disabled: false,
+          min: null,
+          max: null,
+          allowBlank: false,
+          minimumNumberOfCharacters: 0,
+        },
+      }
+    },
+    setup({ selected }) {
+      const queryClient = useQueryClient();
+      const form = ref({
+        jurnal_item: selected ? [] : [ {},{}]
+      });
+      const debit = ref(0.00);
+      const kredit = ref(0.00);
+      const fileUpload = ref([]);
+
+
 
     const { data: account } = useQuery(["accounts"], () =>
       axios.get("/masterjurnal/child").then((res) => res.data)
@@ -366,7 +316,12 @@ export default {
       {
         enabled: !!selected,
         cacheTime: 0,
-        onSuccess: (data) => (form.value = data),
+        onSuccess: (data) => {
+            form.value = data;
+            fileUpload.value = data.file_bukti_master;
+          },
+
+        
         onSettled: () => KTApp.unblock("#form-masterjurnal"),
       }
     );
@@ -396,11 +351,14 @@ export default {
 
     return {
       account,
-      fileUpload,
-      masterjurnal,
-      submit,
-      form,
-      queryClient,
+        fileUpload,
+        masterjurnal,
+        submit,
+        form,
+        queryClient,
+        debit, 
+        kredit,
+
     };
   },
   methods: {
@@ -408,31 +366,34 @@ export default {
       this.file = files;
     },
     onUpdateFilesUpload(filesUpload) {
-      this.fileUpload = filesUpload;
-    },
-    onSubmit() {
-      const vm = this;
-      const data = new FormData(document.getElementById("form-masterjurnal"));
-      data.append("upload", this.fileUpload[0].file);
-      vm.form.jurnal_items.forEach((item, i) => {
-        data.append(`jurnal_items[${i}][account_id]`, item.account_id);
-        data.append(`jurnal_items[${i}][debit]`, item.debit);
-        data.append(`jurnal_items[${i}][kredit]`, item.kredit);
-        data.append(`jurnal_items[${i}][keterangan]`, item.keterangan);
-        // data.append('jurnal_items[].keterangan', item.saldo);
-      });
-      this.submit(data, {
-        onSuccess: (data) => {
-          toastr.success(data.message);
-          vm.$parent.openForm = false;
-          vm.$parent.selected = undefined;
-          vm.queryClient.invalidateQueries(["/masterjurnal/paginate"], {
-            exact: true,
-          });
-        },
-      });
-    },
+        this.fileUpload = filesUpload;
+      },
+      onSubmit() {
+        const vm = this;
+        const data = new FormData(document.getElementById("form-masterjurnal"));
+        this.fileUpload.forEach(file => data.append("file[]", file.file));
+        vm.form.jurnal_item.forEach((item, i) => {
+          data.append(`jurnal_item[${i}][account_id]`, item.account_id);
+          data.append(`jurnal_item[${i}][debit]`, item.debit);
+          data.append(`jurnal_item[${i}][kredit]`, item.kredit);
+          data.append(`jurnal_item[${i}][keterangan]`, item.keterangan);
+          // data.append(`jurnal_item[${i}][saldo]`, item.saldo);
+          // data.append('jurnal_item[].keterangan', item.saldo);
+        });
+        this.submit(data, {
+          onSuccess: (data) => {
+            toastr.success(data.message);
+            vm.$parent.openForm = false; 
+            vm.$parent.selected = undefined;
+            vm.queryClient.invalidateQueries(["/masterjurnal/paginate"], { exact: true });
+          }
+        });
+      },
+      loaDDate(){
+        $("#kt_datepicker_1").flatpickr();
+      },
 
+      
     loadDate() {
       var vm = this;
 
@@ -448,7 +409,7 @@ export default {
       );
 
       setTimeout(function () {
-        $(" .input-date").flatpickr({
+        $(".input-date").flatpickr({
           enableTime: false,
           dateFormat: "Y-m-d",
           minDate: `${min.getFullYear()}-${
@@ -459,7 +420,7 @@ export default {
           }-${max.getDate()}`,
         });
 
-        $(" .input-date")
+        $(".input-date")
           .val(vm.form.tanggal)
           .on("change", function (val) {
             vm.form.tanggal = val;
@@ -493,7 +454,7 @@ export default {
       }
     },
     addJurnalItems() {
-      this.form.jurnal_items.push({});
+      this.form.jurnal_item.push({});
     },
     delJurnalItems(index) {
       this.form.jurnal_item.splice(index, 1);
@@ -503,18 +464,12 @@ export default {
 
       var debit = 0;
       var kredit = 0;
+        for (let index = 0; index < app.form.jurnal_item.length; index ++) {
+        const element = app.form.jurnal_item[index];
+          debit += parseFloat(element.debit);
+          kredit += parseFloat(element.kredit);
 
-      for (let index = 0; index < app.form.jurnal_itemsL.length; index++) {
-        const element = app.form.jurnal_items[index];
-        debit += parseFloat(
-          element.debit.replaceAll(".", "").replaceAll(",", ".")
-        );
-        kredit += parseFloat(
-          element.kredit.replaceAll(".", "").replaceAll(",", ".")
-        );
       }
-
-     
       // console.log(debit , kredit);
       app.debit = debit;
       app.kredit = kredit;
@@ -530,28 +485,31 @@ export default {
     },
     changeSaldo(i, ic) {
       var app = this;
-      app.form.jurnal_item[i].saldo = app.account[ic].saldo;
+      app.form.jurnal_item[i].saldo = app.account[ic].saldo_berjalan;
     },
-    // getAccount() {
-    //   setTimeout(() => {
-    //     var app = this;
-    //     var app = app.form.account_id;
-    //     axios
-    //       .get(`masterjurnal/child`)
-    //       .then((res) => {
-    //         app.child= res.data;
-    //       })
-    //       .catch((err) => {
-    //         toastr.error("sesuatu error terjadi", "gagal");
-    //       });
-    //   }, 500);
-    // },
-  },
-
-  mounted() {
+    getAccount() {
+      setTimeout(() => {
+        var app = this;
+        var app = app.form.account_id;
+        axios
+          .get(`masterjurnal/child`)
+          .then((res) => {
+            app.child= res.data;
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
+    },
+    },
+    mounted() {
+    this.hitungSaldo();
     this.loadDate();
+    this.loaDDate();
   },
-};
+    
+  };
+  
 </script>
 
 <style></style>

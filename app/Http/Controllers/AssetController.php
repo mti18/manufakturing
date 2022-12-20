@@ -47,7 +47,7 @@ class AssetController extends Controller
             
             Asset::create($data);
 
-            return response()->json(['message' => 'Jabatan berhasil diperbarui']);
+            return response()->json(['message' => 'Asset berhasil ditambah']);
         } else {
             return abort(404);
         }
@@ -90,7 +90,7 @@ class AssetController extends Controller
             // return 'oioi';
             Asset::create($data);
 
-            return response()->json(['message' => 'Jabatan berhasil diperbarui']);
+            return response()->json(['message' => 'Asset berhasil diperbarui']);
         } else {
             return abort(404);
         }
@@ -99,7 +99,7 @@ class AssetController extends Controller
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             Asset::where('uuid', $uuid)->delete();
-         return response()->json(['message' => 'Jabatan berhasil dihapus']);
+         return response()->json(['message' => 'Asset berhasil dihapus']);
         } else {
             return abort(404);
         }

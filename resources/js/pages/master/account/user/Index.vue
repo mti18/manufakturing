@@ -1,6 +1,6 @@
 <template>
      <section>
-      <Form v-if="openForm" :selected="selected" method="POST"/>
+      <Form v-if="openForm" :selected="selected" />
       <div class="card">
         <div class="card-header">
           <div class="card-title w-100">
@@ -30,7 +30,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button v-if="type == 'account'" type="submit" class="btn btn-primary" @click="send()" >Tambah</button>
+                <button v-if="type == 'create'" type="submit" class="btn btn-primary" @click="send()" >Tambah</button>
                 <button v-else type="submit" class="btn btn-primary" @click="send()" >Update</button>
               </div>
             </div>
@@ -72,7 +72,7 @@
       return {
         treeDisplayData: [],
         formRequest: {},
-        type: 'account'
+        type: 'create'
       };
     },
     computed: {
@@ -185,12 +185,12 @@
     send(){
       var app = this;
                 var data = 'account/send';
-                var type = 'account';
+                var type = 'create';
                 if(app.formRequest.uuid != undefined){
                     data = `account/${app.formRequest.uuid}/update`;
                     type = 'update';
                 }
-                app.$http.post(data, app.formRequest).then((res) => {
+                app.axios.post(data, app.formRequest).then((res) => {
                     toastr.success(`sukses ${type} data`, 'success');
                     app.getData();
                     $('#exampleModal').modal('hide');
@@ -249,8 +249,9 @@
      
       },
       addNodeFunction: function (node) {
+        this.formRequest = {}
         this.formRequest.parent_id = node.id
-        this.type = 'account';
+        this.type = 'create';
         $('#exampleModal').modal('show')
     },
     editNodeFunction: function (node){
@@ -268,6 +269,19 @@
       
     }
   },
+  setup() {
+      const selected = ref();
+      const openForm = ref(false);
+      
+     
+     
+      return {
+    
+        selected,
+        openForm,
+    
+      }
+    },
   };
 
  
