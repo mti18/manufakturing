@@ -33,7 +33,7 @@
               required
               autoComplete="off"
               v-model="form.profile_id"
-              @change="perusahaan($event)"
+              @change="perusahaan($event), getnumber()"
             >
               <option value="" disabled>Pilih</option>
               <option
@@ -433,7 +433,7 @@
                   @change="getSatuanJadi(index, $event), getHargaBJ(index)"
                   v-model="item.barangjadi_id"
                 >
-                  <option disabled value="">Pilih</option>
+                  <option disabled value="">Pilih barang jadi</option>
                   <option
                     v-for="item in barangjadis"
                     :value="item.id"
@@ -461,6 +461,7 @@
                   placeholder="Volume"
                   required
                   autoComplete="off"
+                  @input="hitungnilaijadi($event, index)"
                   v-model="item.volume"
                 />
               </td>
@@ -471,7 +472,7 @@
                   :id="'nm_satuan_jadi' + index"
                   placeholder="Pilih"
                   v-model="item.satuan"
-                  @change="hitungbarangjadi($event, index)"
+                  @change="hitungnilaijadi($event, index)"
                   required
                 >
                   <option value="" disabled>Pilih</option>
@@ -492,7 +493,7 @@
                   type="text"
                   name="harga"
                   v-bind="config"
-                  @input="hitungbarangjadi($event, index)"
+                  @input.prevent="hitungjumlahjadi($event, index)"
                   required
                 ></money3>
               </td>
@@ -504,7 +505,7 @@
                   type="text"
                   name="diskon"
                   v-bind="config"
-                  @input="hitungbarangjadi($event, index)"
+                  @input.prevent="hitungjumlahjadi($event, index)"
                   required
                 ></money3>
               </td>
@@ -554,7 +555,7 @@
                   @change="getSatuanMentah(index, $event), getHargaBM(index)"
                   v-model="item.barangmentah_id"
                 >
-                  <option value="" disabled>Pilih</option>
+                  <option value="" disabled>Pilih barang mentah</option>
                   <option
                     v-for="item in barangmentahs"
                     :value="item.id"
@@ -1086,7 +1087,7 @@ export default {
       };
     },
 
-    hitungbarangjadi(e, index) {
+    hitungnilaijadi(e, index) {
       var app = this;
 
       var volume = app.form.barangjadi[index].volume;
@@ -1095,12 +1096,23 @@ export default {
       );
 
       var nilai = app.form.barangjadi[index].satuanjadi[indexsatuan].nilai;
+      app.form.barangjadi[index].nilaitotal = volume * nilai;
+
+      // var jumlah =
+      //   volume * nilai * parseFloat(app.form.barangjadi[index].harga) -
+      //   parseFloat(app.form.barangjadi[index].diskon);
+
+      // app.form.barangjadi[index].jumlah = jumlah;
+    },
+
+    hitungjumlahjadi(e, index) {
+      var app = this;
       var jumlah =
-        volume * nilai * parseFloat(app.form.barangjadi[index].harga) -
+        app.form.barangjadi[index].nilaitotal *
+          parseFloat(app.form.barangjadi[index].harga) -
         parseFloat(app.form.barangjadi[index].diskon);
 
       app.form.barangjadi[index].jumlah = jumlah;
-      // app.form.total = app.form.barangjadi[index].jumlah;
     },
 
     hitungbarangmentah(index) {
@@ -1131,7 +1143,7 @@ export default {
 
     hitungnetto() {
       var app = this;
-      console.log(app.form);
+      // console.log(app.form);
 
       if (app.form.tipe_diskon == "persen") {
         var uang_muka =
@@ -1220,6 +1232,17 @@ export default {
 
         app.form.barangmentah[index].harga = app.barangmentahs[index].harga;
       }, 100);
+    },
+
+    getnumber() {
+      this.$http
+        .get("salesorder/getnumber")
+        .then((res) => {
+          this.form.no_pemesanan = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     onUpdateFiles(files) {

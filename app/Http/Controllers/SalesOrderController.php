@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\RestApi;
-use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\SalesOrder;
 use App\Models\SalesOrderDetail;
-use App\Models\SatuanJadiChild;
-use App\Models\Supplier;
+use PDF;
+
 
 class SalesOrderController extends Controller
 {
@@ -22,7 +21,7 @@ class SalesOrderController extends Controller
             $courses = SalesOrder::with(['supplier', 'profile', 'diketahui_oleh'])->where(function ($q) use ($request) {
                 $q->where('profile_id', 'LIKE', '%' . $request->search . '%');
                 $q->orWhere('supplier_id', 'LIKE', '%' . $request->search . '%');
-            })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
+            })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
 
             // $courses->map(function ($a)
@@ -62,6 +61,7 @@ class SalesOrderController extends Controller
                 'account_id' => 'nullable|numeric',  
                 'tgl_pesan' => 'required|string', 
                 'tgl_pengiriman' => 'required|string', 
+                'no_pemesanan' => 'required',
                 'detail' => 'required|array',
                 'tempo' => 'nullable|numeric',
                 'keterangan' => 'nullable', 
@@ -285,5 +285,41 @@ class SalesOrderController extends Controller
         } else {
             return abort(404);
         }
+    }
+
+    public function getnumber()
+    {
+        
+        $a = SalesOrder::pluck('no_pemesanan')->toArray();
+        
+        if(count($a) > 0){
+            sort($a);
+            $start = 1;
+            for ($i=0; $i < count($a); $i++) { 
+                if((int)$a[$i] != $start){
+                    return str_pad($start,4,"0",STR_PAD_LEFT);
+                }
+                $start++;
+            }
+            return str_pad($start,4,"0",STR_PAD_LEFT);
+            
+        }
+        return str_pad('1',4,"0",STR_PAD_LEFT);
+    }
+
+    public function generatepdf1($uuid)
+    {
+        $data = SalesOrder::with(['barangjadi', 'barangmentah'])->where('uuid', $uuid)->first();
+        $no_pemesanan = $data['no_pemesanan'];
+        $pdf = PDF::loadview('laporan.salesorderV1.Index', ['data' => $data]);
+        return $pdf->download('Salesorder - ' . $no_pemesanan . 'pdf');
+    }
+
+    public function generatepdf2($uuid)
+    {
+        $data = SalesOrder::with(['barangjadi', 'barangmentah'])->where('uuid', $uuid)->first();
+        $no_pemesanan = $data['no_pemesanan'];
+        $pdf = PDF::loadview('laporan.salesorderV2.Index', ['data' => $data]);
+        return $pdf->download('Salesorder - ' . $no_pemesanan . 'pdf');
     }
 }

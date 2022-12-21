@@ -45,6 +45,8 @@ use App\Http\Controllers\KonfirmasiOrderController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PermintaanBarangController;
 use App\Http\Controllers\PermintaanInternalController;
+use App\Models\SalesOrderDetail;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -368,8 +370,10 @@ Route::prefix('v1')->group(function () {
                 Route::get('get', [SalesOrderController::class, 'get']);
                 Route::post('paginate', [SalesOrderController::class, 'paginate']);
                 Route::post('store', [SalesOrderController::class, 'store']);
+                Route::get('{uuid}/generatepdf1', [SalesOrderController::class, 'generatepdf1']);
+                Route::get('{uuid}/generatepdf2', [SalesOrderController::class, 'generatepdf2']);
+                Route::get('getnumber', [SalesOrderController::class, 'getnumber']);
                 Route::get('{uuid}/edit', [SalesOrderController::class, 'edit']);
-                Route::get('{id}/profiles', [SalesOrderController::class, 'profiles']);
                 Route::post('{uuid}/update', [SalesOrderController::class, 'update']);
                 Route::delete('{uuid}/destroy', [SalesOrderController::class, 'destroy']);
             }

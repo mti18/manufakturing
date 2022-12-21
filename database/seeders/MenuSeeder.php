@@ -29,8 +29,8 @@ class MenuSeeder extends Seeder
                 ['id' => 3, 'name' => 'Dashboard', 'url' => '/', 'route' => 'dashboard', 'component' => 'Index', 'icon' => 'las la-home fs-2'],
                 ['id' => 4, 'name' => 'Sales Order', 'url' => '/salesorder', 'route' => 'dashboard.salesorder', 'component' => 'salesorder/Index', 'icon' => 'fas fa-shopping-cart fs-2'],
                 ['id' => 5, 'name' => 'Konfirmasi Order', 'url' => '/konfirmasiorder', 'route' => 'dashboard.konfirmasiorder', 'component' => 'konfirmasiorder/Index', 'icon' => 'fas fa-clipboard-check fs-2'],
-                ['id' => 6, 'name' => 'Pembelian', 'url' => '/pembelian', 'route' => 'dashboard.pembelian', 'component' => 'pembelian/Index', 'icon' => 'fas fa-shopping-bascket fs-2'],
-                ['id' => 7, 'name' => 'Permintaan', 'url' => '/permintaan', 'route' => 'dashboard.permintaan', 'component' => 'permintaan/Index', 'icon' => 'fas fa-shopping-bascket fs-2'],
+                ['id' => 6, 'name' => 'Pembelian', 'url' => '/pembelian', 'route' => 'dashboard.pembelian', 'component' => 'pembelian/Index', 'icon' => 'fas fa-shopping-bag fs-2'],
+                ['id' => 7, 'name' => 'Permintaan', 'url' => '/permintaan', 'route' => 'dashboard.permintaan', 'component' => 'permintaan/Index', 'icon' => 'fas fa-shopping-basket fs-2'],
                 ['id' => 8, 'name' => 'Master', 'route' => 'dashboard.master', 'icon' => 'las fa-database fs-2', 'children' => [
                     ['id' => 9, 'name' => 'User', 'url' => '/master/user', 'route' => 'dashboard.master.user', 'icon' => 'las la-user fs-2', 'component' => 'master/user/Index'],
                     ['id' => 10, 'name' => 'User Grup', 'url' => '/master/user-group', 'route' => 'dashboard.master.user-group', 'icon' => 'las la-users fs-2', 'component' => 'master/user-group/Index'],
