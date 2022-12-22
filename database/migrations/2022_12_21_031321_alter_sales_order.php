@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('sales_order_detail', function (Blueprint $table) {
-            $table->uuid('uuid')->unique();
+        Schema::table('sales_orders', function (Blueprint $table) {
+            $table->string('no_pemesanan');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('sales_order_detail', function (Blueprint $table) {
-            $table->dropColumn('uuid');
+        Schema::table('sales_orders', function (Blueprint $table) {
+            $table->dropColumn('no_pemesanan');
 
         });
     }

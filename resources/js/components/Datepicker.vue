@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { getCurrentInstance, ref } from "vue";
 export default {
   props: {
     modelValue: {
@@ -26,6 +27,10 @@ export default {
       default: null,
     },
   },
+  setup() {
+    const ready = ref(false);
+    return { ready };
+  },
   emits: ["update:modelValue"],
   mounted() {
     const vm = this;
@@ -37,20 +42,19 @@ export default {
         }
       },
       defaultDate: vm.modelValue,
-      ...vm.options
+      ...vm.options,
     });
   },
   watch: {
     modelValue(val) {
-      $(this.$el).flatpickr().setDate(val)
-    }
+      $(this.$el).flatpickr().setDate(val);
+      this.$emit("update:modelValue", val);
+    },
   },
   destroyed() {
     $(this.$el).flatpickr().destroy();
   },
-}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

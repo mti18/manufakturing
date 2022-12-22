@@ -33,7 +33,7 @@ return new class extends Migration
         Schema::table('barang_jadis', function (Blueprint $table) {
             $table->dropForeign(['gudang_id']);
             $table->dropColumn('gudang_id');
-
+            
             $table->dropColumn('harga');
             $table->dropColumn('kd_barang_jadi');
             $table->dropColumn('foto');

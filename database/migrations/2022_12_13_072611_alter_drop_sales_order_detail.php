@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('master_jurnals', function (Blueprint $table) {
-            $table->dropColumn('upload');
+        Schema::table('sales_order_detail', function (Blueprint $table) {
+            $table->dropColumn('uuid');
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('master_jurnals', function (Blueprint $table) {
-            $table->string('upload');
+        Schema::table('sales_order_detail', function (Blueprint $table) {
+            $table->uuid('uuid')->unique();
         });
     }
 };

@@ -6,7 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\BulanController;
 use App\Http\Controllers\GolonganController;
+use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\MasterJurnalController;
+use App\Http\Controllers\NeracaSaldoController;
 use App\Http\Controllers\TahunController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +45,8 @@ use App\Http\Controllers\KonfirmasiOrderController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PermintaanBarangController;
 use App\Http\Controllers\PermintaanInternalController;
+use App\Models\SalesOrderDetail;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -366,8 +370,10 @@ Route::prefix('v1')->group(function () {
                 Route::get('get', [SalesOrderController::class, 'get']);
                 Route::post('paginate', [SalesOrderController::class, 'paginate']);
                 Route::post('store', [SalesOrderController::class, 'store']);
+                Route::get('{uuid}/generatepdf1', [SalesOrderController::class, 'generatepdf1']);
+                Route::get('{uuid}/generatepdf2', [SalesOrderController::class, 'generatepdf2']);
+                Route::get('getnumber', [SalesOrderController::class, 'getnumber']);
                 Route::get('{uuid}/edit', [SalesOrderController::class, 'edit']);
-                Route::get('{id}/profiles', [SalesOrderController::class, 'profiles']);
                 Route::post('{uuid}/update', [SalesOrderController::class, 'update']);
                 Route::delete('{uuid}/destroy', [SalesOrderController::class, 'destroy']);
             }
@@ -389,7 +395,16 @@ Route::prefix('v1')->group(function () {
             );
             Route::prefix('bukubesar')->group(function () {
                 Route::post('paginate/{bulan}/{tahun}', [BukuBesarController::class, 'paginate']);
-
+            }
+            
+            );
+            Route::prefix('neraca')->group(function () {
+                Route::get('neraca/{bulan}/{tahun}/{type}', [NeracaSaldoController::class, 'neraca']);
+            }
+            
+            );
+            Route::prefix('jurnal')->group(function () {
+                Route::get('jurnal/{bulan}/{tahun}/{type}', [JurnalController::class, 'jurnal']);
             }
             
             );
@@ -405,12 +420,12 @@ Route::prefix('v1')->group(function () {
             }
             );
             Route::prefix('salesorderdetail')->group(function () {
-                Route::get('get', [SalesOrderDetail::class, 'get']);
-                Route::post('paginate', [SalesOrderDetail::class, 'paginate']);
-                Route::post('store', [SalesOrderDetail::class, 'store']);
-                Route::get('{uuid}/edit', [SalesOrderDetail::class, 'edit']);
-                Route::post('{uuid}/update', [SalesOrderDetail::class, 'update']);
-                Route::delete('{uuid}/destroy', [SalesOrderDetail::class, 'destroy']);
+                Route::get('get', [SalesOrderDetailController::class, 'get']);
+                Route::post('paginate', [SalesOrderDetailController::class, 'paginate']);
+                Route::post('store', [SalesOrderDetailController::class, 'store']);
+                Route::get('{uuid}/edit', [SalesOrderDetailController::class, 'edit']);
+                Route::post('{uuid}/update', [SalesOrderDetailController::class, 'update']);
+                Route::delete('{uuid}/destroy', [SalesOrderDetailController::class, 'destroy']);
             }
             );
 

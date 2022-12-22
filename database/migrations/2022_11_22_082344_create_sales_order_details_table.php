@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->bigInteger('salesorder_id')->unsigned();
             $table->foreign('salesorder_id')->references('id')->on('sales_orders')
-                  ->onDelete('cascade');
+                  ->onDelete('restrict');
 
             
 
