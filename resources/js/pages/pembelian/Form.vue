@@ -147,9 +147,9 @@
             <div class="mb-8">
               <label class="form-label required"> Bank : </label>
               <select2 name="account_id" id="account_id"
-                class="form-control" required autoComplete="off" v-model="form.account_id" >
+                class="form-control" autoComplete="off" v-model="form.account_id" >
                 <option disabled>Pilih</option>
-                <option v-for="account in accounts" :value="account.id" :key="account.uuid">{{ account.nm_account }}</option>
+                <option v-for="account in accounts" :value="account.id">{{ account.nm_account }}</option>
               </select2>
             </div>
             <div class="mb-8">
@@ -172,7 +172,7 @@
       </div>
     </form>
 
-    <form v-if="!!selected" class="card mb-12" id="form-pembeliandetail" @submit.prevent="onSubmitDetail" >
+    <form v-if="!!selected" class="card mb-12" id="form-pembeliandetail" @submit.prevent="onSubmit" >
       <div class="table-responsive">
         <table class="table border">
           <thead>
@@ -218,7 +218,7 @@
               </div>
             </td> -->
             <td>
-              <input type="text" name="volume" id="volume" @input.prevent="hitungbarang()"
+              <input type="text" name="volume" id="volume"
                 class="form-control" required autoComplete="off" v-model="detail.volume" />
             </td>
             <td>
@@ -226,11 +226,11 @@
                 class="form-control" required autoComplete="off" v-model="detail.nm_satuan" />
             </td>
             <td>
-              <input type="text" name="harga" id="harga" @input.prevent="hitungbarang()"
+              <input type="text" name="harga" id="harga"
                 class="form-control" required autoComplete="off" v-model="detail.harga" />
             </td>
             <td>
-              <input type="text" name="diskon" id="diskon" @input.prevent="hitungbarang()"
+              <input type="text" name="diskon" id="diskon"
                 class="form-control" required autoComplete="off" v-model="detail.diskon" />
             </td>
             <td>
@@ -252,16 +252,14 @@
             </button>
         </div>
       </div>
-    </form>
 
-    <form v-if="!!selected" class="card mb-12" id="form-pembeliandetail" @submit.prevent="onSubmitMore">
       <div class="card-body">
         <div class="row">
           <div class="col-6">
             <div class="mb-8">
               <label class="form-label required"> Keterangan : </label>
               <textarea rows="10" name="keterangan" id="keterangan" placeholder="Keterangan"
-                class="form-control" required autoComplete="off" v-model="form.ketarangan" >
+                class="form-control" required autoComplete="off" v-model="form.keterangan" >
               </textarea>
             </div>
           </div>
@@ -275,8 +273,8 @@
                   <div class="col-md-10">
                     <div class="input-group">
                       <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
-                      <input type="text" name="total" id="total" @input.prevent="hitungdiskon()"
-                        class="form-control" required autoComplete="off" v-model="form.total" />
+                      <input type="text" name="jml_penjualan" id="jml_penjualan"
+                        class="form-control" required autoComplete="off" v-model="form.jml_penjualan" />
                     </div>
                   </div>
                 </div>
@@ -288,7 +286,7 @@
                   <div class="col-md-3">
                     <div class="input-group">
                       <label class="form-label">
-                        <input type="radio" name="tipe_diskon" id="tipe_diskon" @input.prevent="hitungdiskon()"
+                        <input type="radio" name="tipe_diskon" id="tipe_diskon"
                         required autoComplete="off" value="persen" v-model="form.tipe_diskon" />
                         Persen (%)
                       </label>
@@ -297,7 +295,7 @@
                   <div class="col-md-5">
                     <div class="input-group">
                       <label class="form-label">
-                        <input type="radio" name="tipe_diskon" id="tipe_diskon" @input.prevent="hitungdiskon()"
+                        <input type="radio" name="tipe_diskon" id="tipe_diskon"
                         required autoComplete="off" value="rupiah" v-model="form.tipe_diskon" />
                         Rupiah (Rp)
                       </label>
@@ -312,14 +310,14 @@
                   </div>
                   <div class="col-md-10">
                     <div class="input-group" v-if="form.tipe_diskon=='persen'">
-                      <input type="text" name="diskon2" id="diskon2" @input.prevent="hitungdiskon()"
-                        class="form-control" required autoComplete="off" v-model="form.diskon2" />
+                      <input type="text" name="diskon" id="diskon"
+                        class="form-control" required autoComplete="off" v-model="form.diskon" />
                       <div class="input-group-append"><span class="input-group-text">%</span></div> 
                     </div>
                     <div class="input-group" v-if="form.tipe_diskon=='rupiah'">
                       <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
-                      <input type="text" name="diskon2" id="diskon2" @input.prevent="hitungdiskon()"
-                        class="form-control" required autoComplete="off" v-model="form.diskon2" />
+                      <input type="text" name="diskon" id="diskon"
+                        class="form-control" required autoComplete="off" v-model="form.diskon" />
                     </div>
                   </div>
                 </div>
@@ -332,7 +330,7 @@
                   <div class="col-md-10">
                     <div class="input-group">
                       <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
-                      <input type="text" name="uang_muka" id="uang_muka" @input.prevent="uangmuka()"
+                      <input type="text" name="uang_muka" id="uang_muka" 
                         class="form-control" required autoComplete="off" v-model="form.uang_muka" />
                     </div>
                   </div>
@@ -345,7 +343,7 @@
                   <div class="col-md-3">
                     <div class="input-group">
                       <label class="form-label">
-                        <input type="radio" name="tipe_pajak" id="tipe_pajak" @input.prevent="hitungdiskon()"
+                        <input type="radio" name="tipe_pajak" id="tipe_pajak"
                         required autoComplete="off" value="persen"  v-model="form.tipe_pajak" />
                         Persen (%)
                       </label>
@@ -354,7 +352,7 @@
                   <div class="col-md-5">
                     <div class="input-group">
                       <label class="form-label">
-                        <input type="radio" name="tipe_pajak" id="tipe_pajak" @input.prevent="hitungdiskon()"
+                        <input type="radio" name="tipe_pajak" id="tipe_pajak"
                         required autoComplete="off" value="rupiah" v-model="form.tipe_pajak" />
                         Rupiah (Rp)
                       </label>
@@ -369,14 +367,14 @@
                   </div>
                   <div class="col-md-10">
                     <div class="input-group" v-if="form.tipe_pajak=='persen'">
-                      <input type="text" name="diskon2" id="diskon2" @input.prevent="hitungdiskon()"
-                        class="form-control" required autoComplete="off" v-model="form.diskon2" />
+                      <input type="text" name="pajak" id="pajak"
+                        class="form-control" required autoComplete="off" v-model="form.pajak" />
                       <div class="input-group-append"><span class="input-group-text">%</span></div> 
                     </div>
                     <div class="input-group" v-if="form.tipe_pajak=='rupiah'">
                       <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
-                      <input type="text" name="diskon2" id="diskon2" @input.prevent="hitungdiskon()"
-                        class="form-control" required autoComplete="off" v-model="form.diskon2" />
+                      <input type="text" name="pajak" id="pajak"
+                        class="form-control" required autoComplete="off" v-model="form.pajak" />
                     </div>
                   </div>
                 </div>
@@ -502,7 +500,7 @@
       const { data: users } = useQuery(["users"], () => axios.get("/user/get").then((res) => res.data), {
       placeholderData: []
       });
-      const { data: accounts } = useQuery(["accounts"], () => axios.get("/account/get").then((res) => res.data), {
+      const { data: accounts } = useQuery(["accounts"], () => axios.get("/account/getdata").then((res) => res.data), {
       placeholderData: []
       });
 

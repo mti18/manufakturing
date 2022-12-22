@@ -24,6 +24,9 @@ return new class extends Migration
             $table->bigInteger('pembelian_id')->nullable()->unsigned();
             $table->foreign('pembelian_id')->references('id')->on('pembelians')
                   ->onDelete('cascade');
+            $table->bigInteger('permintaan_id')->unsigned()->nullable();
+            $table->foreign('permintaan_id')->references('id')->on('permintaan_barangs')
+                  ->onDelete('cascade');
 
             $table->integer('jumlah')->default(0);
             $table->decimal('harga', 13, 2)->default(0);

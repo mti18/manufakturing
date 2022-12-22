@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\PermintaanBarang;
+use Carbon\Carbon;
 
 class PermintaanInternalController extends Controller
 {
@@ -14,7 +15,7 @@ class PermintaanInternalController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = PermintaanBarang::where(function ($q) use ($request) {
+            $courses = PermintaanBarang::where('tipe', 'internal')->where(function ($q) use ($request) {
                 $q->where('volume', 'LIKE', '%' . $request->search . '%');
                 // $q->orWhere('nm_provinsi', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
@@ -31,13 +32,17 @@ class PermintaanInternalController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'tanggal_permintaan'  => 'nullable', 
-                'no_bukti_permintaan'  => 'nullable', 
+                'no_bukti_permintaan'  => 'nullable',
+                'tipe_barang' => 'required', 
+                'barangjadi_id'  => 'nullable',
+                'barangmentah_id'  => 'nullable', 
                 'volume'  => 'required||numeric', 
                 'harga'  => 'required||numeric', 
                 'jumlah'  => 'required||numeric', 
                 'keterangan'  => 'string||nullable'
             ]);
             $data['tipe'] = 'internal';
+            $data['tanggal'] = Carbon::now()->format('Y-m-d');
             PermintaanBarang::create($data);
 
             return response()->json(['message' => 'Permintaan Internal berhasil diperbarui']);
@@ -69,6 +74,9 @@ class PermintaanInternalController extends Controller
             $data = $request->validate([
                 'tanggal_permintaan'  => 'nullable', 
                 'no_bukti_permintaan'  => 'nullable', 
+                'tipe_barang' => 'required', 
+                'barangjadi_id'  => 'nullable',
+                'barangmentah_id'  => 'nullable',
                 'volume'  => 'required||numeric', 
                 'harga'  => 'required||numeric', 
                 'jumlah'  => 'required||numeric', 

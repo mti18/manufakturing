@@ -17,6 +17,14 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
 
+            $table->enum('tipe_barang', ['barang_jadi', 'barang_mentah']);
+
+            $table->bigInteger('barangjadi_id')->unsigned()->nullable();
+            $table->foreign('barangjadi_id')->references('id')->on('barang_jadis')->onDelete('restrict');
+            $table->bigInteger('barangmentah_id')->unsigned()->nullable();
+            $table->foreign('barangmentah_id')->references('id')->on('barang_mentahs')->onDelete('restrict');
+            
+            $table->date('tanggal');
             $table->date('tanggal_permintaan')->nullable();
             $table->string('no_bukti_permintaan')->nullable();
 
