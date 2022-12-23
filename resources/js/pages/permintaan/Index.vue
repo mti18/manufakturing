@@ -3,14 +3,14 @@
       <FormPembelian v-if="openFormPembelian"/>
       <FormInternal v-if="openFormInternal"/>
       <div>
-        <button v-if="!openFormPembelian" type="button" class="btn btn-primary btn-sm mb-8 mt-3 pojok" @click="openFormPembelian = true">
+          <!-- <button v-if="!openFormPembelian" type="button" class="btn btn-primary btn-sm mb-8 mt-3 pojok" @click="openFormPembelian = true">
             <i class="las la-plus"></i>
-            Tambah 
-          </button>
-          <button v-if="!openFormInternal" type="button" class="btn btn-primary btn-sm mb-8 mt-3 pojok" @click="openFormInternal = true">
+            Tambah Permintaan Pembelian
+          </button> -->
+          <!-- <button v-if="!openFormInternal" type="button" class="btn btn-primary btn-sm mb-8 mt-3 pojok" @click="openFormInternal = true">
             <i class="las la-plus"></i>
-            Tambah 
-          </button>
+            Tambah Permintaan Internal
+          </button> -->
       </div>
       <div class="card">
         <div class="card-header">
@@ -18,20 +18,45 @@
             <h1>Permintaan</h1>
             <ul class="nav nav-tabs nav-tabs-line justify-content-end ms-auto nav-pills">
                 <li class="nav-item">
-                    <a class="nav-link active" data-toggle="pill" role="tab" href="#kt_tab_pane_1">Pembelian</a>
+                    <a class="nav-link active" data-bs-toggle="pill" role="tab" href="#kt_tab_pane_1">Pembelian</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="pill" role="tab" href="#kt_tab_pane_2">Internal</a>
+                    <a class="nav-link" data-bs-toggle="pill" role="tab" href="#kt_tab_pane_2">Internal</a>
                 </li>
             </ul>
           </div>
         </div>
         <div class="card-body">
-          <mti-paginate
+          <div class="tab-content mt-5" id="myTabContent">
+              <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel" aria-labelledby="kt_tab_pane_1"
+              >
+                 <button v-if="!openFormPembelian" type="button" class="btn btn-primary btn-sm mb-8 mt-3 pojok" @click="openFormPembelian = true">
+                  <i class="las la-plus"></i>
+                  Tambah
+                </button>
+                <mti-paginate
+                  id="table-permintaan_pembelians"
+                  url="/permintaan/paginate"
+                  :columns="columns"
+                ></mti-paginate>
+              </div>
+              <div class="tab-pane fade " id="kt_tab_pane_2" role="tabpanel" aria-labelledby="kt_tab_pane_2">
+                <button v-if="!openFormInternal" type="button" class="btn btn-primary btn-sm mb-8 mt-3 pojok" @click="openFormInternal = true">
+                  <i class="las la-plus"></i>
+                  Tambah
+                </button>
+                <mti-paginate
+                  id="table-permintaan_internals"
+                  url="/permintaaninternal/paginate"
+                  :columns="columns"
+                ></mti-paginate>
+              </div>
+          </div>
+          <!-- <mti-paginate
             id="table-permintaan_barangs"
             url="/permintaan/paginate"
             :columns="columns"
-          ></mti-paginate>
+          ></mti-paginate> -->
         </div>
         <div class="tab-content mt-5" id="myTabContent">
             <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel" aria-labelledby="kt_tab_pane_1">Tab content 1</div>

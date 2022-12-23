@@ -15,34 +15,91 @@
         <div class="row">
           <div class="col-6">
             <div class="mb-8">
-              <label for="name" class="form-label required"> Tipe Barang : </label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                placeholder="Nama"
+              <label for="tipe_barang" class="form-label required"> Tipe Barang : </label>
+              <select2
                 class="form-control"
-                required
-                autoComplete="off"
+                name="tipe_barang"
+                placeholder="Pilih Tipe Barang"
+                id="tipe_barang"
                 v-model="form.tipe_barang"
-              />
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="mb-8">
-              <label for="code" class="form-label required"> Nama Barang : </label>
-              <input
-                type="text"
-                name="code"
-                id="code"
-                placeholder="Kode"
-                class="form-control"
                 required
-                autoComplete="off"
-                v-model="form.barang_id"
-              />
+              >
+                <option value="" disabled>Pilih Tipe Barang</option>
+                <option value="barang_jadi">Barang Jadi</option>
+                <option value="barang_mentah">Barang Mentah</option>
+              </select2>
             </div>
           </div>
+
+          <div class="col-6" v-if="form.tipe_barang === 'barang_mentah'">
+            <div class="mb-8">
+              <label for="nm_barang_mentah" class="form-label required">
+                Nama Barang Mentah :
+              </label>
+              <select2
+                class="form-control"
+                name="barangmentah_id"
+                placeholder="Pilih Nama Barang Mentah"
+                id="barangmentah_id"
+                v-model="form.barangmentah_id"
+                @change="getSatuanMentah()"
+                required
+              >
+                <option value="" disabled>Pilih Barang Mentah</option>
+                <option
+                  v-for="item in barangmentahs"
+                  :value="item.id"
+                  :key="item.id"
+                >
+                  {{ item.nm_barangmentah }}
+                </option>
+              </select2>
+            </div>
+          </div>
+
+          <div class="col-6" v-else-if="form.tipe_barang === 'barang_jadi'">
+            <div class="mb-8">
+              <label for="nm_barang_jadi" class="form-label required">
+                Nama Barang Jadi :
+              </label>
+              <select2
+                class="form-control"
+                name="barangjadi_id"
+                placeholder="Pilih Nama Barang Jadi"
+                id="barangjadi_id"
+                v-model="form.barangjadi_id"
+                @change="getSatuanJadi()"
+                required
+              >
+                <option value="" disabled>Pilih Barang Jadi</option>
+                <option
+                  v-for="item in barangjadis"
+                  :value="item.id"
+                  :key="item.id"
+                >
+                  {{ item.nm_barang_jadi }}
+                </option>
+              </select2>
+            </div>
+          </div>
+
+          <div class="col-6" v-else>
+            <div class="mb-8">
+              <label for="" class="form-label required"> Nama Barang : </label>
+              <select2
+                class="form-control"
+                name=""
+                placeholder="Pilih Tipe Barang Terlebih Dahulu "
+                id=""
+                required
+              >
+                <option value="" disabled>
+                  Pilih Tipe Barang Terlebih Dahulu
+                </option>
+              </select2>
+            </div>
+          </div>
+
           <div class="col-4">
             <div class="mb-8">
               <label for="code" class="form-label required"> Volume : </label>
@@ -139,15 +196,17 @@
         default: null,
       },
     },
-  
-    data() {
-      return {
-    
-      };
-    },
+
     setup({ selected }) {
       const queryClient = useQueryClient();
       const form = ref({});
+      const { data: barangjadis } = useQuery(["barang_jadis"], () =>
+        axios.get("/barangjadi/get").then((res) => res.data)
+      );
+
+      const { data: barangmentahs } = useQuery(["barang_mentahs"], () =>
+        axios.get("/barangmentah/get").then((res) => res.data)
+      );
   
       const { data: permintaaninternal } = useQuery(
         ["permintaaninternal", selected, "edit"],
@@ -186,12 +245,49 @@
   
       return {
         permintaaninternal,
+        barangmentahs,
+        barangjadis,
         submit,
         form,
         queryClient,
       };
     },
     methods: {
+      getSatuanJadi() {
+        setTimeout(() => {
+          var app = this;
+          var id = app.form.barangjadi_id;
+
+          var index = app.barangjadis.findIndex((cat) => cat.id == id);
+          id = app.barangjadis[index].barangsatuanjadi_id;
+          axios
+            .get(`barangsatuanjadi/${id}/child`)
+            .then((res) => {
+              app.form.child = res.data.data;
+            })
+            .catch((err) => {
+              toastr.error("sesuatu error terjadi", "gagal");
+            });
+        }, 500);
+      },
+
+      getSatuanMentah() {
+        setTimeout(() => {
+          var app = this;
+          var id = app.form.barangmentah_id;
+
+          var index = app.barangmentahs.findIndex((cat) => cat.id == id);
+          id = app.barangmentahs[index].barangsatuan_id;
+          axios
+            .get(`barangsatuan/${id}/child`)
+            .then((res) => {
+              app.form.child = res.data.data;
+            })
+            .catch((err) => {
+              toastr.error("sesuatu error terjadi", "gagal");
+            });
+        }, 500);
+      },
 
       onUpdateFiles(files) {
         this.file = files;

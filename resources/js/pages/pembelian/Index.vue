@@ -59,7 +59,7 @@
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("supplier.nama", {
-          header: "Nama",
+          header: "Nama Supplier",
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("no_surat", {
@@ -72,6 +72,10 @@
         }),
         columnHelper.accessor("diketahui_oleh.name", {
           header: "User",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("tgl_permintaan", {
+          header: "Tanggal Pemesanan",
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("pembayaran", {

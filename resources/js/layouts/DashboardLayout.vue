@@ -187,9 +187,9 @@
                         <Link class="menu-link px-5"> Akun Saya </Link>
                       </div>
                       <div class="menu-item px-5">
-                        <Link class="menu-link px-5" :href="route('updatepw')">
+                        <!-- <Link class="menu-link px-5" :href="route('updatepw')">
                           Ganti Password
-                        </Link>
+                        </Link> -->
                       </div>
                       <div class="menu-item px-5">
                         <span @click="logout" class="menu-link px-5 text-danger"

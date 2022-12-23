@@ -56,10 +56,16 @@ class PembelianController extends Controller
                 'tgl_po' => 'required|string',
                 'jenis_pembayaran' => 'required',
                 'no_po_pembelian' => 'required|string',
-                'account_id' => 'required|integer',
+                'account_id' => 'nullable|integer',
                 'no_surat_jalan' => 'required|string',
                 'tempo' => 'required|numeric',
                 'keterangan' => 'string|nullable',
+                'jml_penjualan' => 'nullable||numeric',
+                'diskon'  => 'nullable||numeric', 
+                'uangmuka' => 'nullable||numeric', 
+                'pajak'  => 'nullable||numeric', 
+                'ppn'  => 'nullable||numeric', 
+                'netto' => 'nullable||numeric',
             ]);
             $data = Pembelian::create($request->all());
             $data = Pembelian::with(['details'])->where('id', $data->id)->first();
@@ -102,10 +108,16 @@ class PembelianController extends Controller
                 'tgl_po' => 'required|string',
                 'jenis_pembayaran' => 'required',
                 'no_po_pembelian' => 'required|integer',
-                'account_id' => 'required|integer',
+                'account_id' => 'nullable|integer',
                 'no_surat_jalan' => 'required|integer',
                 'tempo' => 'required|numeric',
                 'keterangan' => 'string|nullable',
+                'jml_penjualan' => 'nullable|numeric',
+                'diskon'  => 'nullable|numeric', 
+                'uangmuka' => 'nullable|numeric', 
+                'pajak'  => 'nullable|numeric', 
+                'ppn'  => 'nullable|numeric', 
+                'netto' => 'nullable|numeric',
             ]);
             $data = Pembelian::where('uuid', $uuid)->update($data);
             $data = Pembelian::with(['details'])->where('id', $data->id)->first();
