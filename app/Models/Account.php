@@ -38,6 +38,11 @@ class Account extends Model
         return $this->hasMany('\App\Models\JurnalItem', 'account_id');
     }
 
+    public function salesorder()
+    {
+        return $this->hasMany(SalesOrder::class);
+    }
+
     public function umum()
     {
         return $this->hasMany('\App\Models\JurnalItem', 'account_id')->with('MasterJurnal')->whereHas('MasterJurnal', function ($query) {

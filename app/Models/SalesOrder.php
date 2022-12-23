@@ -18,7 +18,7 @@ class SalesOrder extends Model
     ];
     protected $with = ['barangjadi', 'barangmentah'];
 
-    public function diketahui_oleh()
+    public function diketahuioleh()
     {
         return $this->belongsTo(User::class, 'diketahui_oleh', 'id');
     }
@@ -46,6 +46,6 @@ class SalesOrder extends Model
 
     public function detail()
     {
-        return $this->hasMany(SalesOrderDetail::class, 'salesorder_id', 'id');
+        return $this->hasMany(SalesOrderDetail::class, 'salesorder_id',  'id');
     }
 }

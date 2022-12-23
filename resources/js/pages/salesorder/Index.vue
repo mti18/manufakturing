@@ -22,15 +22,6 @@
           url="/salesorder/paginate"
           :columns="columns"
         ></mti-paginate>
-        <div class="collapse" id="detail">
-          <table class="detail">
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-          </table>
-        </div>
       </div>
     </div>
   </section>
@@ -80,7 +71,7 @@ export default {
         header: "Jatuh Tempo",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("diketahui_oleh.name", {
+      columnHelper.accessor("diketahuioleh.name", {
         header: "User",
         cell: (cell) => cell.getValue(),
       }),
@@ -162,7 +153,7 @@ export default {
                     class: "btn btn-sm btn-icon btn-active-light-secondary",
                     onClick: () =>
                       downloadPdf(
-                        `/salesorder/${cell.getValue()}/generatepdf1`,
+                        `/salesorder/${cell.getValue()}/generatepdf2`,
                         "GET"
                       ),
                   },
@@ -209,6 +200,30 @@ export default {
                     },
                   },
                   h("i", { class: "la la-trash text-danger fs-2" })
+                ),
+                h(
+                  "button",
+                  {
+                    class: "btn btn-sm btn-icon btn-active-light-warning",
+                    // onClick: () => {
+                    //   deletesalesorder(
+                    //     `/salesorder/${cell.getValue()}/destroy`
+                    //   );
+                    // },
+                  },
+                  h("i", { class: "la la-money-bill-wave text-warning fs-2" })
+                ),
+                h(
+                  "button",
+                  {
+                    class: "btn btn-sm btn-icon btn-active-light-warning",
+                    // onClick: () => {
+                    //   deletesalesorder(
+                    //     `/salesorder/${cell.getValue()}/destroy`
+                    //   );
+                    // },
+                  },
+                  h("i", { class: "la la-backspace text-warning fs-2" })
                 ),
               ]),
       }),

@@ -35,6 +35,7 @@
     "vue-class-component": "^7.2.6",
     "vue-debounce": "^4.0.0",
     "vue-filepond": "^7.0.3",
+    "vue-jstree": "^2.1.6",
     "vue-query": "^1.26.0",
     "vue-toast-notification": "^3.0.4",
     "vue3-otp-input": "^0.3.6",

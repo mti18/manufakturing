@@ -40,7 +40,7 @@ const useDelete = ({
 const useDownloadPdf = ({
   swalMixin = {
     customClass: {
-      confirmButton: "btn btn-danger btn-sm",
+      confirmButton: "btn btn-success btn-sm",
       cancelButton: "btn btn-secondary btn-sm",
     },
     buttonsStyling: false,

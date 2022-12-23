@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\SalesOrder;
 use App\Models\SalesOrderDetail;
+use App\Models\SatuanJadiChild;
+use App\Models\User;
 use PDF;
 
 
@@ -18,8 +20,9 @@ class SalesOrderController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = SalesOrder::with(['supplier', 'profile', 'diketahui_oleh'])->where(function ($q) use ($request) {
-                $q->where('profile_id', 'LIKE', '%' . $request->search . '%');
+            $courses = SalesOrder::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'detail'])->where(function ($q) use ($request) {
+                $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
+                $q->orwhere('profile_id', 'LIKE', '%' . $request->search . '%');
                 $q->orWhere('supplier_id', 'LIKE', '%' . $request->search . '%');
             })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
@@ -73,44 +76,12 @@ class SalesOrderController extends Controller
                 'netto' => 'nullable|numeric',
             ]);
 
-
             $data['status'] = '1';
             $data['pembayaran'] = ($request->tempo == '0') ? 'yes' : 'no';
             $data = SalesOrder::create($data);
             $data = SalesOrder::where('id', $data->id)->first();
 
-            // foreach($request->detail as $item){
-            //     // $volume = $item['volume'];
-            //     // $barangmentah_id = $item['barangmentah_id'];
-            //     // $barangjadi_id = $item['barangjadi_id'];
-            //     $harga = $item['harga'];
-            //     $diskon = $item['diskon'];
-            //     $jumlah = $item['jumlah'];
-            //     // $keterangan = isset($item['keterangan']) ? $item['keterangan'] : null;
-                
-            //     $harga = str_replace('.', '', $harga);
-            //     $harga = (double)str_replace(',', '.', $harga);
-            //     $data['harga'] = $harga;
-            //     $diskon = str_replace('.', '', $diskon);
-            //     $diskon = (double)str_replace(',', '.', $diskon);
-            //     $data['diskon'] = $diskon;
-            //     $jumlah = str_replace('.', '', $jumlah);
-            //     $jumlah = (double)str_replace(',', '.', $jumlah);
-            //     $data['jumlah'] = $jumlah;
             
-
-            //         SalesOrderDetail::create([
-            //             'volume' => $item['volume'],
-            //             'barangmentah_id' => $item['barangmentah_id'],
-            //             'barangjadi_id' => $item['barangjadi_id'],
-            //             'harga' => $harga,
-            //             'diskon' => $diskon,
-            //             'jumlah' => $jumlah,
-            //             'keterangan' =>  isset($item['keterangan']) ? $item['keterangan'] : null,
-            //             'salesorder_id' => $data->id,
-
-            //         ]);
-            // }
 
             return response()->json(['message' => 'Sales Order berhasil diperbarui', 'data' => $data]);
         } else {
@@ -144,7 +115,7 @@ class SalesOrderController extends Controller
                 'diketahui_oleh' => 'nullable|numeric', 
                 'jumlah_paket' => 'nullable|numeric', 
                 'bukti_pesan' => 'required|string', 
-                'jenis_pembayaran' => 'required|in:Tunai,Cek,Transfer', 
+                'jenis_pembayaran' => 'required|in:Tunai,Cek,Transfer,Free', 
                 'account_id' => 'nullable|numeric',  
                 'tgl_pesan' => 'required|string', 
                 'tgl_pengiriman' => 'required|string', 
@@ -187,7 +158,7 @@ class SalesOrderController extends Controller
                     $harga = $item['harga'];
                     $diskon = $item['diskon'];
                     $jumlah = $item['jumlah'];
-                    
+
                     $harga = str_replace('.', '', $harga);
                     $harga = (double)str_replace(',', '.', $harga);
                     $item['harga'] = $harga;
@@ -197,10 +168,14 @@ class SalesOrderController extends Controller
                     $jumlah = str_replace('.', '', $jumlah);
                     $jumlah = (double)str_replace(',', '.', $jumlah);
                     $item['jumlah'] = $jumlah;
+
+                    // $child = SatuanJadiChild::find($item['satuan']);
+                    // $volume = $item['volume'] * $child->nilai;
+                    // $item['volume'] = $volume;
     
                         SalesOrderDetail::create([
                             'volume' => $item['volume'],
-                            'barangjadi_id' => $item['barangmentah_id'],
+                            'barangmentah_id' => $item['barangmentah_id'],
                             'harga' => $item['harga'],
                             'diskon' => $item['diskon'],
                             'jumlah' => $item['jumlah'],
@@ -225,7 +200,10 @@ class SalesOrderController extends Controller
                     $jumlah = (double)str_replace(',', '.', $jumlah);
                     $item['jumlah'] = $jumlah;
 
-    
+                    $child = SatuanJadiChild::find($item['satuan']);
+                    $volume = $item['volume'] * $child->nilai;
+                    $item['volume'] = $volume;
+
                         SalesOrderDetail::create([
                             'volume' => $item['volume'],
                             'barangjadi_id' => $item['barangjadi_id'],
@@ -309,17 +287,19 @@ class SalesOrderController extends Controller
 
     public function generatepdf1($uuid)
     {
-        $data = SalesOrder::with(['barangjadi', 'barangmentah'])->where('uuid', $uuid)->first();
+        $user = User::find(auth()->user()->id);
+        $data = SalesOrder::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'detail'])->where('uuid', $uuid)->first();
         $no_pemesanan = $data['no_pemesanan'];
-        $pdf = PDF::loadview('laporan.salesorderV1.Index', ['data' => $data]);
-        return $pdf->download('Salesorder - ' . $no_pemesanan . 'pdf');
+        $pdf = PDF::loadview('laporan.salesorderV1.Index', ['data' => $data ,'user' => $user]);
+        return $pdf->download('Salesorder - ' . $no_pemesanan);
     }
 
     public function generatepdf2($uuid)
     {
-        $data = SalesOrder::with(['barangjadi', 'barangmentah'])->where('uuid', $uuid)->first();
+        $user = User::find(auth()->user()->id);
+        $data = SalesOrder::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'detail'])->where('uuid', $uuid)->first();
         $no_pemesanan = $data['no_pemesanan'];
-        $pdf = PDF::loadview('laporan.salesorderV2.Index', ['data' => $data]);
-        return $pdf->download('Salesorder - ' . $no_pemesanan . 'pdf');
+        $pdf = PDF::loadview('laporan.salesorderV2.Index', ['data' => $data, 'user' => $user]);
+        return $pdf->download('Salesorder - ' . $no_pemesanan);
     }
 }

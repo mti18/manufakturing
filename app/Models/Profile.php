@@ -32,6 +32,11 @@ class Profile extends Model
         return $this->belongsTo(Kelurahan::class);
     }
 
+    public function salesorder()
+    {
+        return $this->hasMany(SalesOrder::class);
+    }
+
     public static function booted() {
         parent::boot();
 

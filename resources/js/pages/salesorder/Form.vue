@@ -287,10 +287,12 @@
               required
               autoComplete="off"
               v-model="form.jenis_pembayaran"
+              @change="free()"
             >
               <option value="Tunai">Tunai</option>
               <option value="Cek">Cek</option>
               <option value="Transfer">Transfer</option>
+              <option value="Free">Free</option>
             </select2>
           </div>
           <div class="mb-8" v-if="form.jenis_pembayaran == 'Transfer'">
@@ -304,16 +306,12 @@
               v-model="form.account_id"
             >
               <option disabled>Pilih</option>
-              <option
-                v-for="account in accounts"
-                :value="account.id"
-                :key="account.uuid"
-              >
+              <option v-for="account in account" :value="account.id" :key="id">
                 {{ account.nm_account }}
               </option>
             </select2>
           </div>
-          <div class="mb-8">
+          <div class="mb-8" v-if="form.jenis_pembayaran != 'Free'">
             <label for="code" class="form-label required">
               Jatuh Tempo :
             </label>
@@ -728,6 +726,7 @@
                         autoComplete="off"
                         value="persen"
                         v-model="form.tipe_diskon"
+                        @change="tipediskon()"
                       />
                       Persen (%)
                     </label>
@@ -743,6 +742,7 @@
                         autoComplete="off"
                         value="rupiah"
                         v-model="form.tipe_diskon"
+                        @change="tipediskon()"
                       />
                       Rupiah (Rp)
                     </label>
@@ -854,7 +854,7 @@
             <div class="mb-8">
               <div class="row">
                 <div class="col-md-2">
-                  <label for="code" class="form-labe required"> PPN : </label>
+                  <label for="code" class="form-label required"> PPN : </label>
                 </div>
                 <div class="col-md-10">
                   <div class="input-group">
@@ -973,36 +973,54 @@ export default {
     const { data: users = [] } = useQuery(["users"], () =>
       axios.get("/user/get").then((res) => res.data)
     );
-    const { data: accounts = [] } = useQuery(["accounts"], () =>
-      axios.get("/account/get").then((res) => res.data)
+    const { data: account = [] } = useQuery(["accounts"], () =>
+      axios.get("/masterjurnal/child").then((res) => res.data)
     );
 
     const { data: salesorder = { details: [] }, refetch } = useQuery(
       ["salesorder", selected, "edit"],
       () => {
-        // setTimeout(() => KTApp.block("#form-salesorder"), 100);
+        setTimeout(() => KTApp.block("#form-salesorder"), 100);
         return axios
           .get(`/salesorder/${selected.value}/edit`)
           .then((res) => res.data);
       },
-
       {
-        enabled: !!selected.value,
+        enabled: !!selected,
         cacheTime: 0,
-        onSuccess: ({ data }) => {
-          const datas = { ...data.data };
-          console.log(datas);
-          if (datas.barangjadi.length) {
-            datas.barangjadi.push();
-          }
-          if (datas.barangmentah.length) {
-            datas.barangmentah.push();
-          }
-          form.value = datas;
+        onSuccess: (data) => {
+          form.value = data;
         },
-        onError: (error) => console.log(error),
+        onSettled: () => KTApp.unblock("#form-salesorder"),
       }
     );
+
+    // const { data: salesorder } = useQuery(
+    //   ["salesorder", selected, "edit"],
+    //   () => {
+    //     // setTimeout(() => KTApp.block("#form-salesorder"), 100);
+    //     return axios
+    //       .get(`/salesorder/${selected.value}/edit`)
+    //       .then((res) => res.data);
+    //   },
+
+    //   {
+    //     enabled: !!selected.value,
+    //     cacheTime: 0,
+    //     onSuccess: ({ data }) => {
+    //       console.log(data);
+    //       const datas = { ...data.data };
+    //       if (datas.barangjadi.length) {
+    //         datas.barangjadi.push();
+    //       }
+    //       if (datas.barangmentah.length) {
+    //         datas.barangmentah.push();
+    //       }
+    //       form.value = datas;
+    //     },
+    //     onError: (error) => console.log(error),
+    //   }
+    // );
 
     const { mutate: submit } = useMutation(
       (data) =>
@@ -1045,7 +1063,7 @@ export default {
       barangjadis,
       barangmentahs,
       profiles,
-      accounts,
+      account,
       customers,
       users,
       submit,
@@ -1129,16 +1147,34 @@ export default {
       var app = this;
       var jumlah = 0;
 
-      for (let i = 0; i < app.form.barangmentah.length; i++) {
-        jumlah += parseFloat(app.form.barangmentah[i].jumlah);
-      }
+      if (app.form.jenis_pembayaran == "Free") {
+        app.form.total = 0;
+      } else {
+        for (let i = 0; i < app.form.barangmentah.length; i++) {
+          jumlah += parseFloat(app.form.barangmentah[i].jumlah);
+        }
 
-      for (let i = 0; i < app.form.barangjadi.length; i++) {
-        jumlah += parseFloat(app.form.barangjadi[i].jumlah);
-      }
+        for (let i = 0; i < app.form.barangjadi.length; i++) {
+          jumlah += parseFloat(app.form.barangjadi[i].jumlah);
+        }
 
-      // console.log(jumlah);
-      app.form.total = jumlah;
+        // console.log(jumlah);
+        app.form.total = jumlah;
+      }
+    },
+
+    tipediskon() {
+      var app = this;
+
+      app.form.diskon = 0;
+    },
+
+    free() {
+      var app = this;
+
+      if (app.form.jenis_pembayaran == "Free") {
+        app.form.tempo = 0;
+      }
     },
 
     hitungnetto() {
@@ -1271,10 +1307,24 @@ export default {
         },
       });
     },
+    getAccount() {
+      setTimeout(() => {
+        var app = this;
+        var app = app.form.account_id;
+        axios
+          .get(`masterjurnal/child`)
+          .then((res) => {
+            app.child = res.data;
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
+    },
   },
 
   mounted() {
-    this.clearFormData();
+    // this.clearFormData();
   },
 };
 </script>
