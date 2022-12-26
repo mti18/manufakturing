@@ -106,7 +106,7 @@ class BarangJadiController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = BarangJadi::all();
+            $data = BarangJadi::with('barangsatuanjadi')->get();
             return response()->json($data);
         } else {
             return abort(404);

@@ -30,7 +30,7 @@ return new class extends Migration
                   ->onDelete('restrict');
             $table->integer('jumlah_paket');
             $table->string('bukti_pesan')->nullable(); // no_bukti
-            $table->enum('jenis_pembayaran', ['Tunai', 'Cek', 'Transfer'])->default('Tunai');
+            $table->enum('jenis_pembayaran', ['Tunai', 'Cek', 'Transfer', 'Free'])->default('Tunai');
             $table->integer('account_id')->unsigned()->nullable();
             $table->foreign('account_id')->references('id')->on('accounts')
                   ->onDelete('restrict');

@@ -1,6 +1,7 @@
 <template>
   <section id="main">
     <Form v-if="openForm" :selected="selected" />
+    <Retur v-if="openRetur" :selected="selected" />
     <div class="card">
       <div class="card-header">
         <div class="card-title w-100">
@@ -22,15 +23,6 @@
           url="/salesorder/paginate"
           :columns="columns"
         ></mti-paginate>
-        <div class="collapse" id="detail">
-          <table class="detail">
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-          </table>
-        </div>
       </div>
     </div>
   </section>
@@ -43,16 +35,19 @@ import { createColumnHelper } from "@tanstack/vue-table";
 const columnHelper = createColumnHelper();
 
 import Form from "./Form.vue";
+import Retur from "./Retur.vue";
 import { useDelete, useDownloadPdf } from "@/libs/hooks";
 
 export default {
   components: {
     Form,
+    Retur,
   },
   setup() {
     const queryClient = useQueryClient();
     const selected = ref();
     const openForm = ref(false);
+    const openRetur = ref(false);
 
     const { delete: deletesalesorder } = useDelete({
       onSuccess: () => {
@@ -80,7 +75,7 @@ export default {
         header: "Jatuh Tempo",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("diketahui_oleh.name", {
+      columnHelper.accessor("diketahuioleh.name", {
         header: "User",
         cell: (cell) => cell.getValue(),
       }),
@@ -140,83 +135,114 @@ export default {
       }),
       columnHelper.accessor("uuid", {
         header: "Aksi",
-        cell: (cell) =>
-          openForm.value
-            ? null
-            : h("div", { class: "d-inlineblock gap-2" }, [
-                h(
-                  "button",
-                  {
-                    class: "btn btn-sm btn-icon btn-active-light-primary",
-                    onClick: () =>
-                      downloadPdf(
-                        `/salesorder/${cell.getValue()}/generatepdf1`,
-                        "GET"
-                      ),
-                  },
-                  h("i", { class: "la la-print text-success fs-2" })
-                ),
-                h(
-                  "button",
-                  {
-                    class: "btn btn-sm btn-icon btn-active-light-secondary",
-                    onClick: () =>
-                      downloadPdf(
-                        `/salesorder/${cell.getValue()}/generatepdf1`,
-                        "GET"
-                      ),
-                  },
-                  h("i", { class: "la la-print  fs-2" })
-                ),
+        cell: (cell) => {
+          if (openForm.value && openRetur.value) return null;
+          const status = cell.row.original.status;
 
-                h(
-                  "button",
-                  {
-                    class:
-                      "btn btn-sm btn-icon btn-active-light-secondary btn-arrow",
-                    type: "button",
-                    "data-bs-toggle": "collapse",
-                    "data-bs-target": "#detail",
-                    "aria-expanded": "false",
-                    "aria-controls": "detail",
-                  },
-                  h("i", {
-                    class:
-                      "la la-arrow-circle-down text-primary rotate-90 fs-2",
-                  })
-                ),
+          const buttons = [];
+          if (status === "draft") {
+            buttons.push(
+              h(
+                "button",
+                {
+                  class: "btn btn-sm btn-icon btn-active-light-primary",
+                  onClick: () =>
+                    downloadPdf(
+                      `/salesorder/${cell.getValue()}/generatepdf1`,
+                      "GET"
+                    ),
+                },
+                h("i", { class: "la la-print text-success fs-2" })
+              ),
+              h(
+                "button",
+                {
+                  class: "btn btn-sm btn-icon btn-active-light-secondary",
+                  onClick: () =>
+                    downloadPdf(
+                      `/salesorder/${cell.getValue()}/generatepdf2`,
+                      "GET"
+                    ),
+                },
+                h("i", { class: "la la-print  fs-2" })
+              ),
 
-                h(
-                  "button",
-                  {
-                    class: "btn btn-sm btn-icon btn-active-light-warning",
-                    onClick: () => {
-                      KTUtil.scrollTop();
-                      selected.value = cell.getValue();
-                      openForm.value = true;
-                    },
+              h(
+                "button",
+                {
+                  class:
+                    "btn btn-sm btn-icon btn-active-light-secondary btn-arrow",
+                  type: "button",
+                  "data-bs-toggle": "collapse",
+                  "data-bs-target": "#detail",
+                  "aria-expanded": "false",
+                  "aria-controls": "detail",
+                },
+                h("i", {
+                  class: "la la-arrow-circle-down text-primary rotate-90 fs-2",
+                })
+              ),
+
+              h(
+                "button",
+                {
+                  class: "btn btn-sm btn-icon btn-active-light-warning",
+                  onClick: () => {
+                    KTUtil.scrollTop();
+                    selected.value = cell.getValue();
+                    openForm.value = true;
                   },
-                  h("i", { class: "la la-pencil text-warning fs-2" })
-                ),
-                h(
-                  "button",
-                  {
-                    class: "btn btn-sm btn-icon btn-active-light-danger",
-                    onClick: () => {
-                      deletesalesorder(
-                        `/salesorder/${cell.getValue()}/destroy`
-                      );
-                    },
+                },
+                h("i", { class: "la la-pencil text-warning fs-2" })
+              ),
+              h(
+                "button",
+                {
+                  class: "btn btn-sm btn-icon btn-active-light-danger",
+                  onClick: () => {
+                    deletesalesorder(`/salesorder/${cell.getValue()}/destroy`);
                   },
-                  h("i", { class: "la la-trash text-danger fs-2" })
-                ),
-              ]),
+                },
+                h("i", { class: "la la-trash text-danger fs-2" })
+              ),
+              h(
+                "button",
+                {
+                  class: "btn btn-sm btn-icon btn-active-light-warning",
+                  // onClick: () => {
+                  //   deletesalesorder(
+                  //     `/salesorder/${cell.getValue()}/destroy`
+                  //   );
+                  // },
+                },
+                h("i", { class: "la la-money-bill-wave text-warning fs-2" })
+              ),
+              h(
+                "button",
+                {
+                  class: "btn btn-sm btn-icon btn-active-light-warning",
+                  onClick: () => {
+                    KTUtil.scrollTop();
+                    selected.value = cell.getValue();
+                    openRetur.value = true;
+                  },
+                },
+                h("i", { class: "la la-backspace text-warning fs-2" })
+              )
+            );
+          }
+
+          return h("div", { class: "d-inlineblock gap-2" }, buttons);
+          // h("div", { class: "d-inlineblock gap-2" }, [
+          // ]);
+        },
       }),
     ];
 
     return {
       selected,
       openForm,
+      openRetur,
       columns,
     };
   },
@@ -224,8 +250,8 @@ export default {
 </script>
 
 <style>
-#main #btn-arrow:checked {
+/* #main #btn-arrow:checked {
   transform: rotate(-90deg);
   transition: 1s;
-}
+} */
 </style>

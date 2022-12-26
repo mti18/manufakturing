@@ -35,6 +35,7 @@ return new class extends Migration
             $table->decimal('harga', 12, 2);
             $table->decimal('jumlah', 12, 2);
             $table->text('keterangan')->nullable();
+            
             $table->timestamps();
         });
     }
