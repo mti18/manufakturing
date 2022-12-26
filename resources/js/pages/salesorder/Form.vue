@@ -3,11 +3,7 @@
     <div class="card-header">
       <div class="card-title w-100">
         <h3>
-          {{
-            salesorder?.uuid
-              ? `Edit Sales Order : ${salesorder.name}`
-              : "Tambah Sales Order"
-          }}
+          {{ salesorder?.uuid ? `Edit Sales Order :` : "Tambah Sales Order" }}
         </h3>
         <button
           type="button"
@@ -46,7 +42,7 @@
             </select2>
           </div>
 
-          <div v-if="form.profile_id != ''">
+          <div v-if="form.profile_id != null">
             <div class="mb-8">
               <label for="name" class="form-label"> Provinsi : </label>
               <input
@@ -140,7 +136,7 @@
               </option>
             </select2>
           </div>
-          <div v-if="form.supplier_id != ''">
+          <div v-if="form.supplier_id != null">
             <div class="mb-8">
               <label for="name" class="form-label"> Nomor Telepon : </label>
               <input
@@ -334,6 +330,7 @@
         </div>
         <div class="col-12">
           <button
+            v-if="!isNext"
             type="submit"
             class="btn btn-primary btn-sm me-auto mt-8 d-block"
           >
@@ -348,26 +345,24 @@
   <!-- BUTTON LIST -->
   <div class="card-header kedua">
     <div class="card-title w-100">
-      <button
+      <!-- <button
         type="button"
         class="btn btn-primary btn-sm btn-elevate btn-icon-sm me-2"
         @click="($parent.openForm = false), ($parent.selected = undefined)"
       >
         <i class="las la-camera-retro"></i>
         Scan QR Code
-      </button>
+      </button> -->
       <button
         type="button"
-        class="btn btn-primary btn-sm btn-elevate btn-icon-sm"
-        @click="($parent.openForm = false), ($parent.selected = undefined)"
+        class="btn btn-primary btn-sm btn-elevate btn-icon-sm ms-2"
       >
         <i class="las la-pen"></i>
         Typing Code
       </button>
       <button
         type="button"
-        class="btn btn-primary btn-sm btn-elevate btn-icon-sm pojok"
-        @click="($parent.openForm = false), ($parent.selected = undefined)"
+        class="btn btn-primary btn-sm btn-elevate btn-icon-sm ms-2"
       >
         <i class="las la-copy"></i>
         Salin Pesanan
@@ -485,7 +480,7 @@
               </td>
               <td>
                 <money3
-                  v-model="item.harga"
+                  v-model.number="item.harga"
                   id="harga"
                   class="form-control"
                   type="text"
@@ -497,7 +492,7 @@
               </td>
               <td>
                 <money3
-                  v-model="item.diskon"
+                  v-model.number="item.diskon"
                   id="diskon"
                   class="form-control"
                   type="text"
@@ -509,7 +504,7 @@
               </td>
               <td>
                 <money3
-                  v-model="item.jumlah"
+                  v-model.number="item.jumlah"
                   id="jumlah"
                   class="form-control"
                   type="text"
@@ -605,7 +600,7 @@
               </td>
               <td>
                 <money3
-                  v-model="item.harga"
+                  v-model.number="item.harga"
                   id="harga"
                   class="form-control"
                   type="text"
@@ -617,7 +612,7 @@
               </td>
               <td>
                 <money3
-                  v-model="item.diskon"
+                  v-model.number="item.diskon"
                   id="diskon"
                   class="form-control"
                   type="text"
@@ -629,7 +624,7 @@
               </td>
               <td>
                 <money3
-                  v-model="item.jumlah"
+                  v-model.number="item.jumlah"
                   id="jumlah"
                   class="form-control"
                   type="text"
@@ -699,7 +694,7 @@
                       <span class="input-group-text">Rp</span>
                     </div>
                     <money3
-                      v-model="form.total"
+                      v-model.number="form.total"
                       id="total"
                       class="form-control"
                       type="text"
@@ -785,7 +780,7 @@
                       name="diskon"
                       @input="hitungnetto()"
                       v-bind="config"
-                      v-model="form.diskon"
+                      v-model.number="form.diskon"
                       required
                     ></money3>
                   </div>
@@ -813,11 +808,11 @@
                       <span class="input-group-text">Rp</span>
                     </div>
                     <money3
-                      v-model="form.uang_muka"
-                      id="uang_muka"
+                      v-model.number="form.uangmuka"
+                      id="uangmuka"
                       class="form-control"
                       type="text"
-                      name="uang_muka"
+                      name="uangmuka"
                       @input="hitungnetto()"
                       v-bind="config"
                       required
@@ -887,7 +882,7 @@
                       <span class="input-group-text">Rp</span>
                     </div>
                     <money3
-                      v-model="form.netto"
+                      v-model.number="form.netto"
                       id="netto"
                       class="form-control"
                       type="text"
@@ -923,11 +918,8 @@ import { useQuery, useMutation } from "vue-query";
 import axios from "@/libs/axios";
 import { useQueryClient } from "vue-query";
 import { Money3Component } from "v-money3";
-import { Money3Directive } from "v-money3";
-
 export default {
   components: { money3: Money3Component },
-  directives: { money3: Money3Directive },
   data() {
     return {
       profile_so: {},
@@ -955,8 +947,11 @@ export default {
   },
   setup(props) {
     const queryClient = useQueryClient();
-    const form = ref({});
+    const form = ref({
+      barangmentah: [],
+    });
     const selected = ref(props.selected);
+    const isNext = ref(false);
 
     const { data: profiles = [] } = useQuery(["profiles"], () =>
       axios.get("/profile/get").then((res) => res.data)
@@ -1071,6 +1066,7 @@ export default {
       queryClient,
       selected,
       refetch,
+      isNext,
     };
   },
   methods: {
@@ -1117,8 +1113,8 @@ export default {
       app.form.barangjadi[index].nilaitotal = volume * nilai;
 
       // var jumlah =
-      //   volume * nilai * parseFloat(app.form.barangjadi[index].harga) -
-      //   parseFloat(app.form.barangjadi[index].diskon);
+      //   volume * nilai * app.form.barangjadi[index].harga) -
+      //   app.form.barangjadi[index].diskon);
 
       // app.form.barangjadi[index].jumlah = jumlah;
     },
@@ -1127,8 +1123,8 @@ export default {
       var app = this;
       var jumlah =
         app.form.barangjadi[index].nilaitotal *
-          parseFloat(app.form.barangjadi[index].harga) -
-        parseFloat(app.form.barangjadi[index].diskon);
+          app.form.barangjadi[index].harga -
+        app.form.barangjadi[index].diskon;
 
       app.form.barangjadi[index].jumlah = jumlah;
     },
@@ -1136,8 +1132,8 @@ export default {
     hitungbarangmentah(index) {
       var app = this;
       var jumlah =
-        parseFloat(app.form.barangmentah[index].harga) -
-        parseFloat(app.form.barangmentah[index].diskon);
+        app.form.barangmentah[index].harga -
+        app.form.barangmentah[index].diskon;
 
       app.form.barangmentah[index].jumlah = jumlah;
       // app.form.total = app.form.barangjadi[index].jumlah;
@@ -1151,11 +1147,11 @@ export default {
         app.form.total = 0;
       } else {
         for (let i = 0; i < app.form.barangmentah.length; i++) {
-          jumlah += parseFloat(app.form.barangmentah[i].jumlah);
+          jumlah += app.form.barangmentah[i].jumlah;
         }
 
         for (let i = 0; i < app.form.barangjadi.length; i++) {
-          jumlah += parseFloat(app.form.barangjadi[i].jumlah);
+          jumlah += app.form.barangjadi[i].jumlah;
         }
 
         // console.log(jumlah);
@@ -1182,21 +1178,20 @@ export default {
       // console.log(app.form);
 
       if (app.form.tipe_diskon == "persen") {
-        var uang_muka =
-          parseFloat(app.form.total) -
-          (parseFloat(app.form.total) * parseFloat(app.form.diskon)) / 100 -
-          parseFloat(app.form.uang_muka);
+        var uangmuka =
+          app.form.total -
+          (app.form.total * app.form.diskon) / 100 -
+          app.form.uangmuka;
 
-        var pph = uang_muka + (uang_muka * parseFloat(app.form.pph)) / 100;
-        var ppn = pph + (pph * parseFloat(app.form.ppn)) / 100;
+        var pph = uangmuka + (uangmuka * app.form.pph) / 100;
+        var ppn = pph + (pph * app.form.ppn) / 100;
 
         app.form.netto = ppn;
-      } else {
-        var uang_muka =
-          (parseFloat(app.form.total) - parseFloat(app.form.diskon) || 0) -
-          parseFloat(app.form.uang_muka);
-        var pph = uang_muka + (uang_muka * parseFloat(app.form.pph)) / 100;
-        var ppn = pph + (pph * parseFloat(app.form.ppn)) / 100;
+      } else if (app.form.tipe_diskon == "rupiah") {
+        var uangmuka =
+          app.form.total - app.form.diskon || 0 - app.form.uangmuka;
+        var pph = uangmuka + (uangmuka * app.form.pph) / 100;
+        var ppn = pph + (pph * app.form.ppn) / 100;
 
         app.form.netto = ppn;
       }
@@ -1286,6 +1281,7 @@ export default {
     },
     onSubmit() {
       const vm = this;
+      vm.isNext = true;
       vm.form.detail = {
         barangmentah: vm.form.barangmentah ?? [],
         barangjadi: vm.form.barangjadi ?? [],

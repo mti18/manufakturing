@@ -14,8 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('sales_orders', function (Blueprint $table) {
-            $table->string('no_pemesanan');
-
+            $table->enum('acc_pimpinan', ['N', 'Y'])->default('N');
         });
     }
 
@@ -27,8 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('sales_orders', function (Blueprint $table) {
-            $table->dropColumn('no_pemesanan');
-
+            $table->dropColumn('acc_pimpinan');
         });
     }
 };

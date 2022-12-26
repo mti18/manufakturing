@@ -37,11 +37,11 @@ class SalesOrder extends Model
 
     public function barangjadi() 
     {
-        return $this->belongsToMany(BarangJadi::class,'sales_order_detail', 'salesorder_id', 'barangjadi_id');
+        return $this->belongsToMany(BarangJadi::class,'sales_order_details', 'salesorder_id', 'barangjadi_id');
     }
     public function barangmentah() 
     {
-        return $this->belongsToMany(BarangJadi::class,'sales_order_detail', 'salesorder_id', 'barangmentah_id');
+        return $this->belongsToMany(BarangJadi::class,'sales_order_details', 'salesorder_id', 'barangmentah_id');
     }
 
     public function detail()
