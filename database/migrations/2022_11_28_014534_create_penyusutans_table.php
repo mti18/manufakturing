@@ -13,16 +13,20 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('assets', function (Blueprint $table) {
+        Schema::create('penyusutans', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->string('nm_assets');
-            $table->year('tahun');
-            $table->bigInteger('kelompok_id')->unsigned();
-            $table->foreign('kelompok_id')->references('id')->on('kelompoks')->onDelete('cascade');
             
-          
-            $table->integer('jumlah')->default('1');
+            $table->bigInteger('asset_id')->unsigned();
+            $table->foreign('asset_id')->references('id')->on('asset_jurnals')
+                ->onDelete('cascade');
+
+            $table->integer('masterjurnal_id')->unsigned();
+            $table->foreign('masterjurnal_id')->references('id')->on('master_jurnals')
+                ->onDelete('cascade');
+
+            $table->date('tanggal');
+
             $table->timestamps();
         });
     }
@@ -34,6 +38,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('assets');
+        Schema::dropIfExists('penyusutans');
     }
 };

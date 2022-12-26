@@ -28,10 +28,11 @@ class JenisAssetController extends Controller
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
                 'nama' => 'required',
+                'account_id' => 'required',
             ]);
             JenisAsset::create($data);
 
-            return response()->json(['message' => 'Jabatan berhasil diperbarui']);
+            return response()->json(['message' => 'Jenis Asset berhasil diperbarui']);
         } else {
             return abort(404);
         }
@@ -48,7 +49,7 @@ class JenisAssetController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = JenisAsset::where('uuid', $uuid)->first();
+            $data = JenisAsset::where('id', $uuid)->with(['assetdetail','profile'])->first();
             return response()->json($data);
         } else {
             return abort(404);

@@ -15,6 +15,16 @@ class Profile extends Model
      'provinsi_id', 'kab_kota_id', 'kecamatan_id', 'kelurahan_id'];
     protected $hidden = [ 'created_at', 'updated_at'];
 
+    public function assetdetail()
+    {
+        return $this->hasMany('\App\Models\Asset', 'profile_id');
+    }
+
+    public function jenisasset()
+    {
+        return $this->hasMany(JenisAsset::class, 'id');
+    }
+
     public function provinsi()
     {
         return $this->belongsTo(Provinsi::class);

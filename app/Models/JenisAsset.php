@@ -12,5 +12,14 @@ class JenisAsset extends Model
     use Uuid;
 
     public $table = "jenisassets";
-    protected $fillable = ['uuid', 'nama'];
+    protected $fillable = ['uuid', 'nama', 'account_id'];
+
+    public function assetdetail()
+    {
+        return $this->hasMany('\App\Models\Asset', 'jenisasset_id');
+    }
+    public function profile()
+    {
+        return $this->belongsTo('\App\Models\Profile', 'profile_id');
+    }
 }

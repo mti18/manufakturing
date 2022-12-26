@@ -10,8 +10,8 @@
       </div>
       <div class="card-body">
         <mti-paginate
-          id="table-profile"
-          url="/profile/paginate"
+          id="table-asset"
+          url="/asset/paginateprofile"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -49,11 +49,11 @@ export default {
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("nama", {
-        header: "Profil",
+        header: "Nama Profile",
         cell: (cell) => cell.getValue(),
       }),
 
-      columnHelper.accessor("uuid", {
+      columnHelper.accessor("id", {
         header: "Aksi",
         cell: (cell) =>
           openForm.value
@@ -66,6 +66,7 @@ export default {
                     onClick: () => {
                       selected.value = cell.getValue();
                       openAsset.value = true;
+                      console.log(cell.getValue())
                       return;
                     },
                   },

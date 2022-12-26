@@ -23,6 +23,26 @@
               <input type="text" name="nama" id="nama" placeholder="Nama"
                 class="form-control" required autoComplete="off" v-model="form.nama" />
             </div>
+            <div class="mb-8">
+              <label for="name" class="form-label required"> Account: </label>
+              <select2
+              class="form-control"
+              name="account_id"
+              placeholder="Pilih Account"
+              id="account"
+              v-model="form.account_id"
+              required
+            > 
+              <option value="" disabled>Pilih Account</option>
+              <option
+                v-for="item in account"
+                :value="item.id" :key="item.uuid"
+              >
+              {{ item.nm_account }}
+              </option>
+             
+            </select2>
+            </div>
           </div>
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-sm ms-auto mt-8 d-block">
@@ -52,9 +72,10 @@
       const queryClient = useQueryClient();
       const form = ref({});
 
-      const { data: accounts  } = useQuery(["accounts"], () =>
-      axios.get("/account/get").then((res) => res.data)
+      const { data: account } = useQuery(["accounts"], () =>
+      axios.get("/masterjurnal/child").then((res) => res.data)
     );
+    
   
       const { data: jenisasset } = useQuery(
         ["jenisasset", selected, "edit"],
@@ -84,7 +105,7 @@
   
       return {
         jenisasset,
-        accounts,
+        account,
         submit,
         form,
         queryClient
@@ -105,7 +126,21 @@
             vm.queryClient.invalidateQueries(["/jenisasset/paginate"], { exact: true });
           }
         });
-      }
+      },
+      getAccount() {
+      setTimeout(() => {
+        var app = this;
+        var app = app.form.account_id;
+        axios
+          .get(`masterjurnal/child`)
+          .then((res) => {
+            app.child= res.data;
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
+    },
     }
   };
   </script>

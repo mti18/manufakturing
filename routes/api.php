@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetGroupController;
+use App\Http\Controllers\AssetJurnalController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\BulanController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\GolonganController;
 use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\MasterJurnalController;
 use App\Http\Controllers\NeracaSaldoController;
+use App\Http\Controllers\PenyusutanController;
 use App\Http\Controllers\TahunController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -321,6 +323,8 @@ Route::prefix('v1')->group(function () {
             Route::prefix('asset')->group(function () {
                 Route::get('get', [AssetController::class, 'get']);
                 Route::post('paginate', [AssetController::class, 'paginate']);
+                Route::post('paginatejenisasset', [AssetController::class, 'paginatejenisasset']);
+                Route::post('paginateprofile', [AssetController::class, 'paginateprofile']);
                 Route::post('store', [AssetController::class, 'store']);
                 Route::get('{uuid}/edit', [AssetController::class, 'edit']);
                 Route::post('{uuid}/update', [AssetController::class, 'update']);
@@ -364,6 +368,25 @@ Route::prefix('v1')->group(function () {
                 Route::delete('{uuid}/destroy', [AssetGroupController::class, 'destroy']);
             }
             );
+            Route::prefix('assetjurnal')->group(function () {
+                Route::get('show', [AssetJurnalController::class, 'get']);
+                Route::post('paginate', [AssetJurnalController::class, 'paginate']);
+                Route::post('store', [AssetJurnalController::class, 'store']);
+                Route::get('{uuid}/edit', [AssetJurnalController::class, 'edit']);
+                Route::post('{uuid}/update', [AssetJurnalController::class, 'update']);
+                Route::delete('{uuid}/destroy', [AssetJurnalController::class, 'destroy']);
+            }
+            );
+            Route::prefix('penyusutan')->group(function () {
+                Route::get('show', [PenyusutanController::class, 'get']);
+                Route::post('paginate', [PenyusutanController::class, 'paginate']);
+                Route::post('store', [PenyusutanController::class, 'store']);
+                Route::post('susutkan', [PenyusutanController::class, 'susutkan']);
+                Route::get('{uuid}/edit', [PenyusutanController::class, 'edit']);
+                Route::post('{uuid}/update', [PenyusutanController::class, 'update']);
+                Route::delete('{uuid}/destroy', [PenyusutanController::class, 'destroy']);
+            }
+            );
             Route::prefix('salesorder')->group(function () {
                 Route::get('get', [SalesOrderController::class, 'get']);
                 Route::post('paginate', [SalesOrderController::class, 'paginate']);
@@ -391,11 +414,13 @@ Route::prefix('v1')->group(function () {
             );
             Route::prefix('bukubesar')->group(function () {
                 Route::post('paginate/{bulan}/{tahun}', [BukuBesarController::class, 'paginate']);
+                Route::get('reportbukubesar/{bulan}/{tahun}', [BukuBesarController::class, 'ReportBukuBesar']);
             }
             
             );
             Route::prefix('neraca')->group(function () {
                 Route::get('neraca/{bulan}/{tahun}/{type}', [NeracaSaldoController::class, 'neraca']);
+                
             }
             
             );

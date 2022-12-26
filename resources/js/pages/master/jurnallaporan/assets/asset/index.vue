@@ -12,7 +12,7 @@
           </div>
         </div>
         <div class="card-body">
-          <mti-paginate id="table-position" url="/asset/paginate" :columns="columns"></mti-paginate>
+          <mti-paginate id="table-position" url="/assetjurnal/paginate" :columns="columns"></mti-paginate>
         </div>
       </div>
     </section>
@@ -37,7 +37,7 @@
       
       const { delete: deleteasset } = useDelete({
         onSuccess: () => {
-          queryClient.invalidateQueries(["/asset/paginate"]);
+          queryClient.invalidateQueries(["/assetjurnal/paginate"]);
         }
       })
   
@@ -67,7 +67,7 @@
                 openForm.value = true;
               }}, h('i', { class: 'la la-pencil fs-2' })), 
               h('button', { class: 'btn btn-sm btn-icon btn-danger', onClick: () => {
-                deleteasset(`/asset/${cell.getValue()}/destroy`);
+                deleteasset(`/assetjurnal/${cell.getValue()}/destroy`);
               }}, h('i', { class: 'la la-trash fs-2' }))
             ]),
         }),

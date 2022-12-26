@@ -4,9 +4,9 @@
       <div class="card-title w-100">
         <h3>
           {{
-            kelompok?.uuid
-              ? `Edit Jabatan : ${kelompok.name}`
-              : "Tambah Jabatan"
+            kelompoks ?.uuid
+              ? `Edit kelompok : ${kelompok.name}`
+              : "Tambah kelompok"
           }}
         </h3>
         <button

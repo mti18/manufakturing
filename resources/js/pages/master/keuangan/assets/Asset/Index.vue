@@ -21,7 +21,7 @@
       <div class="card-body">
         <mti-paginate
           id="table-jenisasset"
-          url="/jenisasset/paginate"
+          url="/asset/paginatejenisasset"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -57,11 +57,11 @@ export default {
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("nama", {
-        header: "Profil",
+        header: "Jenis Asset",
         cell: (cell) => cell.getValue(),
       }),
 
-      columnHelper.accessor("uuid", {
+      columnHelper.accessor("id", {
         header: "Aksi",
         cell: (cell) =>
           openForm.value

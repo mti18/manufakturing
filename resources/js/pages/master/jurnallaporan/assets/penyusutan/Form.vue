@@ -1,9 +1,9 @@
 <template>
-    <form class="card mb-12" id="form-golongan" @submit.prevent="onSubmit">
+    <form class="card mb-12" id="form-penyusutan" @submit.prevent="onSubmit">
       <div class="card-header">
         <div class="card-title w-100">
           <h3>
-            {{ golongan?.uuid ? `Edit Golongan : ${golongan.nm_golongan}` : "Tambah Golongan"  }}
+            {{ penyusutan?.uuid ? `Edit Penyusutan : ` : "Tambah Penyusutan"  }}
           </h3>
           <button
             type="button"
@@ -105,34 +105,36 @@
       const queryClient = useQueryClient();
       const form = ref({});
   
-      const { data: golongan } = useQuery(
-        ["golongan", selected, "edit"],
+      const { data: penyusutan } = useQuery(
+        ["penyusutan", selected, "edit"],
         () => {
-          setTimeout(() => KTApp.block("#form-golongan"), 100);
-          return axios.get(`/golongan/${selected}/edit`).then((res) => res.data);
+          setTimeout(() => KTApp.block("#form-penyusutan"), 100);
+          return axios.get(`/penyusutan/${selected}/edit`).then((res) => res.data);
         },
         {
           enabled: !!selected,
           cacheTime: 0,
           onSuccess: data => form.value = data,
-          onSettled: () => KTApp.unblock("#form-golongan"),
+          onSettled: () => KTApp.unblock("#form-penyusutan"),
         }
       );
+     
   
-      const { mutate: submit } = useMutation((data) => axios.post(selected ? `/golongan/${selected}/update` : '/golongan/store', data).then(res => res.data), {
+      const { mutate: submit } = useMutation((data) => axios.post(selected ? `/penyusutan/${selected}/update` : '/penyusutan/store', data).then(res => res.data), {
         onMutate: () => {
-          KTApp.block("#form-golongan");
+          KTApp.block("#form-penyusutan");
         },
         onError: (error) => {
           toastr.error(error.response.data.message);
         },
         onSettled: () => {
-          KTApp.unblock("#form-golongan");
+          KTApp.unblock("#form-penyusutan");
         }
       });
   
       return {
-        golongan,
+
+        penyusutan,
         submit,
         form,
         queryClient
@@ -144,13 +146,13 @@
       },
       onSubmit() {
         const vm = this;
-        const data = new FormData(document.getElementById("form-golongan"));
+        const data = new FormData(document.getElementById("form-penyusutan"));
         this.submit(data, {
           onSuccess: (data) => {
             toastr.success(data.message);
             vm.$parent.openForm = false;
             vm.$parent.selected = undefined;
-            vm.queryClient.invalidateQueries(["/golongan/paginate"], { exact: true });
+            vm.queryClient.invalidateQueries(["/penyusutan/paginate"], { exact: true });
           }
         });
       }
