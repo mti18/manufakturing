@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('sales_order_detail', function (Blueprint $table) {
+        Schema::table('sales_order_details', function (Blueprint $table) {
             $table->dropColumn('uuid');
         });
     }
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('sales_order_detail', function (Blueprint $table) {
+        Schema::table('sales_order_details', function (Blueprint $table) {
             $table->uuid('uuid')->unique();
         });
     }

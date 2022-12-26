@@ -73,9 +73,9 @@
             <div class="mb-8">
               <label class="form-label required"> No Surat : </label>
               <div class="input-group">
-                <!-- <div class="input-group-prepend">
+                <div class="input-group-prepend">
                   <span class="input-group-text" @change="nomor($event)">{{ nomor }}</span>
-                </div> -->
+                </div>
                 <input type="text" class="form-control" name="no_surat" required v-model="form.no_surat" placeholder="No Surat">
               </div>
             </div>
@@ -149,7 +149,7 @@
               <select2 name="account_id" id="account_id"
                 class="form-control" autoComplete="off" v-model="form.account_id" >
                 <option disabled>Pilih</option>
-                <option v-for="account in accounts" :value="account.id">{{ account.nm_account }}</option>
+                <option v-for="account in account" :value="account.id" :key="id" >{{ account.nm_account }}</option>
               </select2>
             </div>
             <div class="mb-8">
@@ -464,7 +464,7 @@
             <div class="mb-8">
               <label class="form-label"> Keterangan : </label>
               <textarea rows="10" name="keterangan" id="keterangan" placeholder="Keterangan"
-                class="form-control" autoComplete="off" v-model="form.keterangan" >
+                class="form-control"  autoComplete="off" v-model="form.keterangan" >
               </textarea>
             </div>
           </div>
@@ -535,8 +535,8 @@
                   <div class="col-md-10">
                     <div class="input-group">
                       <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
-                      <money3 type="text" name="uangmuka" id="uangmuka" v-bind="config"
-                        class="form-control" required autoComplete="off" v-model="form.uangmuka" />
+                      <money3 type="text" name="uang_muka" id="uang_muka" v-bind="config"
+                        class="form-control" required autoComplete="off" v-model="form.uang_muka" />
                     </div>
                   </div>
                 </div>
@@ -673,13 +673,15 @@
         barangmentah: [],
         barangjadi: []
       });
+      const { data: account } = useQuery(["accounts"], () => axios.get("/masterjurnal/child").then((res) => res.data), {
+      });
       const selected = ref(props.selected);
 
       const { data: pembelian = {details: []}, refetch } = useQuery(
         ["pembelian", selected, "edit"],
         () => {
           // setTimeout(() => KTApp.block("#form-pembelian"), 100);
-          return axios.get(`/pembelian/${selected.value}/edit`).then((res) => res.data);
+          return axios.get(`/pembelianinternal/${selected.value}/edit`).then((res) => res.data);
         },
         {
           enabled: !!selected.value,
@@ -699,7 +701,7 @@
         }
       );
   
-      const { mutate: submit } = useMutation((data) => axios.post(selected.value ? `/pembelian/${selected.value}/update` : '/pembelian/store', data).then(res => res.data), {
+      const { mutate: submit } = useMutation((data) => axios.post(selected.value ? `/pembelianinternal/${selected.value}/update` : '/pembelianinternal/store', data).then(res => res.data), {
         onMutate: () => {
           KTApp.block("#form-pembelian");
         },
@@ -722,41 +724,23 @@
       });
 
   
-      const { data: profiles } = useQuery(["profiles"], () => 
-        axios.get("/profile/get").then((res) => res.data)
-      );
-      const { data: suppliers } = useQuery(["suppliers"], () => 
-        axios.get("/supplier/get").then((res) => res.data)
-      );
-      const { data: users } = useQuery(["users"], () => 
-        axios.get("/user/get").then((res) => res.data)
-      );
-      const { data: accounts } = useQuery(["accounts"], () => 
-        axios.get("/account/getdata").then((res) => res.data)
-      );
-      const { data: barangjadis = [] } = useQuery(["barang_jadis"], () =>
-        axios.get("/barangjadi/get").then((res) => res.data)
-      );
-      const { data: barangmentahs = [] } = useQuery(["barang_mentahs"], () =>
-        axios.get("/barangmentah/get").then((res) => res.data)
-      );
-
-
-      // const { data: permintaanbarangjadis = [] } = useQuery(["permintaan_barangs"], () =>
-      //   axios.get("/permintaan/getBJ").then((res) => res.data)
-      // );
-      // const { data: permintaanbarangmentahs = [] } = useQuery(["permintaan_barangs"], () =>
-      //   axios.get("/permintaan/getBM").then((res) => res.data)
-      // );
+      const { data: profiles } = useQuery(["profiles"], () => axios.get("/profile/get").then((res) => res.data), {
+      placeholderData: []
+      });
+      const { data: suppliers } = useQuery(["suppliers"], () => axios.get("/supplier/get").then((res) => res.data), {
+      placeholderData: []
+      });
+      const { data: users } = useQuery(["users"], () => axios.get("/user/get").then((res) => res.data), {
+      placeholderData: []
+      });
+     
 
       return {
         pembelian,
         profiles,
-        accounts,
+        account,
         suppliers,
         users,
-        barangjadis,
-        barangmentahs,
         submit,
         form,
         queryClient,
@@ -845,15 +829,15 @@
           barangjadi: vm.form.barangjadi ?? [],
         };
 
-        // const data = new FormData(document.getElementById("form-pembelian"));
-        this.submit(vm.form, {
+        const data = new FormData(document.getElementById("form-pembelian"));
+        this.submit(data, {
           onSuccess: (data) => {
             toastr.success(data.message);
-            // vm.selected = data.data.uuid;
+            vm.selected = data.data.uuid;
             vm.$parent.openForm = true;
             vm.$parent.selected = undefined;
             vm.refetch();
-            vm.queryClient.invalidateQueries(["/pembelian/paginate"], { exact: true });
+            vm.queryClient.invalidateQueries(["/pembelianinternal/paginate"], { exact: true });
           }
         });
       },
@@ -871,7 +855,7 @@
       if (this.type == "store") {
         if (codes != "") {
           vm.kode =
-            vm.nomor + "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.bulan + "/" + vm.tahun;
+            "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.bulan + "/" + vm.tahun;
           vm.form.no_surat = vm.kode;
           $(".codes").val(vm.kode);
         } else {
@@ -882,7 +866,7 @@
       } else {
         if (codes != "") {
           vm.kode =
-            vm.nomor + "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.bulan + "/" + vm.tahun;
+            "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.bulan + "/" + vm.tahun;
           vm.form.no_surat = vm.kode;
             $(".codes").val(vm.kode);
           } else {
@@ -940,8 +924,23 @@
             console.log(err);
           });
       },
+      getAccount() {
+      setTimeout(() => {
+        var app = this;
+        var app = app.form.account_id;
+        axios
+          .get(`masterjurnal/child`)
+          .then((res) => {
+            app.child= res.data;
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
+    },
     },
     mounted() {
+      
       if (!this.selected) {
         this.getnomor();
         this.getbulan();

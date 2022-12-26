@@ -105,38 +105,44 @@
           },
           cell: (cell) => cell.getValue(),
         }),
+        columnHelper.accessor("tipe_barang", {
+          header: "Tipe Barang",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("nm_barang", {
+          header: "Nama Barang",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("tanggal", {
+          header: "Tanggal",
+          cell: (cell) => cell.getValue(),
+        }),
         columnHelper.accessor("volume", {
-          header: "Nama",
+          header: "Volume",
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("harga", {
-          header: "Kode",
+          header: "Harga",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("jumlah", {
+          header: "Jumlah",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("keterangan", {
+          header: "Keterangan",
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("uuid", {
           header: "Aksi",
           cell: (cell) =>
-            openFormPembelian.value
-              ? null
-              : h("div", { class: "d-flex gap-2" }, [
-                  h(
-                    "button",
-                    {
-                      class: "btn btn-sm btn-icon btn-warning",
-                      onClick: () => {
-                        KTUtil.scrollTop();
-                        selected.value = cell.getValue();
-                        openFormPembelian.value = true;
-                      },
-                    },
-                    h("i", { class: "la la-pencil fs-2" })
-                  ),
+                h("div", { class: "d-flex gap-2" }, [
                   h(
                     "button",
                     {
                       class: "btn btn-sm btn-icon btn-danger",
                       onClick: () => {
-                        deletepermintaan_barang(`/permintaan_barang/${cell.getValue()}/destroy`);
+                        deletepermintaan_barang(`/permintaan/${cell.getValue()}/destroy`);
                       },
                     },
                     h("i", { class: "la la-trash fs-2" })

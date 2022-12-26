@@ -15,12 +15,33 @@ class PermintaanBarangController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = PermintaanBarang::where('tipe', 'pembelian')->where(function ($q) use ($request) {
+            $courses = PermintaanBarang::with(['barang_jadi',  'barang_mentah'])->where('tipe', 'pembelian')->where(function ($q) use ($request) {
                 $q->where('volume', 'LIKE', '%' . $request->search . '%');
                 // $q->orWhere('nm_provinsi', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
+            $courses->map(function ($a)
+            {
+                if ($a->tipe_barang == "barang_mentah") {
+                    $a->nm_barang = $a->barang_mentah->nm_barangmentah;
+                } elseif ($a->tipe_barang == "barang_jadi") {
+                    $a->nm_barang = $a->barang_jadi->nm_barang_jadi;
+                }
 
+                if ($a->tipe_barang == "barang_mentah") {
+                    $a->tipe_barang ='Barang Mentah';
+                } elseif ($a->tipe_barang == "barang_jadi") {
+                    $a->tipe_barang ='Barang Jadi';
+                }
+
+                if (!empty($a->keterangan)) {
+                    $a->keterangan = $a->keterangan;
+                } else {
+                    $a->keterangan = '-';
+                }
+
+
+            });
 
             return response()->json($courses);
         } else {
@@ -54,7 +75,25 @@ class PermintaanBarangController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = PermintaanBarang::all();
+            $data = PermintaanBarang::where('tipe', 'pembelian')->get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function getBJ() {
+        if (request()->wantsJson()) {
+            $data = PermintaanBarang::where('tipe', 'pembelian')->where('tipe_barang', 'barang_jadi')->get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function getBM() {
+        if (request()->wantsJson()) {
+            $data = PermintaanBarang::where('tipe', 'pembelian')->where('tipe_barang', 'barang_mentah')->get();
             return response()->json($data);
         } else {
             return abort(404);

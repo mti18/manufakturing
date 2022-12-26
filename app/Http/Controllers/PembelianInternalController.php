@@ -8,7 +8,7 @@ use App\Models\Pembelian;
 use Carbon\Carbon;
 use App\Helpers\AppHelper;
 
-class PembelianController extends Controller
+class PembelianInternalController extends Controller
 {
     public function paginate(Request $request) {
         if (request()->wantsJson()) {
@@ -16,7 +16,7 @@ class PembelianController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = Pembelian::with('supplier', 'diketahui_oleh', 'profile')->where(function ($q) use ($request) {
+            $courses = Pembelian::with('supplier', 'diketahui_oleh')->where('tipe', '2')->where(function ($q) use ($request) {
                 $q->where('supplier_id', 'LIKE', '%' . $request->search . '%');
                 $q->orWhere('account_id', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
@@ -52,10 +52,9 @@ class PembelianController extends Controller
                 'ppn'  => 'nullable||numeric', 
                 'netto' => 'nullable||numeric',
             ]);
-            $data['tipe'] = '1'; // (1) Pembelian // (2) Pembelian Internal
+            $data['tipe'] = '2';    // (1) Pembelian // (2) Pembelian Internal
             $data = Pembelian::create($request->all());
-            $data = Pembelian::where('id', $data->id)->first();
-            // $data = Pembelian::with(['details'])->where('id', $data->id)->first();
+            $data = Pembelian::with(['details'])->where('id', $data->id)->first();
 
             return response()->json(['message' => 'Data pembelian berhasil diperbarui', 'data' => $data]);
         } else {
@@ -65,7 +64,7 @@ class PembelianController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = Pembelian::all();
+            $data = Pembelian::where('tipe', '2')->get();
             return response()->json($data);
         } else {
             return abort(404);
@@ -94,9 +93,9 @@ class PembelianController extends Controller
                 'diketahui_oleh' => 'nullable|string',
                 'tgl_po' => 'required|string',
                 'jenis_pembayaran' => 'required',
-                'no_po_pembelian' => 'required|string',
+                'no_po_pembelian' => 'required|integer',
                 'account_id' => 'nullable|integer',
-                'no_surat_jalan' => 'required|string',
+                'no_surat_jalan' => 'required|integer',
                 'tempo' => 'required|numeric',
                 'keterangan' => 'string|nullable',
                 'jml_penjualan' => 'nullable|numeric',
@@ -106,28 +105,8 @@ class PembelianController extends Controller
                 'ppn'  => 'nullable|numeric', 
                 'netto' => 'nullable|numeric',
             ]);
-
-            $jml_penjualan = $data['jml_penjualan'];
-            $diskon = $data['diskon'];
-            $uangmuka = $data['uangmuka'];
-            $netto = $data['netto'];
-
-            $jml_penjualan = str_replace('.', '', $jml_penjualan);
-            $jml_penjualan = (double)str_replace(',', '.', $jml_penjualan);
-            $data['jml_penjualan'] = $jml_penjualan;
-            $diskon = str_replace('.', '', $diskon);
-            $diskon = (double)str_replace(',', '.', $diskon);
-            $data['diskon'] = $diskon;
-            $uangmuka = str_replace('.', '', $uangmuka);
-            $uangmuka = (double)str_replace(',', '.', $uangmuka);
-            $data['uangmuka'] = $uangmuka;
-            $netto = str_replace('.', '', $netto);
-            $netto = (double)str_replace(',', '.', $netto);
-            $data['netto'] = $netto;
-
             $data = Pembelian::where('uuid', $uuid)->update($data);
-            
-            // $data = Pembelian::with(['details'])->where('id', $data->id)->first();
+            $data = Pembelian::with(['details'])->where('id', $data->id)->first();
 
             return response()->json(['message' => 'Data pembelian berhasil diperbarui', 'data' => $data]);
         } else {
@@ -168,15 +147,14 @@ class PembelianController extends Controller
     
     public function getnomor()
     {
-        $data = Pembelian::pluck('no_surat')->toArray();
+        $data = Pembelian::pluck('nomor')->toArray();
         $a = [];
 
-
-        
         foreach($data as $item){
-            $exp = explode("/", $item);
-            $a[] = $exp[0];
+              $exp = explode("-", $item);
+              $a[] = $exp[1];
         }
+
         if(count($a) > 0){
             sort($a);
             $start = 1;

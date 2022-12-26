@@ -5,19 +5,19 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title w-100">
-            <h1>Pembelian</h1>
+            <h1>Pembelian Internal</h1>
             <button v-if="!openForm" type="button" class="btn btn-primary btn-sm ms-auto me-5" @click="openDetail = true" >
               <i class="las la-eye" style="margin-left: 0;"></i>
               Detail
             </button>
             <button v-if="!openForm" type="button" class="btn btn-success btn-sm " @click="openForm = true" style="margin-left: 0;">
               <i class="las la-plus"></i>
-              Tambah
+              Pembelian Internal
             </button>
           </div>
         </div>
         <div class="card-body">
-          <mti-paginate id="table-pembelian" url="/pembelian/paginate" :columns="columns"></mti-paginate>
+          <mti-paginate id="table-pembelian" url="/pembelianinternal/paginate" :columns="columns"></mti-paginate>
         </div>
       </div>
     </section>

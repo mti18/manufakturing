@@ -12,6 +12,8 @@ class PembelianDetail extends Model
     use HasFactory;
     use Uuid;
 
+    protected $table = 'pembelian_details';
+
     
     public function salesorder()
     {
