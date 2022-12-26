@@ -45,8 +45,11 @@ use App\Http\Controllers\StokKeluarController;
 use App\Http\Controllers\StokMasukController;
 use App\Http\Controllers\KonfirmasiOrderController;
 use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\PembelianInternalController;
 use App\Http\Controllers\PermintaanBarangController;
 use App\Http\Controllers\PermintaanInternalController;
+use App\Models\SalesOrderDetail;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -391,8 +394,10 @@ Route::prefix('v1')->group(function () {
                 Route::get('get', [SalesOrderController::class, 'get']);
                 Route::post('paginate', [SalesOrderController::class, 'paginate']);
                 Route::post('store', [SalesOrderController::class, 'store']);
+                Route::get('{uuid}/generatepdf1', [SalesOrderController::class, 'generatepdf1']);
+                Route::get('{uuid}/generatepdf2', [SalesOrderController::class, 'generatepdf2']);
+                Route::get('getnumber', [SalesOrderController::class, 'getnumber']);
                 Route::get('{uuid}/edit', [SalesOrderController::class, 'edit']);
-                Route::get('{id}/profiles', [SalesOrderController::class, 'profiles']);
                 Route::post('{uuid}/update', [SalesOrderController::class, 'update']);
                 Route::delete('{uuid}/destroy', [SalesOrderController::class, 'destroy']);
             }
@@ -441,12 +446,12 @@ Route::prefix('v1')->group(function () {
             }
             );
             Route::prefix('salesorderdetail')->group(function () {
-                Route::get('get', [SalesOrderDetail::class, 'get']);
-                Route::post('paginate', [SalesOrderDetail::class, 'paginate']);
-                Route::post('store', [SalesOrderDetail::class, 'store']);
-                Route::get('{uuid}/edit', [SalesOrderDetail::class, 'edit']);
-                Route::post('{uuid}/update', [SalesOrderDetail::class, 'update']);
-                Route::delete('{uuid}/destroy', [SalesOrderDetail::class, 'destroy']);
+                Route::get('get', [SalesOrderDetailController::class, 'get']);
+                Route::post('paginate', [SalesOrderDetailController::class, 'paginate']);
+                Route::post('store', [SalesOrderDetailController::class, 'store']);
+                Route::get('{uuid}/edit', [SalesOrderDetailController::class, 'edit']);
+                Route::post('{uuid}/update', [SalesOrderDetailController::class, 'update']);
+                Route::delete('{uuid}/destroy', [SalesOrderDetailController::class, 'destroy']);
             }
             );
 
@@ -465,6 +470,8 @@ Route::prefix('v1')->group(function () {
             });
             Route::prefix('pembelian')->group(function () {
                 Route::get('get', [PembelianController::class, 'get']);
+                Route::get('getBJ', [PembelianController::class, 'get']);
+                Route::get('getBM', [PembelianController::class, 'get']);
                 Route::post('paginate', [PembelianController::class, 'paginate']);
                 Route::post('store', [PembelianController::class, 'store']);
                 Route::get('{uuid}/edit', [PembelianController::class, 'edit']);
@@ -474,6 +481,19 @@ Route::prefix('v1')->group(function () {
                 Route::get('{id}/getnomor', [PembelianController::class, 'getnomorbyid']);
                 Route::get('gettahun', [PembelianController::class, 'gettahun']);
                 Route::get('getbulan', [PembelianController::class, 'getbulan']);
+            });
+
+            Route::prefix('pembelianinternal')->group(function () {
+                Route::get('get', [PembelianInternalController::class, 'get']);
+                Route::post('paginate', [PembelianInternalController::class, 'paginate']);
+                Route::post('store', [PembelianInternalController::class, 'store']);
+                Route::get('{uuid}/edit', [PembelianInternalController::class, 'edit']);
+                Route::post('{uuid}/update', [PembelianInternalController::class, 'update']);
+                Route::delete('{uuid}/destroy', [PembelianInternalController::class, 'destroy']);
+                Route::get('getnomor', [PembelianInternalController::class, 'getnomor']);
+                Route::get('{id}/getnomor', [PembelianInternalController::class, 'getnomorbyid']);
+                Route::get('gettahun', [PembelianInternalController::class, 'gettahun']);
+                Route::get('getbulan', [PembelianInternalController::class, 'getbulan']);
             });
 
         
@@ -487,6 +507,15 @@ Route::prefix('v1')->group(function () {
             });
 
             Route::prefix('permintaaninternal')->group(function () {
+                Route::get('get', [PermintaanInternalController::class, 'get']);
+                Route::post('paginate', [PermintaanInternalController::class, 'paginate']);
+                Route::post('store', [PermintaanInternalController::class, 'store']);
+                Route::get('{uuid}/edit', [PermintaanInternalController::class, 'edit']);
+                Route::post('{uuid}/update', [PermintaanInternalController::class, 'update']);
+                Route::delete('{uuid}/destroy', [PermintaanInternalController::class, 'destroy']);
+            });
+
+            Route::prefix('pembayaran')->group(function () {
                 Route::get('get', [PermintaanInternalController::class, 'get']);
                 Route::post('paginate', [PermintaanInternalController::class, 'paginate']);
                 Route::post('store', [PermintaanInternalController::class, 'store']);

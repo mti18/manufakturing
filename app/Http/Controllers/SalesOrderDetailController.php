@@ -20,7 +20,6 @@ class SalesOrderDetailController extends Controller
                 $q->where('volume', 'LIKE', '%' . $request->search . '%');
                 $q->orWhere('harga', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
-
             return response()->json($courses);
         } else {
             return abort(404);
@@ -40,6 +39,7 @@ class SalesOrderDetailController extends Controller
                 'keterangan' => 'nullable',
             ]);
 
+            
             $harga = $data['harga'];
             $diskon = $data['diskon'];
             $jumlah = $data['jumlah'];
@@ -57,6 +57,8 @@ class SalesOrderDetailController extends Controller
             unset($data['satuan']);
 
             SalesOrderDetail::create($data);
+
+            
 
             return response()->json(['message' => 'Detail berhasil ditambahkan']);
         } else {
@@ -112,9 +114,12 @@ class SalesOrderDetailController extends Controller
             unset($data['satuan']);
             
             if (!isset($data['uuid'])) {
+                // return SalesOrder::findByUuid($uuid);
+                // SalesOrderDetail::where('uuid', $data['uuid'])->delete($data);
                 SalesOrder::where('uuid',$uuid)->first()->detail()->create($data);
+
             } else {
-                SalesOrderDetail::where('uuid', $uuid)->update($data);
+                SalesOrderDetail::where('uuid', $data['uuid'])->update($data);
             }
 
             return response()->json(['message' => 'DetBarangil berhasil diedit']);

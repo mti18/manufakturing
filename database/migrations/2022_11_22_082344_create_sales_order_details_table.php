@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sales_order_detail', function (Blueprint $table) {
+        Schema::create('sales_order_details', function (Blueprint $table) {
             $table->id();
 
             $table->bigInteger('volume');
@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->bigInteger('salesorder_id')->unsigned();
             $table->foreign('salesorder_id')->references('id')->on('sales_orders')
-                  ->onDelete('cascade');
+                  ->onDelete('restrict');
 
             
 
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sales_order_detail');
+        Schema::dropIfExists('sales_order_details');
     }
 };

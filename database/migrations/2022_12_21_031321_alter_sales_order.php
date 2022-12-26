@@ -13,8 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('master_jurnals', function (Blueprint $table) {
-            $table->dropColumn('upload');
+        Schema::table('sales_orders', function (Blueprint $table) {
+            $table->string('no_pemesanan');
+
         });
     }
 
@@ -25,8 +26,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('master_jurnals', function (Blueprint $table) {
-            $table->string('upload');
+        Schema::table('sales_orders', function (Blueprint $table) {
+            $table->dropColumn('no_pemesanan');
+
         });
     }
 };

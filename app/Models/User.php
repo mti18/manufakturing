@@ -67,6 +67,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(UserGroup::class);
     }
 
+    public function salesorder()
+    {
+        return $this->hasMany(SalesOrder::class, 'diketahui_oleh', 'id');
+    }
+
     public function getUserGroupUuidAttribute()
     {   
         $user_group = $this->user_group()->first();

@@ -21,11 +21,16 @@ class Supplier extends Model
     }
     public function kota()
     {
-        return $this->belongsTo(Kota::class);
+        return $this->belongsTo(Kota::class, 'kab_kota_id');
     }
     public function kecamatan()
     {
         return $this->belongsTo(Kecamatan::class);
+    }
+    
+    public function salesorder()
+    {
+        return $this->hasMany(salesorder::class);
     }
 
 

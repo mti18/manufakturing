@@ -6,19 +6,27 @@
 
 <script type="text/javascript">
 export default {
-  props: ['options', 'modelValue', 'placeholder', 'onChange', 'fromIndex', 'search', 'id'],
+  props: [
+    "options",
+    "modelValue",
+    "placeholder",
+    "onChange",
+    "fromIndex",
+    "search",
+    "id",
+  ],
   emits: ["update:modelValue"],
-  mounted: function() {
+  mounted: function () {
     var vm = this;
     $(this.$el)
       .select2({
         data: this.options,
-        placeholder: this.placeholder ? this.placeholder : 'Pilih',
-        minimumResultsForSearch: this.search == 'hide' ? -1 : 5,
+        placeholder: this.placeholder ? this.placeholder : "Pilih",
+        minimumResultsForSearch: this.search == "hide" ? -1 : 5,
       })
       .val(this.modelValue)
-      .trigger('change')
-      .on('change', function() {
+      .trigger("change")
+      .on("change", function () {
         vm.$emit("update:modelValue", this.value);
         if (vm.onChange) {
           vm.onChange($(this).val());
@@ -26,23 +34,17 @@ export default {
       });
   },
   watch: {
-    modelValue: function(value) {
-      $(this.$el)
-        .val(value)
-        .trigger('change');
+    modelValue: function (value) {
+      $(this.$el).val(value).trigger("change");
 
-      this.$emit('change', this.modelValue);
+      this.$emit("change", this.modelValue);
     },
-    options: function(options) {
-      $(this.$el)
-        .empty()
-        .select2({ data: options });
+    options: function (options) {
+      $(this.$el).empty().select2({ data: options });
     },
   },
-  destroyed: function() {
-    $(this.$el)
-      .off()
-      .select2('destroy');
+  destroyed: function () {
+    $(this.$el).off().select2("destroy");
   },
 };
 </script>
