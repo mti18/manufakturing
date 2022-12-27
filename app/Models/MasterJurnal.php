@@ -24,6 +24,20 @@ class MasterJurnal extends Model
     {
         return $this->hasMany(BuktiMaster::class, "masterjurnal_id", "id");
     }
+    public function Asset()
+    {
+        return $this->hasOne(AssetJurnal::class, "masterjurnal_id", "id");
+    }
+
+    public function Penyusutan()
+    {
+        return $this->hasOne(Penyusutan::class, "masterjurnal_id", "id");
+    }
+
+    public function ReportJurnal()
+    {
+        return $this->hasOne(ReportJurnal::class, "masterjurnal_id", "id");
+    }
 
     public function getFileBuktiMasterAttribute() {
         $files = [];

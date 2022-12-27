@@ -122,7 +122,7 @@ class BukuBesarController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Buku Besar');
-        $sheet->getTabColor()->setRGB('ff6666');
+        $sheet->getTabColor()->setRGB('38E54D');
         // Default Font Style
         $spreadsheet->getDefaultStyle()->applyFromArray([
             'font'  => [
@@ -133,17 +133,16 @@ class BukuBesarController extends Controller
 
         //Header
         $spreadsheet->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-        $spreadsheet->getActiveSheet()->mergeCells('A1:G1');
+        $spreadsheet->getActiveSheet()->mergeCells('A1:F1');
         $sheet->setCellValue('A1', strtoupper("LAPORAN BUKU BESAR Bulan " . AppHelper::get_bulan($bulan) . " Tahun " . $tahun));
         $spreadsheet->getActiveSheet()->getStyle('A1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-            ->getStartColor()->setARGB('E6B192');
+            ->getStartColor()->setARGB('38E54D');
         $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
 
 
 
@@ -159,8 +158,10 @@ class BukuBesarController extends Controller
         $spasi = 2;
 
         foreach ($data as $item) {
-            $sheet->setCellValue('A' . $a, $item->nm_account);
-            $sheet->setCellValue('B' . $a, $item->kode_account);
+            $sheet->setCellValue('C' . $a, $item->nm_account);
+            $sheet->setCellValue('D' . $a, $item->kode_account);
+             $spreadsheet->getActiveSheet()->getStyle('A' . $a . ':F' . $a)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('38E54D');
 
             $b = $a + 1;
             $c = $b + 1;
@@ -172,7 +173,7 @@ class BukuBesarController extends Controller
             $sheet->setCellValue('E' . $b, "saldo");
             $sheet->setCellValue('F' . $b, "Keterangan");
             $spreadsheet->getActiveSheet()->getStyle('A' . $b . ':F' . $b)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('E6B192');
+                ->getStartColor()->setARGB('38E54D');
 
             $saldo = 0;
             foreach ($item->jurnal_item as $citem) {

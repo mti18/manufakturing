@@ -3,7 +3,7 @@
       <div class="card-header">
         <div class="card-title w-100">
           <h3>
-            {{ pembelian?.uuid ? `Edit Jabatan : ${pembelian.name}` : "Tambah Jabatan"  }}
+            {{ pembelian?.uuid ? `Edit Pembelian : ${pembelian.name}` : "Tambah Pembelian"  }}
           </h3>
           <button
             type="button"
@@ -73,9 +73,9 @@
             <div class="mb-8">
               <label class="form-label required"> No Surat : </label>
               <div class="input-group">
-                <div class="input-group-prepend">
+                <!-- <div class="input-group-prepend">
                   <span class="input-group-text" @change="nomor($event)">{{ nomor }}</span>
-                </div>
+                </div> -->
                 <input type="text" class="form-control" name="no_surat" required v-model="form.no_surat" placeholder="No Surat">
               </div>
             </div>
@@ -173,83 +173,288 @@
     </form>
 
     <form v-if="!!selected" class="card mb-12" id="form-pembeliandetail" @submit.prevent="onSubmit" >
-      <div class="table-responsive">
-        <table class="table border">
-          <thead>
-            <tr class="fw-bold fs-6 text-gray-800 border align-middle">
-              <!-- <th rowspan="2">Tipe Barang</th>
-              <th rowspan="2">Nama Barang</th> -->
-              <th colspan="2">Qty</th>
-              <th rowspan="2">Harga</th>
-              <th rowspan="2">Diskon</th>
-              <th rowspan="2">Jumlah</th>
-              <th rowspan="2">Keterangan</th>
-              <th rowspan="2">Aksi</th>
-            </tr>
-            <tr class="fw-bold fs-6 text-gray-800 border">
-              <th>Volume</th>
-              <th>Satuan</th>
-            </tr>
-          </thead>
-          <tbody class="border align-middle">
-          <tr v-for="detail in form.details" :key="detail.id">
-            <!-- <td>
-              <select2 name="tipe" id="tipe"
-                class="form-control" required autoComplete="off" v-model="form.tipe" >
-                <option disabled>Pilih</option>
-                <option value="Barang Mentah">Barang Mentah</option>
-                <option value="Barang Jadi">Barang Jadi</option>
-              </select2>
-            </td>
-            <td>
-              <div v-if="form.tipe=='Barang Mentah'">
-                <select2 name="barang_id" id="supplier" 
-                  class="form-control" required autoComplete="off" v-model="form.barang_id" >
-                  <option disabled>Pilih</option>
-                  <option v-for="supplier in suppliers" :value="supplier.id" :key="supplier.uuid">{{ supplier.nama }}</option>
-                </select2>
-              </div>
-              <div v-if="form.tipe=='Barang Jadi'">
-                <select2 name="supplier_id" id="supplier"
-                  class="form-control" required autoComplete="off" v-model="form.supplier_id" >
-                  <option disabled>Pilih</option>
-                  <option v-for="user in users" :value="user.id" :key="user.uuid">{{ user.name }}</option>
-                </select2>
-              </div>
-            </td> -->
-            <td>
-              <input type="text" name="volume" id="volume"
-                class="form-control" required autoComplete="off" v-model="detail.volume" />
-            </td>
-            <td>
-              <input type="text" name="nm_satuan" id="nm_satuan"
-                class="form-control" required autoComplete="off" v-model="detail.nm_satuan" />
-            </td>
-            <td>
-              <input type="text" name="harga" id="harga"
-                class="form-control" required autoComplete="off" v-model="detail.harga" />
-            </td>
-            <td>
-              <input type="text" name="diskon" id="diskon"
-                class="form-control" required autoComplete="off" v-model="detail.diskon" />
-            </td>
-            <td>
-              <input type="text" name="jumlah" id="jumlah"
-                class="form-control" required autoComplete="off" v-model="detail.jumlah" />
-            </td>
-            <td>
-              <textarea type="text" name="keterangan" id="keterangan"
-                class="form-control" autoComplete="off" v-model="detail.keterangan" />
-            </td>
-            <td></td>
-          </tr>
-          </tbody>
-        </table>
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary btn-sm me-auto mt-8 d-block">
-              <i class="la la-arrow-circle-right"></i>
-              Tambah Barang
-            </button>
+      <div class="detail">
+        <div class="col">
+          <button
+            type="submit"
+            class="btn btn-primary btn-sm me-auto mt-8 ms-4"
+            @click.prevent="tambahBarangJadi()"
+          >
+            <i class="la la-arrow-circle-right"></i>
+            Tambah Barang Jadi
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-sm me-auto mt-8 ms-4"
+            @click.prevent="tambahBarangMentah()"
+          >
+            <i class="la la-arrow-circle-right"></i>
+            Tambah Barang Mentah
+          </button>
+        </div>
+        <div class="table-responsive mt-5">
+          <table class="table border">
+            <thead>
+              <tr class="fw-bold fs-6 text-gray-800 border align-middle">
+                <!-- <th rowspan="2">Tipe Barang</th>-->
+                <th rowspan="2" class="ps-13 pe-13" width="200px">Nama Barang</th>
+                <th colspan="2">Qty</th>
+                <th rowspan="2">Harga</th>
+                <th rowspan="2">Diskon</th>
+                <th rowspan="2">Jumlah</th>
+                <th rowspan="2">Keterangan</th>
+                <th rowspan="2" class="pe-4 ps-3">Aksi</th>
+              </tr>
+              <tr class="fw-bold fs-6 text-gray-800 border">
+                <th>Volume</th>
+                <th width="130px">Satuan</th>
+              </tr>
+            </thead>
+            <tbody class="border align-middle">
+              <tr v-for="(item, index) in form.barangjadi">
+                <td>
+                  <select2
+                    name="barangjadi_id"
+                    :id="'barangjadi_id' + index"
+                    class="form-control ms-2"
+                    required
+                    autoComplete="off"
+                    @change="getSatuanJadi(index, $event), getHargaBJ(index)"
+                    v-model="item.barangjadi_id"
+                  >
+                    <option disabled value="">Pilih barang jadi</option>
+                    <option
+                      v-for="item in barangjadis"
+                      :value="item.id"
+                      :key="item.id"
+                      :disabled="
+                        form.barangjadi.findIndex(
+                          (cat) => cat.barangjadi_id == item.id
+                        ) == -1
+                          ? false
+                          : true
+                      "
+                    >
+                      {{ item.nm_barang_jadi }}
+                    </option>
+                  </select2>
+                </td>
+
+                <td>
+                  <input
+                    type="text"
+                    name="volume"
+                    id="volume"
+                    style="width: 100px"
+                    class="form-control"
+                    placeholder="Volume"
+                    required
+                    autoComplete="off"
+                    @input="hitungnilaijadi($event, index)"
+                    v-model="item.volume"
+                  />
+                </td>
+                <td>
+                  <select2
+                    class="form-control satuan"
+                    name="satuan"
+                    :id="'nm_satuan_jadi' + index"
+                    placeholder="Pilih"
+                    v-model="item.satuan"
+                    @change="hitungnilaijadi($event, index)"
+                    required
+                  >
+                    <option value="" disabled>Pilih</option>
+                    <option
+                      v-for="satuan in item.satuanjadi"
+                      :value="satuan.id"
+                      :key="satuan.id"
+                    >
+                      {{ satuan.nm_satuan_jadi_children }}
+                    </option>
+                  </select2>
+                </td>
+                <td>
+                  <money3
+                    v-model="item.harga"
+                    id="harga"
+                    class="form-control"
+                    type="text"
+                    name="harga"
+                    v-bind="config"
+                    @input.prevent="hitungjumlahjadi($event, index)"
+                    required
+                  ></money3>
+                </td>
+                <td>
+                  <money3
+                    v-model="item.diskon"
+                    id="diskon"
+                    class="form-control"
+                    type="text"
+                    name="diskon"
+                    v-bind="config"
+                    @input.prevent="hitungjumlahjadi($event, index)"
+                    required
+                  ></money3>
+                </td>
+                <td>
+                  <money3
+                    v-model="item.jumlah"
+                    id="jumlah"
+                    class="form-control"
+                    type="text"
+                    name="jumlah"
+                    v-bind="config"
+                    @change="getTotal()"
+                    disabled
+                    required
+                  ></money3>
+                </td>
+                <td>
+                  <textarea
+                    type="text"
+                    name="keterangan"
+                    id="keterangan"
+                    class="form-control"
+                    placeholder="Keterangan"
+                    autoComplete="off"
+                    v-model="item.keterangan"
+                  />
+                </td>
+                <td class="pe-6 ps-1">
+                  <a href="javascript:void(0)">
+                    <i
+                      class="la la-trash icon-lg text-danger ms-5"
+                      @click.prevent="hapusBarangJadi(index)"
+                      style="font-size: 22px"
+                    ></i>
+                  </a>
+                </td>
+              </tr>
+
+              <tr v-for="(item, index) in form.barangmentah">
+                <td>
+                  <select2
+                    name="barangmentah_id"
+                    :id="'barangmentah_id' + index"
+                    class="form-control ms-2"
+                    required
+                    autoComplete="off"
+                    @change="getSatuanMentah(index, $event), getHargaBM(index)"
+                    v-model="item.barangmentah_id"
+                  >
+                    <option value="" disabled>Pilih barang mentah</option>
+                    <option
+                      v-for="item in barangmentahs"
+                      :value="item.id"
+                      :key="item.id"
+                      :disabled="
+                        form.barangmentah.findIndex(
+                          (cat) => cat.barangmentah_id == item.id
+                        ) == -1
+                          ? false
+                          : true
+                      "
+                    >
+                      {{ item.nm_barangmentah }}
+                    </option>
+                  </select2>
+                </td>
+
+                <td>
+                  <input
+                    type="text"
+                    name="volume"
+                    id="volume"
+                    class="form-control"
+                    style="width: 100px"
+                    placeholder="Volume"
+                    required
+                    autoComplete="off"
+                    v-model="item.volume"
+                  />
+                </td>
+                <td>
+                  <select2
+                    class="form-control satuan"
+                    name="satuan"
+                    placeholder="Pilih"
+                    :id="'nm_satuan_mentah' + index"
+                    v-model="item.satuan"
+                    required
+                  >
+                    <option value="" disabled>Pilih</option>
+                    <option
+                      v-for="satuan in item.satuanmentah"
+                      :value="satuan.id"
+                      :key="satuan.id"
+                    >
+                      {{ satuan.nm_satuan_children }}
+                    </option>
+                  </select2>
+                </td>
+                <td>
+                  <money3
+                    v-model="item.harga"
+                    id="harga"
+                    class="form-control"
+                    type="text"
+                    name="harga"
+                    @input="hitungbarangmentah(index)"
+                    v-bind="config"
+                    required
+                  ></money3>
+                </td>
+                <td>
+                  <money3
+                    v-model="item.diskon"
+                    id="diskon"
+                    class="form-control"
+                    type="text"
+                    name="diskon"
+                    @input="hitungbarangmentah(index)"
+                    v-bind="config"
+                    required
+                  ></money3>
+                </td>
+                <td>
+                  <money3
+                    v-model="item.jumlah"
+                    id="jumlah"
+                    class="form-control"
+                    type="text"
+                    name="jumlah"
+                    v-bind="config"
+                    @change="getTotal()"
+                    disabled
+                    required
+                  ></money3>
+                </td>
+                <td>
+                  <textarea
+                    type="text"
+                    name="keterangan"
+                    id="keterangan"
+                    class="form-control"
+                    placeholder="Keterangan"
+                    autoComplete="off"
+                    v-model="item.keterangan"
+                  />
+                </td>
+                <td class="pe-6 ps-1">
+                  <a href="javascript:void(0)" class="d-inline-block">
+                    <i
+                      @click.prevent="hapusBarangMentah(index)"
+                      class="la la-trash icon-lg text-danger ms-5"
+                      style="font-size: 22px"
+                    ></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -257,9 +462,9 @@
         <div class="row">
           <div class="col-6">
             <div class="mb-8">
-              <label class="form-label required"> Keterangan : </label>
+              <label class="form-label"> Keterangan : </label>
               <textarea rows="10" name="keterangan" id="keterangan" placeholder="Keterangan"
-                class="form-control" required autoComplete="off" v-model="form.keterangan" >
+                class="form-control" autoComplete="off" v-model="form.keterangan" >
               </textarea>
             </div>
           </div>
@@ -273,7 +478,7 @@
                   <div class="col-md-10">
                     <div class="input-group">
                       <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
-                      <input type="text" name="jml_penjualan" id="jml_penjualan"
+                      <money3 type="text" name="jml_penjualan" id="jml_penjualan" v-bind="config"
                         class="form-control" required autoComplete="off" v-model="form.jml_penjualan" />
                     </div>
                   </div>
@@ -316,7 +521,7 @@
                     </div>
                     <div class="input-group" v-if="form.tipe_diskon=='rupiah'">
                       <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
-                      <input type="text" name="diskon" id="diskon"
+                      <money3 type="text" name="diskon" id="diskon" v-bind="config"
                         class="form-control" required autoComplete="off" v-model="form.diskon" />
                     </div>
                   </div>
@@ -330,8 +535,8 @@
                   <div class="col-md-10">
                     <div class="input-group">
                       <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
-                      <input type="text" name="uang_muka" id="uang_muka" 
-                        class="form-control" required autoComplete="off" v-model="form.uang_muka" />
+                      <money3 type="text" name="uangmuka" id="uangmuka" v-bind="config"
+                        class="form-control" required autoComplete="off" v-model="form.uangmuka" />
                     </div>
                   </div>
                 </div>
@@ -401,8 +606,8 @@
                   <div class="col-md-10">
                     <div class="input-group">
                       <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
-                      <input type="text" name="netto" id="netto"
-                        class="form-control" required autoComplete="off" v-model="form.netto" />
+                      <money3 type="text" name="netto" id="netto"
+                        class="form-control" v-bind="config" required autoComplete="off" v-model="form.netto" />
                     </div>
                   </div>
                 </div>
@@ -427,8 +632,13 @@
   import { useQuery, useMutation } from "vue-query";
   import axios from "@/libs/axios";
   import { useQueryClient } from "vue-query";
+  import { Money3Component } from "v-money3";
+  import { Money3Directive } from "v-money3";
+
   
   export default {
+    components: { money3: Money3Component },
+    directives: { money3: Money3Directive },
     props: {
       selected: {
         type: String,
@@ -439,6 +649,20 @@
     data() {
       return {
         nomor: null,
+
+        config: {
+          prefix: "",
+          suffix: "",
+          thousands: ".",
+          decimal: ",",
+          precision: 2,
+          disableNegative: false,
+          disabled: false,
+          min: null,
+          max: null,
+          allowBlank: false,
+          minimumNumberOfCharacters: 0,
+        },
       };
     },
 
@@ -446,6 +670,8 @@
       const queryClient = useQueryClient();
       const form = ref({
         details: [{}],
+        barangmentah: [],
+        barangjadi: []
       });
       const selected = ref(props.selected);
 
@@ -461,13 +687,15 @@
           onSuccess: ({data}) => {
             const datas = {...data.data};
             console.log(datas)
-            if (datas.details.length) {
-              datas.details.push({});
+            if (datas.barangjadi.length) {
+              datas.barangjadi.push();
             }
-            form.value = datas;
-          },
+            if (datas.barangmentah.length) {
+              datas.barangmentah.push();
+            }
+              form.value = datas;
+            },
           onError: error => console.log(error),
-          onSettled: () => KTApp.unblock("#form-pembelian"),
         }
       );
   
@@ -476,33 +704,50 @@
           KTApp.block("#form-pembelian");
         },
         onError: (error) => {
-          toastr.error(error.response.data.message);
+          toastr.error(error);
+          KTApp.unblock("#form-pembelian");
         },
         onSettled: () => {
           KTApp.unblock("#form-pembelian");
         },
         onSuccess: (data) => {
+          KTApp.unblock("#form-pembelian");
           const datas = {...data.data};
-          if (!datas.details.length) {
-            datas.details.push({});
-          }
+          // if (!datas.details.length) {
+          //   datas.details.push({});
+          // }
+          selected.value = datas.uuid;
           form.value = datas;
         }
       });
 
   
-      const { data: profiles } = useQuery(["profiles"], () => axios.get("/profile/get").then((res) => res.data), {
-      placeholderData: []
-      });
-      const { data: suppliers } = useQuery(["suppliers"], () => axios.get("/supplier/get").then((res) => res.data), {
-      placeholderData: []
-      });
-      const { data: users } = useQuery(["users"], () => axios.get("/user/get").then((res) => res.data), {
-      placeholderData: []
-      });
-      const { data: accounts } = useQuery(["accounts"], () => axios.get("/account/getdata").then((res) => res.data), {
-      placeholderData: []
-      });
+      const { data: profiles } = useQuery(["profiles"], () => 
+        axios.get("/profile/get").then((res) => res.data)
+      );
+      const { data: suppliers } = useQuery(["suppliers"], () => 
+        axios.get("/supplier/get").then((res) => res.data)
+      );
+      const { data: users } = useQuery(["users"], () => 
+        axios.get("/user/get").then((res) => res.data)
+      );
+      const { data: accounts } = useQuery(["accounts"], () => 
+        axios.get("/account/getdata").then((res) => res.data)
+      );
+      const { data: barangjadis = [] } = useQuery(["barang_jadis"], () =>
+        axios.get("/barangjadi/get").then((res) => res.data)
+      );
+      const { data: barangmentahs = [] } = useQuery(["barang_mentahs"], () =>
+        axios.get("/barangmentah/get").then((res) => res.data)
+      );
+
+
+      // const { data: permintaanbarangjadis = [] } = useQuery(["permintaan_barangs"], () =>
+      //   axios.get("/permintaan/getBJ").then((res) => res.data)
+      // );
+      // const { data: permintaanbarangmentahs = [] } = useQuery(["permintaan_barangs"], () =>
+      //   axios.get("/permintaan/getBM").then((res) => res.data)
+      // );
 
       return {
         pembelian,
@@ -510,6 +755,8 @@
         accounts,
         suppliers,
         users,
+        barangjadis,
+        barangmentahs,
         submit,
         form,
         queryClient,
@@ -518,6 +765,48 @@
       }
     },
     methods: {
+
+      tambahBarangJadi() {
+        this.form.barangjadi.push({});
+      },
+      tambahBarangMentah() {
+        this.form.barangmentah.push({});
+      },
+
+      hapusBarangJadi(index) {
+        this.form.barangjadi.splice(index, 1);
+      },
+
+      hapusBarangMentah(index) {
+        this.form.barangmentah.splice(index, 1);
+      },
+      getSatuanMentah(index, satuan_id) {
+        setTimeout(() => {
+          var app = this;
+          var i = app.barangmentahs.findIndex((cat) => cat.id == satuan_id);
+
+          satuan_id = app.barangmentahs[i]?.barangsatuan_id;
+
+          var app = this;
+          axios.get(`barangsatuan/${satuan_id}/child`).then((res) => {
+            app.form.barangmentah[index].satuanmentah = res.data.data;
+          });
+        }, 100);
+      },
+
+      getSatuanJadi(index, satuan_id) {
+        setTimeout(() => {
+          var app = this;
+          var i = app.barangjadis.findIndex((cat) => cat.id == satuan_id);
+
+          satuan_id = app.barangjadis[i]?.barangsatuanjadi_id;
+
+          var app = this;
+          axios.get(`barangsatuanjadi/${satuan_id}/child`).then((res) => {
+            app.form.barangjadi[index].satuanjadi = res.data.data;
+          });
+        }, 100);
+      },
 
       perusahaan(e){
         var app=this;
@@ -551,11 +840,16 @@
       },
       onSubmit() {
         const vm = this;
-        const data = new FormData(document.getElementById("form-pembelian"));
-        this.submit(data, {
+        vm.form.detail = {
+          barangmentah: vm.form.barangmentah ?? [],
+          barangjadi: vm.form.barangjadi ?? [],
+        };
+
+        // const data = new FormData(document.getElementById("form-pembelian"));
+        this.submit(vm.form, {
           onSuccess: (data) => {
             toastr.success(data.message);
-            vm.selected = data.data.uuid;
+            // vm.selected = data.data.uuid;
             vm.$parent.openForm = true;
             vm.$parent.selected = undefined;
             vm.refetch();
@@ -577,7 +871,7 @@
       if (this.type == "store") {
         if (codes != "") {
           vm.kode =
-            "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.bulan + "/" + vm.tahun;
+            vm.nomor + "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.bulan + "/" + vm.tahun;
           vm.form.no_surat = vm.kode;
           $(".codes").val(vm.kode);
         } else {
@@ -588,7 +882,7 @@
       } else {
         if (codes != "") {
           vm.kode =
-            "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.bulan + "/" + vm.tahun;
+            vm.nomor + "/SP/VRA-" + codes.replace(/[^A-Za-z]/g, "").toUpperCase() + "/" + vm.bulan + "/" + vm.tahun;
           vm.form.no_surat = vm.kode;
             $(".codes").val(vm.kode);
           } else {

@@ -12,7 +12,7 @@
             </button>
             <button v-if="!openForm" type="button" class="btn btn-success btn-sm " @click="openForm = true" style="margin-left: 0;">
               <i class="las la-plus"></i>
-              Pembelian
+              Tambah
             </button>
           </div>
         </div>

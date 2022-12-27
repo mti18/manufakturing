@@ -12,4 +12,12 @@ class Kelompok extends Model
     use Uuid;
 
     protected $fillable = ['uuid', 'nama', 'masa', 'tarif'];
+
+
+    public function assetdetail()
+    {
+        return $this->hasMany('\App\Models\Asset', 'kelompok_id');
+    }
 }
+
+

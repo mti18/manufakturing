@@ -104,7 +104,7 @@
             <div class="mb-8">
               <label for="volume" class="form-label required"> Volume : </label>
               <input
-                type="text"
+                type="number"
                 name="volume"
                 id="volume"
                 placeholder="Volume"
@@ -118,12 +118,13 @@
           <div class="col-4">
             <div class="mb-8">
               <label for="harga" class="form-label required"> Harga : </label>
-              <input
+              <money3
                 type="text"
                 name="harga"
                 id="harga"
                 placeholder="Harga"
                 class="form-control"
+                v-bind="config"
                 required
                 autoComplete="off"
                 v-model="form.harga"
@@ -133,12 +134,13 @@
           <div class="col-4">
             <div class="mb-8">
               <label for="jumlah" class="form-label required"> Jumlah : </label>
-              <input
+              <money3
                 type="text"
                 name="jumlah"
                 id="jumlah"
                 placeholder="Jumlah"
                 class="form-control"
+                v-bind="config"
                 required
                 autoComplete="off"
                 v-model="form.jumlah"
@@ -147,13 +149,12 @@
           </div>
           <div class="col-12">
             <div class="mb-8">
-              <label for="keterangan" class="form-label required"> Keterangan : </label>
+              <label for="keterangan" class="form-label"> Keterangan : </label>
               <textarea
                 name="keterangan"
                 id="keterangan"
                 placeholder="Keterangan"
                 class="form-control"
-                required
                 autoComplete="off"
                 v-model="form.keterangan"
               />
@@ -188,14 +189,39 @@
   import { useQuery, useMutation } from "vue-query";
   import axios from "@/libs/axios";
   import { useQueryClient } from "vue-query";
+  import { Money3Component } from "v-money3";
+  import { Money3Directive } from "v-money3";
   
   export default {
+    components: { money3: Money3Component },
+    directives: { money3: Money3Directive },
+
     props: {
       selected: {
         type: String,
         default: null,
       },
     },
+
+    data() {
+      return {
+
+        config: {
+          prefix: "",
+          suffix: "",
+          thousands: ".",
+          decimal: ",",
+          precision: 2,
+          disableNegative: false,
+          disabled: false,
+          min: null,
+          max: null,
+          allowBlank: false,
+          minimumNumberOfCharacters: 0,
+        },
+      };
+    },
+
 
     setup({ selected }) {
       const queryClient = useQueryClient();

@@ -140,6 +140,7 @@
               autoComplete="off"
               v-model="form.provinsi_id"
             >
+            <option value="" disabled selected></option>
               <option
                 v-for="provinsi in provinsis"
                 :value="provinsi.id"
@@ -161,6 +162,7 @@
               autoComplete="off"
               v-model="form.kab_kota_id"
             >
+            <option value="" disabled selected></option>
               <option v-for="kota in kotas" :value="kota.id" :key="kota.uuid">
                 {{ kota.nm_kab_kota }}
               </option>
@@ -178,6 +180,7 @@
               autoComplete="off"
               v-model="form.kecamatan_id"
             >
+            <option value="" disabled selected></option>
               <option
                 v-for="kecamatan in kecamatans"
                 :value="kecamatan.id"
@@ -197,6 +200,7 @@
               autoComplete="off"
               v-model="form.kelurahan_id"
             >
+            <option value="" disabled selected></option>
               <option
                 v-for="kelurahan in kelurahans"
                 :value="kelurahan.id"

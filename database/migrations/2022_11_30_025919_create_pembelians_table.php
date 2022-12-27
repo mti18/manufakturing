@@ -54,6 +54,8 @@ return new class extends Migration
 
             $table->string('nomor')->nullable();
             $table->enum('pembayaran', ['no', 'yes'])->default('no');
+            $table->enum('tipe', ['1', '2'])->default('1'); // (1) Pembelian // (2) Pembelian Internal
+            $table->enum('acc_pimpinan', ['N', 'Y'])->default('N');
             $table->timestamps();
 
         });

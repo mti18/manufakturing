@@ -3,7 +3,7 @@
       <div class="card-header">
         <div class="card-title w-100">
           <h3>
-            {{ asset?.uuid ? `Edit Asset : ${asset.nm_asset}` : "Tambah Asset "  }}
+            {{ assetjurnal?.uuid ? `Edit Asset : ${assetjurnal.nm_asset}` : "Tambah Asset "  }}
           </h3>
           <button
             type="button"
@@ -17,24 +17,18 @@
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="col-5">
+          <div class="col-6">
             <div class="mb-8">
               <label for="nm_asset" class="form-label required"> Nama Asset : </label>
               <input type="text" name="nm_asset" id="nm_asset" placeholder="Nama Asset"
               class="form-control" required autoComplete="off" v-model="form.nm_asset" />
             </div>
           </div>
-          <div class="col-5">
-            <div class="mb-8">
-              <label for="number" class="form-label required "> Number : </label>
-              <input type="" name="number" id="number" placeholder="Number"
-              class="form-control" required autoComplete="off" v-model="form.number" />
-            </div>
-          </div>
-          <div class="col-3">
+         
+          <div class="col-6">
           <div class="mb-8">
             <label for="nm_golongan" class="form-label required">
-              Nama Golongan :
+              Golongan :
             </label>
             <select2
               class="form-control"
@@ -55,31 +49,12 @@
             </select2>
           </div>
         </div>
-        <div class="col-md-6">
-                <div class="mb-4">
-                  <label class="required form-label">Price :</label>
-                  <input
-                    v-money="{
-                      thousands: '.',
-                      decimal: ',',
-                      precision: 2,
-                    }"
-                  
-                    type="text"
-                    class="form-control"
-                    placeholder="Price"
-                    name="price"
-                    v-model="form.price"
-                    required
-                  />
-                </div>
-              </div>
-        </div>
+      </div>
         <div class="row">
-        <div class="col-3">
+        <div class="col-6">
           <div class="mb-8">
             <label for="nm_asset_group" class="form-label required">
-              Nama Asset Group :
+              Asset Group :
             </label>
             <select2
               class="form-control"
@@ -100,6 +75,114 @@
             </select2>
           </div>
          </div>
+         <div class="col-6">
+        <div class="mb-8">
+              <label for="name" class="form-label required"> Akun Asset Tetap : </label>
+              <select2
+              class="form-control"
+              name="akun_id"
+              placeholder="Pilih Account"
+              id="akun_id"
+              v-model="form.akun_id"
+              required
+            > 
+              <option value="" disabled>Pilih Account</option>
+              <option
+                v-for="item in account"
+                :value="item.id" :key="item.uuid"
+              >
+              {{ item.kode_account }} - {{ item.nm_account }}
+              </option>
+             
+            </select2>
+            </div>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="mb-8">
+              <label for="name" class="form-label required"> Akun Beban : </label>
+              <select2
+              class="form-control"
+              name="beban_id"
+              placeholder="Pilih Account"
+              id="beban_id"
+              v-model="form.beban_id"
+              required
+            > 
+              <option value="" disabled>Pilih Account</option>
+              <option
+                v-for="item in account"
+                :value="item.id" :key="item.uuid"
+              >
+              {{ item.kode_account }} - {{ item.nm_account }}
+              </option>
+             
+            </select2>
+            </div>
+          </div>
+            <div class="col-6">
+              <div class="mb-8">
+              <label for="name" class="form-label required"> Akun Penyusutan : </label>
+              <select2
+              class="form-control"
+              name="penyusutan_id"
+              placeholder="Pilih Account"
+              id="penyusutan_id"
+              v-model="form.penyusutan_id"
+              required
+            > 
+              <option value="" disabled>Pilih Account</option>
+              <option
+                v-for="item in account"
+                :value="item.id" :key="item.uuid"
+              >
+              {{ item.kode_account }} - {{ item.nm_account }}
+              </option>
+             
+            </select2>
+            </div>
+          </div>
+          </div>
+          <div class="row">
+        <div class="col-4">
+            <div class="mb-8">
+                <label class="required form-label">Price :</label>
+                  <div class="input-group">
+                   <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
+                   <money3 v-model="form.price" class="form-control" type="text" id="price" name="price" v-bind="config" required ></money3>
+                 </div>
+                </div>
+              </div>
+        <div class="col-4">
+            <div class="mb-8">
+              <label for="input-number" class="form-label required "> Tanggal : </label>
+              <datepicker name="number" id="input-number" placeholder="Number"
+              class="form-control" required autoComplete="off" :options="monthOptions" @change="changeTanggal" />
+            </div>
+          </div>
+          <div class="col-4">
+              <div class="mb-8">
+              <label for="name" class="form-label required"> Akun Yang Dikreditkan : </label>
+              <select2
+              class="form-control"
+              name="kredit_id"
+              placeholder="Pilih Account"
+              id="kredit_id"
+              v-model="form.kredit_id"
+              required
+            > 
+              <option value="" disabled>Pilih Account</option>
+              <option
+                v-for="item in account"
+                :value="item.id" :key="item.uuid"
+              >
+              {{ item.kode_account }} - {{ item.nm_account }}
+              </option>
+             
+            </select2>
+            </div>
+          </div>
         </div>
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-sm ms-auto mt-8 d-block">
@@ -113,21 +196,61 @@
   </template>
   
   <script>
+  
+  import { Money3Component } from 'v-money3'
+  import { Money3Directive } from 'v-money3';
   import { ref } from "vue";
   import { useQuery, useMutation } from "vue-query";
   import axios from "@/libs/axios";
+ 
   import { useQueryClient } from "vue-query";
+  import monthSelectPlugin from "flatpickr/dist/plugins/monthSelect";
+  import "flatpickr/dist/plugins/monthSelect/style.css";
   
   export default {
+    components: { money3: Money3Component },
+    directives: { money3: Money3Directive },
     props: {
       selected: {
         type: String,
         default: null,
       }
     },
+    data(){
+      return{
+        config: {
+          prefix: '',
+          suffix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          disableNegative: false,
+          disabled: false,
+          min: null,
+          max: null,
+          allowBlank: false,
+          minimumNumberOfCharacters: 0,
+        },
+        monthOptions: {
+          plugins: [
+              new monthSelectPlugin({
+                shorthand: true, //defaults to false
+                dateFormat: "F Y", //defaults to "F Y"
+                altFormat: "F Y", //defaults to "F Y"
+                theme: "light" // defaults to "light"
+              })
+          ]
+        }
+      }
+    },
     setup({ selected }) {
       const queryClient = useQueryClient();
       const form = ref({});
+
+      const { data: account } = useQuery(["accounts"], () =>
+      axios.get("/masterjurnal/child").then((res) => res.data)
+    );
+    
 
       const { data: golongan } = useQuery(["golongans"], () =>
       axios.get("/golongan/get").then((res) => res.data.data)
@@ -137,21 +260,21 @@
       axios.get("/assetgroup/get").then((res) => res.data.data)
     );
   
-      const { data: asset } = useQuery(
-        ["asset", selected, "edit"],
+      const { data: assetjurnal } = useQuery(
+        ["assetjurnal", selected, "edit"],
         () => {
           setTimeout(() => KTApp.block("#form-asset"), 100);
-          return axios.get(`/asset/${selected}/edit`).then((res) => res.data);
+          return axios.get(`/assetjurnal/${selected}/edit`).then((res) => res.data);
         },
         {
           enabled: !!selected,
           cacheTime: 0,
-          onSuccess: data => form.value = data,
+          onSuccess: data => form.value = data.data,
           onSettled: () => KTApp.unblock("#form-asset"),
         }
       );
   
-      const { mutate: submit } = useMutation((data) => axios.post(selected ? `/asset/${selected}/update` : '/asset/store', data).then(res => res.data), {
+      const { mutate: submit } = useMutation((data) => axios.post(selected ? `/assetjurnal/${selected}/update` : '/assetjurnal/store', data).then(res => res.data), {
         onMutate: () => {
           KTApp.block("#form-asset");
         },
@@ -164,12 +287,14 @@
       });
   
       return {
+        account,
         assetgroup,
         golongan,
-        asset,
+        assetjurnal,
         submit,
         form,
-        queryClient
+        queryClient,
+        monthSelectPlugin
       }
     },
     methods: {
@@ -184,11 +309,49 @@
             toastr.success(data.message);
             vm.$parent.openForm = false;
             vm.$parent.selected = undefined;
-            vm.queryClient.invalidateQueries(["/asset/paginate"], { exact: true });
+            vm.queryClient.invalidateQueries(["/assetjurnal/paginate"], { exact: true });
           }
         });
-      }
-    }
+      },
+      changeTanggal(ev) {
+        if (typeof ev === 'string') {
+          this.form.number = ev;
+        }
+        // console.log(ev)
+      },
+      // loadDate() {
+      //       var vm = this;
+      //       setTimeout(function () {
+      //           $(".input-number").flatpickr({
+      //           plugins: [
+      //               new monthSelectPlugin({
+      //               shorthand: true, //defaults to false
+      //               dateFormat: "m.y", //defaults to "F Y"
+      //               altFormat: "F Y", //defaults to "F Y"
+      //               theme: "dark" // defaults to "light"
+      //               }),
+      //           ],
+      //           });
+      //       }, 100);
+      //       },
+      getAccount() {
+        setTimeout(() => {
+        var app = this;
+        axios
+          .get(`masterjurnal/child`)
+          .then((res) => {
+            app.child= res.data;
+          })
+          .catch((err) => {
+            toastr.error("sesuatu error terjadi", "gagal");
+          });
+      }, 500);
+    },
+    },
+    mounted() {
+    this.getAccount();
+    // this.loadDate();
+  },
   };
   </script>
   

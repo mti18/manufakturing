@@ -9,7 +9,7 @@ class SalesOrderDetail extends Model
 {
     use HasFactory;
 
-    // protected $table = 'sales_order_detail';
+    // protected $table = 'sales_order_details';
     protected $with = ['barangjadi', 'barangmentah'];
 
     protected $fillable = ['barangmentah_id', 'barangjadi_id', 'volume', 'harga', 'diskon', 

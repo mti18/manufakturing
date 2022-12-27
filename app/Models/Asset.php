@@ -12,7 +12,7 @@ class Asset extends Model
     use Uuid;
 
 
-    protected $fillable = ['uuid', 'nm_assets', 'tahun', 'kelompok_id', 'jumlah', 'profile_id', 'jenisasset_id'];
+    protected $fillable = ['uuid', 'nm_assets', 'tahun', 'kelompok_id', 'jumlah', 'tarif', 'jenisasset_id' , 'profile_id'];
 
     public function kelompok()
     {
@@ -27,6 +27,5 @@ class Asset extends Model
     public function profile()
     {
         return $this->belongsTo(Profile::class, 'profile_id', 'id');
-
     }
 }

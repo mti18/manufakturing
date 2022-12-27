@@ -20,10 +20,8 @@ return new class extends Migration
             $table->year('tahun');
             $table->bigInteger('kelompok_id')->unsigned();
             $table->foreign('kelompok_id')->references('id')->on('kelompoks')->onDelete('cascade');
-            $table->bigInteger('jenisasset_id')->unsigned();
-            $table->foreign('jenisasset_id')->references('id')->on('jenisassets')->onDelete('cascade');
-            $table->bigInteger('profile_id')->unsigned();
-            $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');
+            
+          
             $table->integer('jumlah')->default('1');
             $table->timestamps();
         });

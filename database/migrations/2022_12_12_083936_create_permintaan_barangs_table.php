@@ -33,7 +33,7 @@ return new class extends Migration
 
             $table->bigInteger('volume');
             $table->decimal('harga', 12, 2);
-            $table->string('jumlah', 12, 2);
+            $table->decimal('jumlah', 12, 2);
             $table->text('keterangan')->nullable();
             
             $table->timestamps();

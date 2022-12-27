@@ -51,7 +51,7 @@
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("nama", {
-          header: "Nama",
+          header: "Jenis Asset",
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("uuid", {
