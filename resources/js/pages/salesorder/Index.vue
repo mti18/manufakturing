@@ -19,8 +19,16 @@
       </div>
       <div class="card-body">
         <mti-paginate
+          v-if="!openRetur"
           id="table-salesorder"
           url="/salesorder/paginate"
+          :columns="columns"
+        ></mti-paginate>
+
+        <mti-paginate
+          v-else-if="!openForm"
+          id="table-salesorder"
+          url="/kategori/paginate"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -35,7 +43,7 @@ import { createColumnHelper } from "@tanstack/vue-table";
 const columnHelper = createColumnHelper();
 
 import Form from "./Form.vue";
-import Retur from "./Retur.vue";
+import Retur from "./returbarang/Form.vue";
 import { useDelete, useDownloadPdf } from "@/libs/hooks";
 
 export default {
@@ -136,7 +144,7 @@ export default {
       columnHelper.accessor("uuid", {
         header: "Aksi",
         cell: (cell) => {
-          if (openForm.value && openRetur.value) return null;
+          if (openForm.value) return null;
           const status = cell.row.original.status;
 
           const buttons = [];

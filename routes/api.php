@@ -42,9 +42,11 @@ use App\Http\Controllers\SalesOrderDetailController;
 use App\Http\Controllers\StokKeluarController;
 use App\Http\Controllers\StokMasukController;
 use App\Http\Controllers\KonfirmasiOrderController;
+use App\Http\Controllers\KonfirmasiPimpinanController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PermintaanBarangController;
 use App\Http\Controllers\PermintaanInternalController;
+use App\Http\Controllers\ReturBarangController;
 use App\Models\SalesOrderDetail;
 
 /*
@@ -473,6 +475,16 @@ Route::prefix('v1')->group(function () {
                 Route::post('{uuid}/update', [PermintaanInternalController::class, 'update']);
                 Route::delete('{uuid}/destroy', [PermintaanInternalController::class, 'destroy']);
             });
+
+            Route::prefix('konfirmasipimpinan')->group(function () {
+                Route::prefix('order')->group(function () {
+                    Route::post('paginate/{status}', [KonfirmasiPimpinanController::class, 'paginateOrder']);
+                    Route::get('{uuid}/detail', [KonfirmasiPimpinanController::class, 'detailOrder']);
+                    Route::post('{uuid}/revisi', [KonfirmasiPimpinanController::class, 'revisiOrder']);
+                    Route::post('{uuid}/accept', [KonfirmasiPimpinanController::class. 'acceptOrder']);    
+                });
+            });
+
         }); 
     });
     });

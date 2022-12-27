@@ -15,6 +15,11 @@ return new class extends Migration
     {
         Schema::table('sales_orders', function (Blueprint $table) {
             $table->enum('acc_pimpinan', ['N', 'Y'])->default('N');
+
+            $table->bigInteger('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')
+                  ->onDelete('cascade');
+
         });
     }
 
@@ -27,6 +32,10 @@ return new class extends Migration
     {
         Schema::table('sales_orders', function (Blueprint $table) {
             $table->dropColumn('acc_pimpinan');
+
+            $table->dropForeign(['user_id']);    
+            $table->dropColumn('user_id');
+
         });
     }
 };

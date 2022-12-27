@@ -26,6 +26,13 @@ class SalesOrderDetail extends Model
         return $this->belongsTo(barangmentah::class, 'barangmentah_id', 'id');
     }
 
+    public function salesorder()
+    {
+        return $this->belongsTo(SalesOrder::class, 'salesorder_id', 'id');
+    }
+
+
+
 
 
 }
