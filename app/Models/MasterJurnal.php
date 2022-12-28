@@ -11,7 +11,7 @@ class MasterJurnal extends Model
     use HasFactory;
     
     use Uuid;
-    protected $fillable = ["uuid", "kd_jurnal", "tanggal", "type", ];
+    protected $fillable = ["uuid", "kd_jurnal", "tanggal", "type", 'status'];
     protected $hidden = [ 'created_at', 'updated_at'];
     protected $appends = ['file_bukti_master'];
 

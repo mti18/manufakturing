@@ -111,7 +111,7 @@
                 KTUtil.scrollTop();
                 selected.value = cell.getValue();
                 openDetail.value = true;
-              }}, h('i', { class: 'la la-pencil-alt fs-2' }))
+              }}, h('i', { class: 'las la-eye fs-2' }))
             ]),
         }),
       ]

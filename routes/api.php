@@ -11,6 +11,7 @@ use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\MasterJurnalController;
 use App\Http\Controllers\NeracaSaldoController;
 use App\Http\Controllers\PenyusutanController;
+use App\Http\Controllers\ReportJurnalController;
 use App\Http\Controllers\TahunController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -142,6 +143,8 @@ Route::prefix('v1')->group(function () {
             Route::prefix('account')->group(function () {
                 Route::get('get', [AccountController::class, 'get']);
                 Route::get('show', [AccountController::class, 'show']);
+                Route::get('showpajak', [AccountController::class, 'showPajak']);
+                Route::get('showbank', [AccountController::class, 'showBank']);
                 Route::get('getdata', [AccountController::class, 'getdata']);
                 Route::post('paginate', [AccountController::class, 'paginate']);
                 Route::post('store', [AccountController::class, 'store']);
@@ -425,14 +428,40 @@ Route::prefix('v1')->group(function () {
             );
             Route::prefix('neraca')->group(function () {
                 Route::get('neraca/{bulan}/{tahun}/{type}', [NeracaSaldoController::class, 'neraca']);
+                Route::get('reportneraca/{bulan}/{tahun}/{type}', [NeracaSaldoController::class, 'ReportNeracaSaldo']);
                 
             }
             
             );
             Route::prefix('jurnal')->group(function () {
                 Route::get('jurnal/{bulan}/{tahun}/{type}', [JurnalController::class, 'jurnal']);
+                Route::get('reportjurnal/{bulan}/{tahun}/{type}', [JurnalController::class, 'ReportJurnal']);
             }
-            
+            );
+            Route::prefix('laporan')->group(function () {
+                Route::post('pratutup', [ReportJurnalController::class, 'pratutup']);
+                Route::post('tutup', [ReportJurnalController::class, 'tutup']);
+                Route::post('hapus', [ReportJurnalController::class, 'tutuphapus']);
+                Route::post('labarugi', [ReportJurnalController::class, 'labarugi']);
+                Route::get('child', [AccountController::class, 'child']);
+                Route::get('tahun', [ReportJurnalController::class, 'tahun']);
+                Route::get('showpajak', [AccountController::class, 'showPajak']);
+                Route::get('get1', [AccountController::class, 'get1']);
+                Route::get('showbank', [AccountController::class, 'showBank']);
+               
+            }
+            );
+            Route::prefix('worksheet')->group(function () {
+                Route::post('worksheet/{tahun}', [JurnalController::class, 'ReportWorksheet']);
+                Route::post('check', [ReportJurnalController::class, 'check']);
+            }
+            );
+            Route::prefix('jurnal')->group(function () {
+                Route::get('jurnal/{bulan}/{tahun}/{type}', [JurnalController::class, 'jurnal']);
+                Route::get('reportjurnal/{bulan}/{tahun}/{type}', [JurnalController::class, 'ReportJurnal']);
+                Route::get('tahun', [ReportJurnalController::class, 'tahun']);
+                Route::post('worksheet/{tahun}', [JurnalController::class, 'ReportWorksheet']);
+            }
             );
 
 

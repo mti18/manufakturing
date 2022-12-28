@@ -12,25 +12,33 @@ class Account extends Model
     use Uuid;
 
     protected $fillable = [
-    	'uuid', 'nm_account', 'kode_account', 'account_type', 'type', 'parent_id',
+    	'uuid', 'nm_account', 'kode_account', 'account_type', 'type', 'parent_id', 'bank', 'pajak','account_header'
     ];
-    protected $with = ['nodes'];
+    // protected $with = ['nodes'];
     protected $appends = ['text', 'state', 'saldo_berjalan'];
     
 
-    // public function children()
-    // {
-    //     return $this->hasOne(Account::class, 'parent_id', 'id');
-    // }
+    public function hutang()
+    {
+        return $this->hasMany('\App\Models\Hutang');
+    }
+    public function pajak()
+    {
+        return $this->hasOne('\App\Models\Account');
+    }
+    public function bank()
+    {
+        return $this->hasOne('\App\Models\Account');
+    }
 
     public function parent()
     {
-        return $this->belongsTo(Account::class, 'parent_id', 'id');
+        return $this->belongsTo(Account::class, 'parent_id');
     }
 
     public function nodes()
     {
-        return $this->hasMany(Account::class, 'parent_id', 'id');
+        return $this->hasMany(Account::class, 'parent_id', 'id')->with('nodes');
     }
 
     public function jurnal_item()

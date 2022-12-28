@@ -33,7 +33,7 @@
           <label>Type</label>
           <select2
             class="form-control"
-            v-model="formRequest.type"
+            v-model="$parent.formRequest.type"
           >
             <option value="0">Umum</option>
             <option value="1">Penyesuaian</option>
@@ -92,7 +92,7 @@ export default {
   methods: {
     sendFilter() {
       var app = this;
-      if (app.$parent.formRequest.bulan == "" || app.$parent.formRequest.tahun == "" ||  app.formRequest.type == "") {
+      if (app.$parent.formRequest.bulan == "" || app.$parent.formRequest.tahun == "" ||  app.$parent.formRequest.type == "") {
         app.$toast.error("Bulan , Tahun , dan Type harus diisi");
          return;
       } else {
@@ -103,7 +103,7 @@ export default {
               "/" +
               app.$parent.formRequest.tahun +
               "/" +
-              app.formRequest.type
+              app.$parent.formRequest.type
           )
           .then((res) => {
             app.$parent.masterjurnal = res.data;
