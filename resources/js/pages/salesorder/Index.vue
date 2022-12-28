@@ -19,9 +19,17 @@
       </div>
       <div class="card-body">
         <mti-paginate
+          v-if="!openRetur"
           id="table-salesorder"
           url="/salesorder/paginate"
-          :columns="columns"
+          :columns="columnsSO"
+        ></mti-paginate>
+
+        <mti-paginate
+          v-else-if="!openForm"
+          id="table-salesorder"
+          url="/kategori/paginate"
+          :columns="columnsRB"
         ></mti-paginate>
       </div>
     </div>
@@ -35,7 +43,7 @@ import { createColumnHelper } from "@tanstack/vue-table";
 const columnHelper = createColumnHelper();
 
 import Form from "./Form.vue";
-import Retur from "./Retur.vue";
+import Retur from "./returbarang/Form.vue";
 import { useDelete, useDownloadPdf } from "@/libs/hooks";
 
 export default {
@@ -57,7 +65,7 @@ export default {
 
     const { download: downloadPdf } = useDownloadPdf();
 
-    const columns = [
+    const columnsSO = [
       columnHelper.accessor("no_pemesanan", {
         header: "NO",
 
@@ -136,7 +144,7 @@ export default {
       columnHelper.accessor("uuid", {
         header: "Aksi",
         cell: (cell) => {
-          if (openForm.value && openRetur.value) return null;
+          if (openForm.value) return null;
           const status = cell.row.original.status;
 
           const buttons = [];
@@ -220,14 +228,14 @@ export default {
               h(
                 "button",
                 {
-                  class: "btn btn-sm btn-icon btn-active-light-warning",
+                  class: "btn btn-sm btn-icon btn-active-light-info",
                   onClick: () => {
                     KTUtil.scrollTop();
                     selected.value = cell.getValue();
                     openRetur.value = true;
                   },
                 },
-                h("i", { class: "la la-backspace text-warning fs-2" })
+                h("i", { class: "la la-eye text-info fs-2" })
               )
             );
           }
@@ -239,11 +247,66 @@ export default {
       }),
     ];
 
+    const columnsRB = [
+      columnHelper.accessor("no_pemesanan", {
+        header: "No Pemesanan",
+
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("no_pemesanan", {
+        header: "Nama Barang",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("no_pemesanan", {
+        header: "Jumlah Retur",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("no_pemesanan", {
+        header: "Status",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("no_pemesanan", {
+        header: "Tanggal",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("uuid", {
+        header: "Aksi",
+        cell: (cell) =>
+          openForm.value
+            ? null
+            : h("div", { class: "d-flex gap-2" }, [
+                h(
+                  "button",
+                  {
+                    class: "btn btn-sm btn-icon btn-warning",
+                    onClick: () => {
+                      KTUtil.scrollTop();
+                      selected.value = cell.getValue();
+                      openForm.value = true;
+                    },
+                  },
+                  h("i", { class: "la la-pencil fs-2" })
+                ),
+                h(
+                  "button",
+                  {
+                    class: "btn btn-sm btn-icon btn-danger",
+                    onClick: () => {
+                      deleteKategori(`/kategori/${cell.getValue()}/destroy`);
+                    },
+                  },
+                  h("i", { class: "la la-trash fs-2" })
+                ),
+              ]),
+      }),
+    ];
+
     return {
       selected,
       openForm,
       openRetur,
-      columns,
+      columnsSO,
+      columnsRB,
     };
   },
 };

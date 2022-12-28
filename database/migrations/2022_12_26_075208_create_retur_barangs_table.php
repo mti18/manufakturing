@@ -25,7 +25,7 @@ return new class extends Migration
                   ->onDelete('cascade');
 
             $table->bigInteger('salesorder_detail_id')->unsigned();
-            $table->foreign('salesorder_detail_id')->references('id')->on('sales_order_detail')
+            $table->foreign('salesorder_detail_id')->references('id')->on('sales_order_details')
                   ->onDelete('cascade');
                   
             $table->enum('status', [0, 1, 2])->default(0); //(1) Reject (2) Accept

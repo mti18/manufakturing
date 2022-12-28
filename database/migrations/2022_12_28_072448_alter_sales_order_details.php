@@ -13,9 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('jenisassets', function (Blueprint $table) {
-            $table->integer('account_id')->unsigned()->nullable();
-            $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
+        Schema::table('sales_order_details', function (Blueprint $table) {
+            $table->enum('status', [0, 1, 2, 3, 4, 5, 6])->default(0);
         });
     }
 
@@ -26,9 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('jenisassets', function (Blueprint $table) {
-            $table->dropForeign(['account_id']);
-            $table->dropColumn('account_id');
+        Schema::table('sales_order_details', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 };

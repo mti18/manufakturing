@@ -20,13 +20,13 @@
             <label for="name" class="form-label"> Nomor Pemesanan : </label>
             <input
               type="text"
-              name="nm_kategori"
+              name="no_pemesanan"
               id="name"
               class="form-control"
               required
               disabled
               autoComplete="off"
-              v-model="form.nm_kategori"
+              v-model="form.no_pemesanan"
             />
           </div>
         </div>
@@ -50,29 +50,25 @@
             <label for="name" class="form-label"> Jumlah : </label>
             <input
               type="text"
-              name="nm_kategori"
+              name="jumlah"
               id="name"
               class="form-control"
-              placeholder="Pilih"
+              placeholder="Jumlah"
               required
               autoComplete="off"
-              v-model="form.nm_kategori"
+              v-model="form.jumlah"
             />
           </div>
         </div>
         <div class="col-12">
           <div class="mb-8">
-            <label for="name" class="form-label"> Jumlah : </label>
-            <input
-              type="text"
-              name="nm_kategori"
-              id="name"
+            <label for="name" class="form-label"> Keterangan : </label>
+            <textarea
               class="form-control"
-              placeholder="Pilih"
-              required
-              autoComplete="off"
-              v-model="form.nm_kategori"
-            />
+              name="keterangan"
+              v-model="keterangan"
+              placeholder="Keterangan"
+            ></textarea>
           </div>
         </div>
         <div class="col-12">
@@ -158,7 +154,7 @@ export default {
       this.submit(data, {
         onSuccess: (data) => {
           toastr.success(data.message);
-          vm.$parent.openRetur = false;
+          // vm.$parent.openRetur = false;
           vm.$parent.selected = undefined;
           vm.queryClient.invalidateQueries(["/salesorder/paginate"], {
             exact: true,

@@ -29,7 +29,7 @@
               required
               autoComplete="off"
               v-model="form.profile_id"
-              @change="perusahaan($event), getnumber()"
+              @change="perusahaan($event)"
             >
               <option value="" disabled>Pilih</option>
               <option
@@ -231,6 +231,7 @@
                 class="form-control"
                 required
                 autoComplete="off"
+                @change="getnumber($event)"
                 v-model="form.tgl_pesan"
               />
             </div>
@@ -948,7 +949,7 @@ export default {
   setup(props) {
     const queryClient = useQueryClient();
     const form = ref({
-      barangmentah: [],
+      tempo: 0,
     });
     const selected = ref(props.selected);
     const isNext = ref(false);
@@ -990,33 +991,6 @@ export default {
       }
     );
 
-    // const { data: salesorder } = useQuery(
-    //   ["salesorder", selected, "edit"],
-    //   () => {
-    //     // setTimeout(() => KTApp.block("#form-salesorder"), 100);
-    //     return axios
-    //       .get(`/salesorder/${selected.value}/edit`)
-    //       .then((res) => res.data);
-    //   },
-
-    //   {
-    //     enabled: !!selected.value,
-    //     cacheTime: 0,
-    //     onSuccess: ({ data }) => {
-    //       console.log(data);
-    //       const datas = { ...data.data };
-    //       if (datas.barangjadi.length) {
-    //         datas.barangjadi.push();
-    //       }
-    //       if (datas.barangmentah.length) {
-    //         datas.barangmentah.push();
-    //       }
-    //       form.value = datas;
-    //     },
-    //     onError: (error) => console.log(error),
-    //   }
-    // );
-
     const { mutate: submit } = useMutation(
       (data) =>
         axios
@@ -1041,12 +1015,6 @@ export default {
         onSuccess: (data) => {
           KTApp.unblock("#form-salesorder");
           const datas = { ...data.data };
-          // if (!datas.barangjadi.length) {
-          //   datas.barangjadi.push();
-          // }
-          // if (!datas.barangmentah.length) {
-          //   datas.barangmentah.push();
-          // }
           selected.value = datas.uuid;
           form.value = datas;
         },
@@ -1086,19 +1054,6 @@ export default {
       var index = app.profiles.findIndex((cat) => cat.id == e);
 
       app.profile_so = app.profiles[index];
-    },
-
-    clearFormData() {
-      this.form = {
-        profile_id: "",
-        supplier_id: "",
-        tgl_pesan: "",
-        tgl_pengiriman: "",
-        jenis_pembayaran: "",
-        diketahui_oleh: "",
-        account_id: "",
-        tempo: 0,
-      };
     },
 
     hitungnilaijadi(e, index) {
@@ -1265,9 +1220,11 @@ export default {
       }, 100);
     },
 
-    getnumber() {
+    getnumber(e) {
+      // console.log();
+
       this.$http
-        .get("salesorder/getnumber")
+        .get("salesorder/getnumber?tgl_pesan=" + $("#tgl_pesan").val())
         .then((res) => {
           this.form.no_pemesanan = res.data;
         })
@@ -1319,9 +1276,8 @@ export default {
     },
   },
 
-  mounted() {
-    // this.clearFormData();
-  },
+  // mounted() {
+  // },
 };
 </script>
 
