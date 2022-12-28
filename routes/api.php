@@ -445,8 +445,6 @@ Route::prefix('v1')->group(function () {
             });
             Route::prefix('pembelian')->group(function () {
                 Route::get('get', [PembelianController::class, 'get']);
-                Route::get('getBJ', [PembelianController::class, 'get']);
-                Route::get('getBM', [PembelianController::class, 'get']);
                 Route::post('paginate', [PembelianController::class, 'paginate']);
                 Route::post('store', [PembelianController::class, 'store']);
                 Route::get('{uuid}/edit', [PembelianController::class, 'edit']);
@@ -474,6 +472,8 @@ Route::prefix('v1')->group(function () {
         
             Route::prefix('permintaan')->group(function () {
                 Route::get('get', [PermintaanBarangController::class, 'get']);
+                Route::get('getBJ', [PermintaanBarangController::class, 'getBJ']);
+                Route::get('getBM', [PermintaanBarangController::class, 'getBM']);
                 Route::post('paginate', [PermintaanBarangController::class, 'paginate']);
                 Route::post('store', [PermintaanBarangController::class, 'store']);
                 Route::get('{uuid}/edit', [PermintaanBarangController::class, 'edit']);

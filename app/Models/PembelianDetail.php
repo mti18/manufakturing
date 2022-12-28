@@ -12,12 +12,6 @@ class PembelianDetail extends Model
     use HasFactory;
     use Uuid;
 
-    protected $table = 'pembelian_details';
-
-    
-    public function salesorder()
-    {
-        return $this->belongsTo(SalesOrder::class);
-    }
+    protected $filllable = ['uuid', 'salesorder_id', 'pembelian_id', 'permintaan_id', 'jumlah', 'harga'];
 }
 

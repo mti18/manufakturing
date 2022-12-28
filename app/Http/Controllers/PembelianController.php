@@ -74,7 +74,7 @@ class PembelianController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = Pembelian::where('uuid', $uuid)->first();
+            $data = Pembelian::with(['barangjadi', 'barangmentah'])->where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);
