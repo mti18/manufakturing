@@ -14,7 +14,7 @@ class SalesOrder extends Model
 
     protected $fillable = ['uuid', 'profile_id', 'supplier_id', 'diketahui_oleh', 'jumlah_paket', 'bukti_pesan', 
         'jenis_pembayaran', 'no_pemesanan','account_id', 'pembayaran', 'tgl_pesan', 'tgl_pengiriman', 'tempo', 'status', 
-        'keterangan', 'total', 'diskon', 'uangmuka', 'pph', 'ppn', 'netto', 'user_id'
+        'keterangan', 'total', 'diskon', 'uangmuka', 'pph', 'ppn', 'netto', 'user_id', 'acc_pimpinan'
     ];
     protected $with = ['barangjadi', 'barangmentah'];
 

@@ -528,10 +528,11 @@ Route::prefix('v1')->group(function () {
 
             Route::prefix('konfirmasipimpinan')->group(function () {
                 Route::prefix('order')->group(function () {
+                    // Route::get('{uuid}/detail', [KonfirmasiPimpinanController::class, 'detailOrder']);
                     Route::post('paginate/{status}', [KonfirmasiPimpinanController::class, 'paginateOrder']);
-                    Route::get('{uuid}/detail', [KonfirmasiPimpinanController::class, 'detailOrder']);
+                    Route::get('{uuid}/generatepdforder', [KonfirmasiPimpinanController::class, 'generatepdforder']);
                     Route::post('{uuid}/revisi', [KonfirmasiPimpinanController::class, 'revisiOrder']);
-                    Route::post('{uuid}/accept', [KonfirmasiPimpinanController::class. 'acceptOrder']);    
+                    Route::post('{uuid}/accept', [KonfirmasiPimpinanController::class, 'acceptOrder']);  
                 });
             });
         }); 

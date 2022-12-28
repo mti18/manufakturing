@@ -195,9 +195,12 @@ class SalesOrderController extends Controller
                     $jumlah = (double)str_replace(',', '.', $jumlah);
                     $item['jumlah'] = $jumlah;
 
-                    // $child = SatuanJadiChild::find($item['satuan']);
-                    // $volume = $item['volume'] * $child->nilai;
-                    // $item['volume'] = $volume;
+                    // $child = SatuanChild::find($data['satuan']);
+                    // if ($data['volume'] > ) {
+                    //     $volume = $data['volume'];
+                    //     $volume = $volume * $child->nilai;
+                    //     $data['volume'] = $volume;
+                    // }
     
                         SalesOrderDetail::create([
                             'volume' => $item['volume'],
@@ -282,17 +285,16 @@ class SalesOrderController extends Controller
 
     public function generatepdf1($uuid)
     {
-        $user = User::find(auth()->user()->id);
-        $data = SalesOrder::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'detail'])->where('uuid', $uuid)->first();
+        $data = SalesOrder::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'detail', 'user'])->where('uuid', $uuid)->first();
         $no_pemesanan = $data['no_pemesanan'];
-        $pdf = PDF::loadview('laporan.salesorderV1.Index', ['data' => $data ,'user' => $user]);
+        $pdf = PDF::loadview('laporan.salesorderV1.Index', ['data' => $data]);
         return $pdf->download('Salesorder - ' . $no_pemesanan);
     }
 
     public function generatepdf2($uuid)
     {
         $user = User::find(auth()->user()->id);
-        $data = SalesOrder::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'detail'])->where('uuid', $uuid)->first();
+        $data = SalesOrder::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'detail', 'user'])->where('uuid', $uuid)->first();
         $no_pemesanan = $data['no_pemesanan'];
         $pdf = PDF::loadview('laporan.salesorderV2.Index', ['data' => $data, 'user' => $user]);
         return $pdf->download('Salesorder - ' . $no_pemesanan);

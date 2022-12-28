@@ -16,7 +16,6 @@
 			width: 19cm;
 		}
 		.table-main{
-
 			width: 100%;
 			overflow: hidden;
 			border-collapse: collapse;
@@ -59,9 +58,10 @@
 		.table-ttd{
 			border-collapse: collapse;
 			margin-left: auto;
+
 		}
 		.title-ttd{
-			width: 120px;
+			width: 100px;
 			text-align: center;
 		}
 		.body-ttd{
@@ -142,6 +142,7 @@
 		}
 	</style>
 </head>
+
 <body>
 	<div class="main">
 		<table class="table-main">
@@ -248,45 +249,89 @@
                     <?php $urut=0; ?>
 						@foreach($data->detail as $datas)
 							<?php $urut++; ?>
-							<tr>
-								@if($datas->barangjadi_id != null)
-									<td class="dts-1 nomor">{{ $urut }}</td>
-									<td class="dts-2 barang"> {{ $datas->barangjadi->nm_barang_jadi }} ({{ $datas->barangjadi->kd_barang_jadi }})</td>
-									<td class="dts-3">{{ $datas->volume }} Buah</td>
-									<td class="dts-4">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
-									<td class="dts-5">{{ $datas->diskon }}%</td>
-									<td class="dts-6">Rp. {{ number_format("$datas->jumlah",2,",",".") }}</td>
-									<td class="dts-7">{{ (($datas->keterangan != null) ? $datas->keterangan : '-') }}</td>
-								@else
-									<td class="dts-1 nomor">{{ $urut }}</td>
-									<td class="dts-2 barang"> {{ $datas->barangmentah->nm_barangmentah }} ({{ $datas->barangmentah->kd_barang_mentah }})</td>
-									<td class="dts-3">{{ $datas->volume }}</td>
-									<td class="dts-4">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
-									<td class="dts-5">{{ $datas->diskon }}%</td>
-									<td class="dts-6">Rp. {{ number_format("$datas->jumlah",2,",",".") }}</td>
-									<td class="dts-7">{{ (($datas->keterangan != null) ? $datas->keterangan : '-') }}</td>
-								@endif
-							</tr>
+						<tr>
+							@if($datas->barangjadi_id != null)
+								<td class="dts-1 nomor">{{ $urut }}</td>
+								<td class="dts-2 barang"> {{ $datas->barangjadi->nm_barang_jadi }} ({{ $datas->barangjadi->kd_barang_jadi }})</td>
+								<td class="dts-3">{{ $datas->volume }} Buah</td>
+								<td class="dts-4">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
+								<td class="dts-5">{{ $datas->diskon }}%</td>
+								<td class="dts-6">Rp. {{ number_format("$datas->jumlah",2,",",".") }}</td>
+								<td class="dts-7">{{ (($datas->keterangan != null) ? $datas->keterangan : '-') }}</td>
+							@else
+								<td class="dts-1 nomor">{{ $urut }}</td>
+								<td class="dts-2 barang"> {{ $datas->barangmentah->nm_barangmentah }} ({{ $datas->barangmentah->kd_barang_mentah }})</td>
+								<td class="dts-3">{{ $datas->volume }}</td>
+								<td class="dts-4">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
+								<td class="dts-5">{{ $datas->diskon }}%</td>
+								<td class="dts-6">Rp. {{ number_format("$datas->jumlah",2,",",".") }}</td>
+								<td class="dts-7">{{ (($datas->keterangan != null) ? $datas->keterangan : '-') }}</td>
+							@endif
+						</tr>
                         @endforeach
+					</tbody>
+				</table>
+				<table border="1" class="table-data" width="100%" style="padding-top: 0px; page-break-inside: avoid;">
+					<tbody>
+						<tr>
+							<td class="no-border dts-1"></td>
+							<td class="no-border dts-2"></td>
+							<td class="no-border dts-3"></td>
+							<td class="no-border dts-4"></td>
+							<td class="no-border dts-5"style="border-top: 1px solid black; margin-bottom: 3px"></td>
+							<td class="no-border dts-6"style="border-top: 1px solid black; margin-bottom: 3px"></td>
+							<td class="no-border dts-7"></td>
+						</tr>
+						<tr>
+							<th class="no-border bold" style="border-right: 1px solid black;" colspan="4" rowspan="6">Note : {{ $data->keterangan }}</th>
+							<th class="bold">Total</th>
+							<td>Rp. {{ number_format("$data->total",2,",",".") }}</td>
+							<td class="no-border" style="border-left: 1px solid black;"></td>
+						</tr>
+						<tr>
+							<th class="bold">Diskon</th>
+                            @if($data->diskon <= 100)
+								<td>{{ $data->diskon }}%</td>
+                            @else
+								<td>Rp. {{ number_format("$data->diskon",2,",",".") }}</td>
+                            @endif
+							<td class="no-border" style="border-left: 1px solid black;"></td>
+						</tr>
+						<tr>
+							<th class="bold">Uang Muka</th>
+							<td>Rp. {{ number_format("$data->uangmuka",2,",",".") }}</td>
+							<td class="no-border" style="border-left: 1px solid black;"></td>
+						</tr>
+						<tr>
+							<th class="bold">PPH</th>
+							<td>{{ $data->pph }}%</td>
+							<td class="no-border" style="border-left: 1px solid black;"></td>
+						</tr>
+						<tr>
+							<th class="bold">PPN</th>
+							<td>{{ $data->ppn }}%</td>
+							<td class="no-border" style="border-left: 1px solid black;"></td>
+						</tr>
+						<tr>
+							<th class="bold">Netto</th>
+							<td>Rp. {{ number_format("$data->netto",2,",",".") }}</td>
+							<td class="no-border" style="border-left: 1px solid black;"></td>
+						</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
-
 		<table border="1" style="margin-top: 15px;" class="table-ttd">
 			<tr>
 				<th class="title-ttd">Dibuat Oleh</th>
-				<th class="title-ttd">Mengtahui</th>
 				<th class="title-ttd">Disetujui</th>	
 			</tr>
 			<tr>
-				<td style="height: 60px;"><img src="" width="90px" height="70px" style="margin-left: 5px;" ></td>
-				<td style="height: 60px;"><img src="" width="90px" height="70px" style="margin-left: 5px;" ></td>
-				<td style="height: 60px;"><img src="{{ (($data->acc_pimpinan != 'N')?public_path($data->profile->ttd):'') }}" width="90px" height="70px" style="margin-left: 5px;" ></td>
+				<td style="height: 80px;"><img src="" width="90px" height="80px" style="margin-left: 5px;" ></td>
+				<td style="height: 80px;"><img src="{{ public_path($data->profile->ttd) }}" width="90px" height="80px" style="margin-left: 5px;" ></td>
 			</tr>
 			<tr>
 				<td style="border-top: 1px solid white; text-align: center;">{{ $data->user->name }}</td>
-				<td style="border-top: 1px solid white; text-align: center;">{{ $data->diketahuioleh->name }}</td>
 				<td style="border-top: 1px solid white; text-align: center;">{{ $data->profile->pimpinan }}</td>
 			</tr>
 		</table>
