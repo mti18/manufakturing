@@ -31,8 +31,8 @@ class UserMenuSeeder extends Seeder
             ['user_group_id' => 1, 'menu_id' => 5],
             ['user_group_id' => 1, 'menu_id' => 6],
             ['user_group_id' => 1, 'menu_id' => 7],
-            ['user_group_id' => 1, 'menu_id' => 8],
-            ['user_group_id' => 1, 'menu_id' => 9],
+            // ['user_group_id' => 1, 'menu_id' => 8],
+            // ['user_group_id' => 1, 'menu_id' => 9],
             ['user_group_id' => 1, 'menu_id' => 10],
             ['user_group_id' => 1, 'menu_id' => 11],
             ['user_group_id' => 1, 'menu_id' => 12],
@@ -71,6 +71,10 @@ class UserMenuSeeder extends Seeder
             ['user_group_id' => 1, 'menu_id' => 45],
             ['user_group_id' => 1, 'menu_id' => 46],
             ['user_group_id' => 1, 'menu_id' => 47],
+            ['user_group_id' => 1, 'menu_id' => 48],
+            ['user_group_id' => 1, 'menu_id' => 49],
+            ['user_group_id' => 1, 'menu_id' => 50],
+            ['user_group_id' => 1, 'menu_id' => 51],
         ];
 
         foreach($usermenus as $usermenu){

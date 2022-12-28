@@ -249,8 +249,15 @@
      
       },
       addNodeFunction: function (node) {
-        this.formRequest = {}
-        this.formRequest.parent_id = node.id
+        this.formRequest = {
+          nm_account : null,
+                    parent_id : node.id,
+                    account_type: node.account_type, 
+                    account_header: node.account_header, 
+                    type: node.type, 
+                    disabled: false
+        };
+        // this.formRequest.parent_id = node.id
         this.type = 'create';
         $('#exampleModal').modal('show')
     },

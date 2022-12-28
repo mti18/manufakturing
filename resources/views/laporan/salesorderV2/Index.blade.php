@@ -259,7 +259,7 @@
 									<td class="dts-7">{{ (($datas->keterangan != null) ? $datas->keterangan : '-') }}</td>
 								@else
 									<td class="dts-1 nomor">{{ $urut }}</td>
-									<td class="dts-2 barang"> {{ $datas->barangmentah->nm_barangmentah }} ({{ $datas->barangjadi->kd_barang_mentah }})</td>
+									<td class="dts-2 barang"> {{ $datas->barangmentah->nm_barangmentah }} ({{ $datas->barangmentah->kd_barang_mentah }})</td>
 									<td class="dts-3">{{ $datas->volume }}</td>
 									<td class="dts-4">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
 									<td class="dts-5">{{ $datas->diskon }}%</td>
@@ -280,12 +280,12 @@
 				<th class="title-ttd">Disetujui</th>	
 			</tr>
 			<tr>
-				<td style="height: 60px;"><img src="" width="90px" height="70px" style="margin-left: 12px;" ></td>
-				<td style="height: 60px;"><img src="" width="90px" height="70px" style="margin-left: 12px;" ></td>
-				<td style="height: 60px;"><img src="" width="90px" height="70px" style="margin-left: 12px;" ></td>
+				<td style="height: 60px;"><img src="" width="90px" height="70px" style="margin-left: 5px;" ></td>
+				<td style="height: 60px;"><img src="" width="90px" height="70px" style="margin-left: 5px;" ></td>
+				<td style="height: 60px;"><img src="{{ (($data->acc_pimpinan != 'N')?public_path($data->profile->ttd):'') }}" width="90px" height="70px" style="margin-left: 5px;" ></td>
 			</tr>
 			<tr>
-				<td style="border-top: 1px solid white; text-align: center;">{{ $user->name }}</td>
+				<td style="border-top: 1px solid white; text-align: center;">{{ $data->user->name }}</td>
 				<td style="border-top: 1px solid white; text-align: center;">{{ $data->diketahuioleh->name }}</td>
 				<td style="border-top: 1px solid white; text-align: center;">{{ $data->profile->pimpinan }}</td>
 			</tr>

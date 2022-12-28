@@ -32,6 +32,7 @@ class AccountController extends Controller
                 'nm_account' => 'required|string',
                 'account_type'  => 'required|string',
                 'type'  => 'required|string',
+                'account_header'  => 'required|string',
 
             ]);
 
@@ -57,9 +58,26 @@ class AccountController extends Controller
             return abort(404);
         }
     }
+    public function showPajak() {
+        if (request()->wantsJson()) {
+            $data = Account::where('account_header', 'pajak')->get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
+    public function showBank() {
+        if (request()->wantsJson()) {
+            $data = Account::where('account_header', 'bank', '1')->get();
+
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
     public function child() {
         if (request()->wantsJson()) {
-            $data = Account::doesntHave('nodes')->get();
+            $data = Account::doesntHave('nodes')->orderBy('kode_account')->get();
             return response()->json($data);
         } else {
             return abort(404);
@@ -67,7 +85,15 @@ class AccountController extends Controller
     }
     public function show() {
         if (request()->wantsJson()) {
-            $data = Account::doesntHave('nodes')->get();
+            $data = Account::doesntHave('nodes')->orderBy('kode_account')->get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
+    public function get1() {
+        if (request()->wantsJson()) {
+            $data = Account::where('parent_id', null)->with('nodes')->orderBy('kode_account')->get();
             return response()->json($data);
         } else {
             return abort(404);
@@ -145,7 +171,7 @@ class AccountController extends Controller
     public function getdata()
     {
 
-        $data = Account::where('parent_id', null)->get();
+        $data = Account::where('parent_id', null)->with('nodes')->get();
         return RestApi::success($data);
     }
     public function send(Request $request) {

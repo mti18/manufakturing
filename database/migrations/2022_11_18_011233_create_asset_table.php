@@ -23,11 +23,29 @@ return new class extends Migration
 
             $table->integer('golongan_id')->unsigned();
             $table->foreign('golongan_id')->references('id')->on('golongans')
-                  ->onDelete('restrict');
+                ->onDelete('restrict');
 
             $table->integer('asset_group_id')->unsigned();
             $table->foreign('asset_group_id')->references('id')->on('asset_groups')
-                  ->onDelete('restrict');
+                ->onDelete('restrict');
+
+            $table->integer('akumulasi_id')->unsigned();
+            $table->foreign('akumulasi_id')->references('id')->on('acounts')
+                ->onDelete('restrict');
+
+            $table->integer('beban_id')->unsigned();
+            $table->foreign('beban_id')->references('id')->on('acounts')
+                ->onDelete('restrict');
+
+            $table->integer('akun_id')->unsigned();
+            $table->foreign('akun_id')->references('id')->on('acounts')
+                ->onDelete('restrict');
+
+
+            $table->integer('kredit_id')->unsigned();
+            $table->foreign('kredit_id')->references('id')->on('acounts')
+                ->onDelete('restrict');
+
                   
 
             $table->timestamps();

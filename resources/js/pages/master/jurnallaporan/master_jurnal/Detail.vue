@@ -120,7 +120,7 @@
                 >
                   <div
                     class="d-flex flex-stack mb-3"
-                    v-if="item.file.split('.')[1] != 'xlsx', 'pdf'"
+                    v-if="item.file.split('.')[1] != 'pdf'"
                   >
                     <div class="me-3">
                       <img
@@ -132,7 +132,7 @@
                   </div>
                   <div
                     class="d-flex flex-stack mb-3"
-                    v-if="item.file.split('.')[1] == 'xlsx', 'pdf'"
+                    v-if="item.file.split('.')[1] ==  'pdf'"
                   >
                     <div class="me-3">
                       <i

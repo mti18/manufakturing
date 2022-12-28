@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetGroupController;
+use App\Http\Controllers\AssetJurnalController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\BulanController;
@@ -9,6 +10,8 @@ use App\Http\Controllers\GolonganController;
 use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\MasterJurnalController;
 use App\Http\Controllers\NeracaSaldoController;
+use App\Http\Controllers\PenyusutanController;
+use App\Http\Controllers\ReportJurnalController;
 use App\Http\Controllers\TahunController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,10 +45,12 @@ use App\Http\Controllers\SalesOrderDetailController;
 use App\Http\Controllers\StokKeluarController;
 use App\Http\Controllers\StokMasukController;
 use App\Http\Controllers\KonfirmasiOrderController;
+use App\Http\Controllers\KonfirmasiPimpinanController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PembelianInternalController;
 use App\Http\Controllers\PermintaanBarangController;
 use App\Http\Controllers\PermintaanInternalController;
+use App\Http\Controllers\ReturBarangController;
 use App\Models\SalesOrderDetail;
 
 /*
@@ -140,6 +145,8 @@ Route::prefix('v1')->group(function () {
             Route::prefix('account')->group(function () {
                 Route::get('get', [AccountController::class, 'get']);
                 Route::get('show', [AccountController::class, 'show']);
+                Route::get('showpajak', [AccountController::class, 'showPajak']);
+                Route::get('showbank', [AccountController::class, 'showBank']);
                 Route::get('getdata', [AccountController::class, 'getdata']);
                 Route::post('paginate', [AccountController::class, 'paginate']);
                 Route::post('store', [AccountController::class, 'store']);
@@ -324,6 +331,8 @@ Route::prefix('v1')->group(function () {
             Route::prefix('asset')->group(function () {
                 Route::get('get', [AssetController::class, 'get']);
                 Route::post('paginate', [AssetController::class, 'paginate']);
+                Route::post('paginatejenisasset', [AssetController::class, 'paginatejenisasset']);
+                Route::post('paginateprofile', [AssetController::class, 'paginateprofile']);
                 Route::post('store', [AssetController::class, 'store']);
                 Route::get('{uuid}/edit', [AssetController::class, 'edit']);
                 Route::post('{uuid}/update', [AssetController::class, 'update']);
@@ -367,6 +376,25 @@ Route::prefix('v1')->group(function () {
                 Route::delete('{uuid}/destroy', [AssetGroupController::class, 'destroy']);
             }
             );
+            Route::prefix('assetjurnal')->group(function () {
+                Route::get('show', [AssetJurnalController::class, 'get']);
+                Route::post('paginate', [AssetJurnalController::class, 'paginate']);
+                Route::post('store', [AssetJurnalController::class, 'store']);
+                Route::get('{uuid}/edit', [AssetJurnalController::class, 'edit']);
+                Route::post('{uuid}/update', [AssetJurnalController::class, 'update']);
+                Route::delete('{uuid}/destroy', [AssetJurnalController::class, 'destroy']);
+            }
+            );
+            Route::prefix('penyusutan')->group(function () {
+                Route::get('show', [PenyusutanController::class, 'get']);
+                Route::post('paginate', [PenyusutanController::class, 'paginate']);
+                Route::post('store', [PenyusutanController::class, 'store']);
+                Route::post('susutkan', [PenyusutanController::class, 'susutkan']);
+                Route::get('{uuid}/edit', [PenyusutanController::class, 'edit']);
+                Route::post('{uuid}/update', [PenyusutanController::class, 'update']);
+                Route::delete('{uuid}/destroy', [PenyusutanController::class, 'destroy']);
+            }
+            );
             Route::prefix('salesorder')->group(function () {
                 Route::get('get', [SalesOrderController::class, 'get']);
                 Route::post('paginate', [SalesOrderController::class, 'paginate']);
@@ -396,18 +424,46 @@ Route::prefix('v1')->group(function () {
             );
             Route::prefix('bukubesar')->group(function () {
                 Route::post('paginate/{bulan}/{tahun}', [BukuBesarController::class, 'paginate']);
+                Route::get('reportbukubesar/{bulan}/{tahun}', [BukuBesarController::class, 'ReportBukuBesar']);
             }
             
             );
             Route::prefix('neraca')->group(function () {
                 Route::get('neraca/{bulan}/{tahun}/{type}', [NeracaSaldoController::class, 'neraca']);
+                Route::get('reportneraca/{bulan}/{tahun}/{type}', [NeracaSaldoController::class, 'ReportNeracaSaldo']);
+                
             }
             
             );
             Route::prefix('jurnal')->group(function () {
                 Route::get('jurnal/{bulan}/{tahun}/{type}', [JurnalController::class, 'jurnal']);
+                Route::get('reportjurnal/{bulan}/{tahun}/{type}', [JurnalController::class, 'ReportJurnal']);
             }
-            
+            );
+            Route::prefix('laporan')->group(function () {
+                Route::post('pratutup', [ReportJurnalController::class, 'pratutup']);
+                Route::post('tutup', [ReportJurnalController::class, 'tutup']);
+                Route::post('hapus', [ReportJurnalController::class, 'tutuphapus']);
+                Route::post('labarugi', [ReportJurnalController::class, 'labarugi']);
+                Route::get('child', [AccountController::class, 'child']);
+                Route::get('tahun', [ReportJurnalController::class, 'tahun']);
+                Route::get('showpajak', [AccountController::class, 'showPajak']);
+                Route::get('get1', [AccountController::class, 'get1']);
+                Route::get('showbank', [AccountController::class, 'showBank']);
+               
+            }
+            );
+            Route::prefix('worksheet')->group(function () {
+                Route::post('worksheet/{tahun}', [JurnalController::class, 'ReportWorksheet']);
+                Route::post('check', [ReportJurnalController::class, 'check']);
+            }
+            );
+            Route::prefix('jurnal')->group(function () {
+                Route::get('jurnal/{bulan}/{tahun}/{type}', [JurnalController::class, 'jurnal']);
+                Route::get('reportjurnal/{bulan}/{tahun}/{type}', [JurnalController::class, 'ReportJurnal']);
+                Route::get('tahun', [ReportJurnalController::class, 'tahun']);
+                Route::post('worksheet/{tahun}', [JurnalController::class, 'ReportWorksheet']);
+            }
             );
 
 
@@ -497,6 +553,16 @@ Route::prefix('v1')->group(function () {
                 Route::get('{uuid}/edit', [PermintaanInternalController::class, 'edit']);
                 Route::post('{uuid}/update', [PermintaanInternalController::class, 'update']);
                 Route::delete('{uuid}/destroy', [PermintaanInternalController::class, 'destroy']);
+            });
+
+            Route::prefix('konfirmasipimpinan')->group(function () {
+                Route::prefix('order')->group(function () {
+                    // Route::get('{uuid}/detail', [KonfirmasiPimpinanController::class, 'detailOrder']);
+                    Route::post('paginate/{status}', [KonfirmasiPimpinanController::class, 'paginateOrder']);
+                    Route::get('{uuid}/generatepdforder', [KonfirmasiPimpinanController::class, 'generatepdforder']);
+                    Route::post('{uuid}/revisi', [KonfirmasiPimpinanController::class, 'revisiOrder']);
+                    Route::post('{uuid}/accept', [KonfirmasiPimpinanController::class, 'acceptOrder']);  
+                });
             });
         }); 
     });

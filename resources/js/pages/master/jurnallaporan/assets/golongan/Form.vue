@@ -17,27 +17,66 @@
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="col-6">
+          <div class="col-6" >
             <div class="mb-8">
-              <label for="nm_golongan" class="form-label required"> Nama : </label>
+              <label for="nm_golongan" class="form-label required"> Nama Golongan : </label>
               <input type="text" name="nm_golongan" id="nm_golongan" placeholder="Nama"
                 class="form-control" required autoComplete="off" v-model="form.nm_golongan" />
             </div>
+          </div>
+            <div class="col-6">
             <div class="mb-8">
               <label for="metode_penyusutan" class="form-label required "> Metode Penyusutan : </label>
               <input type="text" name="metode_penyusutan" id="metode_penyusutan" placeholder="Metode"
                 class="form-control" required autoComplete="off" v-model="form.metode_penyusutan" />
             </div>
-            <div class="mb-8">
-              <label for="masa" class="form-label required "> Masa : </label>
-              <input type="number" min="0" name="masa" id="masa" placeholder="Masa"
-                class="form-control" required autoComplete="off" v-model="form.masa" />
+          </div>
+          
+            <div class="row">
+            <div class="col-6">
+          <div class="mb-8">
+            <label for="name" class="form-label required"> Masa </label>
+            <div class="input-group">
+              <input
+                type="number"
+                name="masa"
+                id="masa"
+                min="0"
+                placeholder="Masa"
+                class="form-control"
+                required
+                autoComplete="off"
+                v-model="form.masa"
+              />
+              <div class="input-group-append">
+                <span class="input-group-text">Tahun</span>
+              </div>
             </div>
-            <div class="mb-8">
-              <label for="rate" class="form-label required "> Rate : </label>
-              <input type="number" min="0" name="rate" id="rate" placeholder="Rate"
-                class="form-control" required autoComplete="off" v-model="form.rate" />
+          </div>
+        </div>
+          <div class="col-6">
+          <div class="mb-8">
+            <label for="code" class="form-label required">
+              Rate Penyusutan :
+            </label>
+            <div class="input-group">
+              <input
+                type="text"
+                name="tarif"
+                id="tarif"
+                placeholder="Tarif Penyusutan"
+                class="form-control"
+                required
+                autoComplete="off"
+                v-model="form.rate"
+              />
+              <div class="input-group-append">
+                <span class="input-group-text">%</span>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
           </div>
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-sm ms-auto mt-8 d-block">
@@ -46,7 +85,6 @@
             </button>
           </div>
         </div>
-      </div>
     </form>
   </template>
   

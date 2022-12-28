@@ -20,7 +20,7 @@ class MasterJurnalController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = MasterJurnal::with(['jurnal_item'])->whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun)->where(function ($q) use ($request) {
+            $courses = MasterJurnal::with(['jurnal_item','Penyusutan'])->whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun)->where(function ($q) use ($request) {
                 $q->where('tanggal', 'LIKE', '%' . $request->search . '%');
             })->orderBy('tanggal', 'asc')->paginate($per, ['*', DB::raw('@angka  := @angka  + 1 AS angka')]);
 
@@ -29,6 +29,17 @@ class MasterJurnalController extends Controller
                 $a->tanggal = AppHelper::tanggal_indo($a->tanggal);
                 $a->debit = AppHelper::rupiah($a->jurnal_item->where('kredit', 0)->sum('debit'));
                 $a->kredit = AppHelper::rupiah($a->jurnal_item->where('debit', 0)->sum('kredit'));
+
+                if ($a->status == "1") {
+                    $a->action = '<button class="btn btn-sm btn-icon btn-light-info mb-2 view" title="Lihat" data-id="' . $a->uuid . '"><i class="fa fa-eye"></i></button>';
+                } else {
+
+                    if (empty($a->Penyusutan)) {
+                        $a->action = '<button class="btn btn-sm btn-icon btn-light-primary mb-2 edit" title="Edit" data-id="' . $a->uuid . '"><i class="fa fa-pencil-alt"></i></button> <button class="btn btn-sm btn-icon btn-light-danger mb-2 delete" title="Hapus" data-id="' . $a->uuid . '"><i class="fa fa-trash"></i></button> <button class="btn btn-sm btn-icon btn-light-info mb-2 view" title="Lihat" data-id="' . $a->uuid . '"><i class="fa fa-eye"></i></button>';
+                    } else {
+                        $a->action = '<button class="btn btn-sm btn-icon btn-light-info mb-2 view" title="Lihat" data-id="' . $a->uuid . '"><i class="fa fa-eye"></i></button>';
+                    }
+                }
 
 
             return $a;
