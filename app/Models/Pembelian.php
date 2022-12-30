@@ -49,4 +49,19 @@ class Pembelian extends Model
     public function details() {
         return $this->hasMany(PembelianDetail::class, 'pembelian_id', 'id');
     }
+
+    public function permintaan()
+    {
+        return $this->belongsTo(PermintaanBarang::class, 'permintaan_id', 'id');
+    }
+
+    public function barang_jadi()
+    {
+        return $this->belongsTo(BarangJadi::class, 'barangjadi_id', 'id');
+    }
+
+    public function barang_mentah()
+    {
+        return $this->belongsTo(BarangMentah::class, 'barangmentah_id', 'id');
+    }
 }

@@ -510,6 +510,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('{id}/getnomor', [PembelianController::class, 'getnomorbyid']);
                 Route::get('gettahun', [PembelianController::class, 'gettahun']);
                 Route::get('getbulan', [PembelianController::class, 'getbulan']);
+                Route::get('{uuid}/generatepdf', [PembelianController::class, 'generatepdf']);
             });
 
             Route::prefix('pembelianinternal')->group(function () {
@@ -539,6 +540,8 @@ Route::prefix('v1')->group(function () {
 
             Route::prefix('permintaaninternal')->group(function () {
                 Route::get('get', [PermintaanInternalController::class, 'get']);
+                Route::get('getBJ', [PermintaanBarangController::class, 'getBJ']);
+                Route::get('getBM', [PermintaanBarangController::class, 'getBM']);
                 Route::post('paginate', [PermintaanInternalController::class, 'paginate']);
                 Route::post('store', [PermintaanInternalController::class, 'store']);
                 Route::get('{uuid}/edit', [PermintaanInternalController::class, 'edit']);

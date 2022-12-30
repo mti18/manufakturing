@@ -39,8 +39,6 @@ class PermintaanBarangController extends Controller
                 } else {
                     $a->keterangan = '-';
                 }
-
-
             });
 
             return response()->json($courses);
