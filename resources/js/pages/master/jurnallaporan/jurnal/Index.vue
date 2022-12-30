@@ -10,7 +10,7 @@
                   <i class="fas fa-angle-left"></i>
                   BACK
                 </button>
-                <button  type="button" class="back btn btn btn-success btn-sm ms-auto " >
+                <button @click="cetak()"  type="button" class="back btn btn btn-success btn-sm ms-auto " >
                   <i class="las la-file-excel"></i>
                   CETAK
                 </button>
@@ -122,6 +122,7 @@
         formRequest: {
           bulan: '',
           tahun: '',
+          type: "",
         }
       }
     },
@@ -142,6 +143,43 @@
       }
     },
     methods:{
+      cetak() {
+      var app = this;
+      app
+        .$http({
+          url:
+            "jurnal/reportjurnal/" +
+            app.formRequest.bulan +
+            "/" +
+            app.formRequest.tahun +
+            "/" +
+            app.formRequest.type,
+          method: "GET",
+          responseType: "arraybuffer",
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader(
+              "Authorization",
+              "Bearer " + localStorage.getItem("authToken")
+            );
+          },
+        })
+        .then(function (res) {
+          var headers = res.headers;
+          KTApp.unblock(".download_excel");
+          var blob = new Blob([res.data], {
+            type: "application/vnd.ms-excel",
+          });
+
+          var link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.download = headers["content-disposition"]
+            .split('filename="')[1]
+            .split('"')[0];
+          link.click();
+
+          window.respon = { status: true, message: "Berhasil Download!" };
+        });
+    },
        
 
      getAccount(){

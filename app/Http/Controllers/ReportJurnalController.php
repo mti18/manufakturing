@@ -45,7 +45,7 @@ class ReportJurnalController extends Controller
         $data = MasterJurnal::where('tanggal', '<=', "$tahun-12-" . date("t", (strtotime("$tahun-12"))))->where('status', "0")->orderBy("tanggal", "ASC")->first();
 
         if(empty($data)){
-            return RestApi::error('jurnal tidak ada di tahun '.$tahun.' dan dibawahnya', 400);
+            return RestApi::error('masterjurnal tidak ada di tahun '.$tahun.' dan dibawahnya', 400);
         }
 
         $tahunarr = [];
@@ -75,8 +75,8 @@ class ReportJurnalController extends Controller
                 $q->whereHas("MasterJurnal", function ($q) use ($parent) {
                     $q->whereYear("tanggal", $parent);
                 });
-            }, 'Account_id'])->get();
-
+            }, ])->get();
+            $data = Account::doesntHave('nodes')->orderBy('kode_account')->get();
 
             $nom_kredit = [];
             $nom_debit = [];
@@ -97,8 +97,8 @@ class ReportJurnalController extends Controller
                 //NSD
                 $total_nsd = $total + $total_jps;
 
-                if ($item->Account_id->tipe != "rill") {
-                    if ($item->Account_id->amount == "debit") {
+                if ($item->account_type != "rill") {
+                    if ($item->type == "debit") {
                         $item->total = abs($total_nsd);
                         array_push($nom_debit, $item);
                     } else {

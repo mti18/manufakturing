@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::table('sales_order_details', function (Blueprint $table) {
             $table->enum('status', ['0', '1', '2', '3', '4', '5', '6'])->default('0'); // (1)Reject (2)Accept (3)Konfirmasi (4)Produksi (5)Pembelian (6)retur
 
-            $table->uuid('uuid')->unique();
 
             $table->bigInteger('barangjadi_id')->unsigned()->nullable();
             $table->foreign('barangjadi_id')->references('id')->on('barang_jadis')->onDelete('restrict');

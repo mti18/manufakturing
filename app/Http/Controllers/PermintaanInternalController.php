@@ -81,6 +81,24 @@ class PermintaanInternalController extends Controller
         }
     }
 
+    public function getBJ() {
+        if (request()->wantsJson()) {
+            $data = PermintaanBarang::where('tipe', 'internal')->where('tipe_barang', 'barang_jadi')->get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function getBM() {
+        if (request()->wantsJson()) {
+            $data = PermintaanBarang::where('tipe', 'internal')->where('tipe_barang', 'barang_mentah')->get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
+
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = PermintaanBarang::where('uuid', $uuid)->first();

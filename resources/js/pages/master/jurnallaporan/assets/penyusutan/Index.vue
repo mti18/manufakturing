@@ -52,13 +52,7 @@
 
   
       const columns = [
-        columnHelper.accessor("nomor", {
-          header: "#",
-          style: {
-            width: "25px",
-          },
-          cell: (cell) => cell.getValue(),
-        }),
+      
         columnHelper.accessor("nm_asset", {
           header: "Nama",
           cell: (cell) => cell.getValue(),

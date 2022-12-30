@@ -33,7 +33,7 @@
           <label>Type</label>
           <select2
             class="form-control"
-            v-model="formRequest.type"
+            v-model="$parent.formRequest.type"
           >
             <option value="" disabled selected>Tahun</option>
             <option value="0">Belum disesuaikan</option>
@@ -85,14 +85,14 @@
         formRequest: {
           bulan: "",
           tahun: "",
-          type: "",
+          
         },
       };
     },
     methods: {
       sendFilter() {
         var app = this;
-        if (app.$parent.formRequest.bulan == "" || app.$parent.formRequest.tahun == "" ||  app.formRequest.type == "") {
+        if (app.$parent.formRequest.bulan == "" || app.$parent.formRequest.tahun == "" ||  app.$parent.formRequest.type == "") {
           app.$toast.error("Bulan , Tahun , dan Type harus diisi");
            return;
         } else {
@@ -102,7 +102,7 @@
           "/" +
           app.$parent.formRequest.tahun +
           "/" +
-          app.formRequest.type;
+          app.$parent.formRequest.type;
 
         app.axios
           .get(app.url)

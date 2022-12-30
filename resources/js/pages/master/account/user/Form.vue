@@ -23,6 +23,8 @@
               <input type="text" name="nm_account" id="nm_account" placeholder="Account"
                 class="form-control" required autoComplete="off" v-model="form.nm_account" />
             </div>
+          </div>
+            <div class="col-6">
             <div class="mb-8">
                 <label  for="account_type" class="form-label required">Account Type</label>
                     <select2 class="form-control" name="account_type"
@@ -30,8 +32,12 @@
                         <option value="rill">Rill</option>
                           <option value="nominal">Nominal</option>
                     </select2>
+                  </div>
                 </div>
-            <div class="mb-8">
+          </div>
+          <div class="row">
+            <div class="col-6">
+            <div class="mb-6">
                 <label  for="Type" class="form-label required">Type</label>
                     <select2 class="form-control" name="type"
                     placeholder="Pilih" v-model="form.type">
@@ -39,14 +45,29 @@
                           <option value="kredit">Kredit</option>
                     </select2>
                 </div>
-          </div>
+              </div>
+            <div class="col-6">
+            <div class="mb-6">
+                <label  for="account_header" class="form-label required">Account Header</label>
+                    <select2 class="form-control" name="account_header"
+                    placeholder="Pilih" v-model="form.account_header">
+                        <option value="pajak">Pajak</option>
+                          <option value="bank">Bank</option>
+                        <option value="hutang">Hutang</option>
+                          <option value="piutang">Piutang</option>
+                    </select2>
+                </div>
+              </div>
+            </div>
+          
+       
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-sm ms-auto mt-8 d-block">
               <i class="las la-save"></i>
               Simpan
             </button>
           </div>
-        </div>
+        
       </div>
     </form>
   </template>
