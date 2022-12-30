@@ -450,6 +450,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('showpajak', [AccountController::class, 'showPajak']);
                 Route::get('get1', [AccountController::class, 'get1']);
                 Route::get('showbank', [AccountController::class, 'showBank']);
+                Route::post('laporan/{tahun}', [JurnalController::class, 'ReportLaporan']); 
                
             }
             );

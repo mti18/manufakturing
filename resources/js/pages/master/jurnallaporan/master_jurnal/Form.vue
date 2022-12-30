@@ -338,12 +338,12 @@
           .then((res) => res.data),
       {
         onMutate: () => {
-          KTApp.block("#form-masterjurnal");
         },
         onError: (error) => {
           toastr.error(error.response.data.message);
         },
         onSettled: () => {
+          
           KTApp.unblock("#form-masterjurnal");
         },
       }

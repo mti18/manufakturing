@@ -22,34 +22,44 @@
           </div>
           <div class="row mt-5">
             <div class="">
-              <button
-              id="btnSearch"
+              <div   v-if="
+              status == false &&
+              $parent.formRequest.tahun != ''
+            ">
+                <button
+                id="btnSearch"
                 @click="sendFilter()"
                 button
                 type="button"
                 class="btn btn-success btn-sm ms-2"
-              >
+                >
                 <i class="las la-eye-slash"></i> TUTUP PERIODE
               </button>
-              <button
-              id="btnSearch"
+              </div>
+              <div 
+              v-if="status == true && $parent.formRequest.tahun != ''">
+
+                <button
+                id="btnSearch"
                 @click="hapus()"
                 button
+              
                 type="button"
-                class="btn btn-success btn-sm ms-2"
-              >
+                class="btn btn-danger btn-sm ms-2"
+                >
                 <i class="las la-eye-slash"></i> HAPUS PERIODE INI
               </button>
               <button
               id="btnSearch"
-                @click="cetak()"
-                button
-                type="button"
-                class="btn btn-success btn-sm ms-2"
+              @click="cetak()"
+              button
+              type="button"
+              class="btn btn-success btn-sm ms-2"
               >
-                <i class="las la-file-excel"></i> CETAK
-              </button>
-            </div>
+              <i class="las la-file-excel"></i> CETAK
+                </button>
+              </div>
+           </div>
           </div>
         </form>
       </div>
@@ -58,15 +68,23 @@
   
   <script>
   // AUTO GENERATE VUE FILE BY MCFLYON ARTISAN COMMAND
-
+ // AUTO GENERATE VUE FILE BY MCFLYON ARTISAN COMMAND
+ import { useDownloadExcel } from "@/libs/hooks";
+ 
   export default {
+    setup() {
+      const {download: downloadExcel} = useDownloadExcel();
+      return {downloadExcel}
+  },
     data() {
       return {
         tahuns: [],
         data: [],
+        status: false,
         account: [],
         formRequest: {
           tahun: "",
+          account_id: "",
          
         },
       };
@@ -199,6 +217,10 @@
           .catch((err) => {
             toastr.error("sesuatu error terjadi", "error");
           });
+      },
+      cetak() {
+        var app = this;
+        app.downloadExcel("laporan/laporan/" + app.$parent.formRequest.tahun, "POST", { account_id: app.$parent.formRequest.account_id });
       },
     },
     mounted() {

@@ -27,7 +27,7 @@ class JenisAssetController extends Controller
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
-                'nama' => 'required',
+                'nama' => 'required/string',
                 'account_id' => 'required',
             ]);
             JenisAsset::create($data);
