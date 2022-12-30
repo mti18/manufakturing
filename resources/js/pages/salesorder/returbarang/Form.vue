@@ -32,17 +32,20 @@
         </div>
         <div class="col-6">
           <div class="mb-8">
-            <label for="name" class="form-label"> Nama Barang : </label>
-            <input
-              type="text"
-              name="nm_kategori"
-              id="name"
+            <label for="code" class="form-label required">
+              Nama Barang :
+            </label>
+            <select2
+              name="salesorder_detail_id"
+              id="salesorder_detail_id"
               class="form-control"
-              placeholder="Pilih"
               required
               autoComplete="off"
-              v-model="form.nm_kategori"
-            />
+              v-model="form.salesorder_detail_id"
+            >
+              <option value="" disabled>Pilih</option>
+              <option value="Tunai">Tunai</option>
+            </select2>
           </div>
         </div>
         <div class="col-6">
@@ -102,11 +105,13 @@ export default {
     const queryClient = useQueryClient();
     const form = ref({});
 
-    const { data: salesorder } = useQuery(
-      ["salesorder", selected, "get"],
+    const { data: returbarang } = useQuery(
+      ["salesorder", selected, "edit"],
       () => {
         setTimeout(() => KTApp.block("#form-retur"), 100);
-        return axios.get(`/salesorder/${selected}/get`).then((res) => res.data);
+        return axios
+          .get(`/salesorder/${selected}/edit`)
+          .then((res) => res.data);
       },
       {
         enabled: !!selected,
@@ -120,7 +125,7 @@ export default {
       (data) =>
         axios
           .post(
-            selected ? `/salesorder/${selected}/update` : "/salesorder/store",
+            selected ? `/returbarang/${selected}/update` : "/returbarang/store",
             data
           )
           .then((res) => res.data),
@@ -138,7 +143,7 @@ export default {
     );
 
     return {
-      salesorder,
+      returbarang,
       submit,
       form,
       queryClient,

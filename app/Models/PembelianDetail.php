@@ -12,12 +12,22 @@ class PembelianDetail extends Model
     use HasFactory;
     use Uuid;
 
-    protected $table = 'pembelian_details';
+    protected $fillable = ['uuid', 'salesorder_id', 'pembelian_id', 'permintaan_id', 'jumlah', 'harga'];
 
-    
-    public function salesorder()
+    public function permintaan()
     {
-        return $this->belongsTo(SalesOrder::class);
+        return $this->belongsTo(PermintaanBarang::class, 'permintaan_id', 'id');
     }
+
+    public function barang_jadi()
+    {
+        return $this->belongsTo(BarangJadi::class, 'barangjadi_id', 'id');
+    }
+
+    public function barang_mentah()
+    {
+        return $this->belongsTo(barangmentah::class, 'barangmentah_id', 'id');
+    }
+
 }
 

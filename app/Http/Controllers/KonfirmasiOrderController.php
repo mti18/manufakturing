@@ -9,23 +9,19 @@ use App\Models\SalesOrderDetail;
 
 class KonfirmasiOrderController extends Controller
 {
-    public function paginate($uuid) {
+    public function paginate(Request $request) {
         if (request()->wantsJson()) {
             $per = (($request->per) ? $request->per : 10);
-            $page = (($request->page) ? $request->page - 1 : 0);
-
-            $salesorder = SalesOrder::findByUuid($uuid);
+            $page = (($request->page) ? $request->page - 1 : 0);    
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = SalesOrderDetail::with('salesorder')->where('salesorder_id', $salesorder->id)->where(function ($q) use ($request) {
-                $q->where('volume', 'LIKE', '%' . $request->search . '%');
-                $q->orWhere('harga', 'LIKE', '%' . $request->search . '%');
-            })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
-
+            $courses = SalesOrder::with(['supplier', 'profile', 'diketahuioleh', 'detail', 'user'])->where('acc_pimpinan', 'Y')->where(function ($q) use ($request) {
+                $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
+            })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
             return response()->json($courses);
+            
         } else {
             return abort(404);
         }
-    }
-}
+    }}

@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SalesOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\SalesOrderDetail;
+use App\Models\Pembelian;
+use App\Models\PembelianDetail;
 
-
-class SalesOrderDetailController extends Controller
+class PembelianDetailController extends Controller
 {
     public function paginate(Request $request) {
         if (request()->wantsJson()) {
@@ -16,7 +15,7 @@ class SalesOrderDetailController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = SalesOrderDetail::where(function ($q) use ($request) {
+            $courses = PembelianDetail::where(function ($q) use ($request) {
                 $q->where('volume', 'LIKE', '%' . $request->search . '%');
                 $q->orWhere('harga', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
@@ -29,34 +28,25 @@ class SalesOrderDetailController extends Controller
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
-                'volume' => 'required|numeric',
-                'satuan' => 'required',
-                'barangmentah_id' => 'nullable',
-                'barangjadi_id' => 'nullable',
+                'permintaan_id' => 'nullable',
                 'harga' => 'required|numeric',
-                'diskon' => 'required|numeric',
                 'jumlah' => 'required|numeric',
-                'keterangan' => 'nullable',
             ]);
 
             
             $harga = $data['harga'];
-            $diskon = $data['diskon'];
             $jumlah = $data['jumlah'];
 
             $harga = str_replace('.', '', $harga);
             $harga = (double)str_replace(',', '.', $harga);
             $data['harga'] = $harga;
-            $diskon = str_replace('.', '', $diskon);
-            $diskon = (double)str_replace(',', '.', $diskon);
-            $data['diskon'] = $diskon;
             $jumlah = str_replace('.', '', $jumlah);
             $jumlah = (double)str_replace(',', '.', $jumlah);
             $data['jumlah'] = $jumlah;
             
             unset($data['satuan']);
 
-            SalesOrderDetail::create($data);
+            PembelianDetail::create($data);
 
             
 
@@ -68,7 +58,7 @@ class SalesOrderDetailController extends Controller
 
     public function get() {
         if (request()->wantsJson()) {
-            $data = SalesOrderDetail::all();
+            $data = PembelianDetail::all();
             return response()->json($data);
         } else {
             return abort(404);
@@ -77,7 +67,7 @@ class SalesOrderDetailController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = SalesOrderDetail::where('uuid', $uuid)->first();
+            $data = PembelianDetail::where('uuid', $uuid)->first();
             return response()->json($data);
         } else {
             return abort(404);
@@ -87,26 +77,17 @@ class SalesOrderDetailController extends Controller
     public function update(Request $request, $uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([
-                'volume' => 'required|numeric',
-                'satuan' => 'required',
-                'barangmentah_id' => 'nullable',
-                'barangjadi_id' => 'nullable',
+                'permintaan_id' => 'nullable',
                 'harga' => 'required|numeric',
-                'diskon' => 'required|numeric',
                 'jumlah' => 'required|numeric',
-                'keterangan' => 'nullable',
             ]);
 
             $harga = $data['harga'];
-            $diskon = $data['diskon'];
             $jumlah = $data['jumlah'];
 
             $harga = str_replace('.', '', $harga);
             $harga = (double)str_replace(',', '.', $harga);
             $data['harga'] = $harga;
-            $diskon = str_replace('.', '', $diskon);
-            $diskon = (double)str_replace(',', '.', $diskon);
-            $data['diskon'] = $diskon;
             $jumlah = str_replace('.', '', $jumlah);
             $jumlah = (double)str_replace(',', '.', $jumlah);
             $data['jumlah'] = $jumlah;
@@ -114,12 +95,12 @@ class SalesOrderDetailController extends Controller
             unset($data['satuan']);
             
             if (!isset($data['uuid'])) {
-                // return SalesOrder::findByUuid($uuid);
-                // SalesOrderDetail::where('uuid', $data['uuid'])->delete($data);
-                SalesOrder::where('uuid',$uuid)->first()->detail()->create($data);
+                // return Pembelian::findByUuid($uuid);
+                // PembelianDetail::where('uuid', $data['uuid'])->delete($data);
+                Pembelian::where('uuid',$uuid)->first()->detail()->create($data);
 
             } else {
-                SalesOrderDetail::where('uuid', $data['uuid'])->update($data);
+                PembelianDetail::where('uuid', $data['uuid'])->update($data);
             }
 
             return response()->json(['message' => 'DetBarangil berhasil diedit']);
@@ -130,7 +111,7 @@ class SalesOrderDetailController extends Controller
 
     public function destroy($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            SalesOrderDetail::where('uuid', $uuid)->delete();
+            PembelianDetail::where('uuid', $uuid)->delete();
             return response()->json(['message' => 'Barang berhasil dihapus']);
         } else {
             return abort(404);

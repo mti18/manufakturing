@@ -2,7 +2,7 @@
   <section id="main">
     <Form v-if="openForm" :selected="selected" />
     <Retur v-if="openRetur" :selected="selected" />
-    <div class="card">
+    <div class="card" v-if="!openRetur">
       <div class="card-header">
         <div class="card-title w-100">
           <h1>Sales Order</h1>
@@ -19,16 +19,23 @@
       </div>
       <div class="card-body">
         <mti-paginate
-          v-if="!openRetur"
           id="table-salesorder"
           url="/salesorder/paginate"
           :columns="columnsSO"
         ></mti-paginate>
+      </div>
+    </div>
 
+    <div class="card" v-else-if="!openForm">
+      <div class="card-header">
+        <div class="card-title w-100">
+          <h1>Retur Barang</h1>
+        </div>
+      </div>
+      <div class="card-body">
         <mti-paginate
-          v-else-if="!openForm"
           id="table-salesorder"
-          url="/kategori/paginate"
+          url="/returbarang/paginate"
           :columns="columnsRB"
         ></mti-paginate>
       </div>
@@ -146,6 +153,7 @@ export default {
         cell: (cell) => {
           if (openForm.value) return null;
           const status = cell.row.original.status;
+          const pembayaran = cell.row.original.pembayaran;
 
           const buttons = [];
           if (status === "draft") {
@@ -179,7 +187,7 @@ export default {
                 "button",
                 {
                   class:
-                    "btn btn-sm btn-icon btn-active-light-secondary btn-arrow",
+                    "btn btn-sm btn-icon btn-active-light-secondary btn-eye",
                   type: "button",
                   "data-bs-toggle": "collapse",
                   "data-bs-target": "#detail",
@@ -187,7 +195,7 @@ export default {
                   "aria-controls": "detail",
                 },
                 h("i", {
-                  class: "la la-arrow-circle-down text-primary rotate-90 fs-2",
+                  class: "la la-eye text-primary rotate-90 fs-2",
                 })
               ),
 
@@ -228,16 +236,31 @@ export default {
               h(
                 "button",
                 {
-                  class: "btn btn-sm btn-icon btn-active-light-info",
+                  class: "btn btn-sm btn-icon btn-active-light-warning",
                   onClick: () => {
                     KTUtil.scrollTop();
                     selected.value = cell.getValue();
                     openRetur.value = true;
                   },
                 },
-                h("i", { class: "la la-eye text-info fs-2" })
+                h("i", { class: "la la-backspace text-warning fs-2" })
               )
             );
+          } else if (status === "process") {
+            if (
+              pembayaran ===
+              "no" /*&&  $pembayaran->sum('bayar') == $salesOrder->netto*/
+            ) {
+            } else {
+            }
+          } else if (status === "ready") {
+            if (pembayaran == "no") {
+            } else {
+            }
+          } else {
+            if (pembayaran == "no") {
+            } else {
+            }
           }
 
           return h("div", { class: "d-inlineblock gap-2" }, buttons);

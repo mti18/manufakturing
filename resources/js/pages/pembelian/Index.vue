@@ -31,7 +31,7 @@
   
   import Form from "./Form.vue";
   import Detail from "./Detail.vue";
-  import { useDelete } from "@/libs/hooks";
+  import { useDelete, useDownloadPdf } from "@/libs/hooks";
   
   export default {
     components: {
@@ -49,6 +49,9 @@
           queryClient.invalidateQueries(["/pembelian/paginate"]);
         }
       })
+
+      const { download: downloadPdf } = useDownloadPdf();
+
   
       const columns = [
         columnHelper.accessor("nomor", {
@@ -98,7 +101,19 @@
               }}, h('i', { class: 'la la-pencil fs-2' })), 
               h('button', { class: 'btn btn-sm btn-icon btn-danger', onClick: () => {
                 deletepembelian(`/pembelian/${cell.getValue()}/destroy`);
-              }}, h('i', { class: 'la la-trash fs-2' }))
+              }}, h('i', { class: 'la la-trash fs-2' })),
+              h(
+                "button",
+                {
+                  class: "btn btn-sm btn-icon btn-active-light-primary",
+                  onClick: () =>
+                    downloadPdf(
+                      `/pembelian/${cell.getValue()}/generatepdf`,
+                      "GET"
+                    ),
+                },
+                h("i", { class: "la la-print text-success fs-2" })
+              ),
             ]),
         }),
       ]

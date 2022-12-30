@@ -50,7 +50,7 @@
   import { createColumnHelper } from "@tanstack/vue-table";
   const columnHelper = createColumnHelper();
   
-  import Form from "./components/FormPembelian.vue";
+  import Form from "./components/FormSalesOrder.vue";
   import UtangPiutang from "./components/UtangPiutang.vue";
   import { useDelete } from "@/libs/hooks";
   

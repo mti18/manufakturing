@@ -19,7 +19,23 @@
         <div class="row">
           <div class="col-6">
             <div class="mb-8">
-              <label for="name" class="form-label required"> Account: </label>
+              <label for="name" class="form-label required"> Perusahaan: </label>
+              <input type="text" name="nama" id="nama" placeholder="Nama"
+                class="form-control" required autoComplete="off" v-model="form.nama" />
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="mb-8">
+              <label for="name" class="form-label required"> Supplier: </label>
+              <input type="text" name="nama" id="nama" placeholder="Nama"
+                class="form-control" required autoComplete="off" v-model="form.nama" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="mb-8">
+              <label for="name" class="form-label required"> Tanggal: </label>
               <input type="text" name="nama" id="nama" placeholder="Nama"
                 class="form-control" required autoComplete="off" v-model="form.nama" />
             </div>
@@ -28,12 +44,52 @@
               <input type="text" name="nama" id="nama" placeholder="Nama"
                 class="form-control" required autoComplete="off" v-model="form.nama" />
             </div>
-          </div>  
+            <div class="mb-8">
+              <label for="name" class="form-label required"> Total: </label>
+              <input type="text" name="nama" id="nama" placeholder="Nama"
+                class="form-control" required autoComplete="off" v-model="form.nama" />
+            </div>
+            <div class="mb-8">
+              <label for="name" class="form-label required"> Total yang harus dibayar: </label>
+              <input type="text" name="nama" id="nama" placeholder="Nama"
+                class="form-control" required autoComplete="off" v-model="form.nama" />
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="mb-8">
+              <label for="name" class="form-label required"> Jenis Pembayaran: </label>
+              <input type="text" name="nama" id="nama" placeholder="Nama"
+                class="form-control" required autoComplete="off" v-model="form.nama" />
+            </div>
+            <div class="mb-8">
+              <label for="name" class="form-label required"> Account: </label>
+              <input type="text" name="nama" id="nama" placeholder="Nama"
+                class="form-control" required autoComplete="off" v-model="form.nama" />
+            </div>
+            <div class="mb-8">
+              <label for="name" class="form-label required"> Uang Muka: </label>
+              <input type="text" name="nama" id="nama" placeholder="Nama"
+                class="form-control" required autoComplete="off" v-model="form.nama" />
+            </div>
+            <div class="mb-8">
+              <label for="name" class="form-label required"> Sisa belum dibayar: </label>
+              <input type="text" name="nama" id="nama" placeholder="Nama"
+                class="form-control" required autoComplete="off" v-model="form.nama" />
+            </div>
+          </div>
           <div class="col-12">
             <div class="mb-8">
-              <label for="name" class="form-label required"> Account: </label>
-              <input type="text" name="nama" id="nama" placeholder="Nama"
-                class="form-control" required autoComplete="off" v-model="form.nama" />
+              <label for="name" class="form-label required"> Bayar: </label>
+              <div class="input-group">
+                <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
+                  <input type="text" name="diskon" id="diskon" v-bind="config"
+                    class="form-control" required autoComplete="off" v-model="form.diskon" />
+              </div>
+            </div>
+            <div class="mb-8">
+              <label for="name" class="form-label required"> Keterangan: </label>
+              <textarea name="diskon" id="diskon" v-bind="config"
+                class="form-control" required autoComplete="off" v-model="form.diskon" />
             </div>
           </div>
           <div class="col-12">

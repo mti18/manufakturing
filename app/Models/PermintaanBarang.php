@@ -12,8 +12,10 @@ class PermintaanBarang extends Model
     use Uuid;
 
     protected $fillable = ['uuid', 'tanggal', 'tanggal_permintaan', 'no_bukti_permintaan', 'status', 'tipe', 
-        'volume', 'harga', 'jumlah', 'keterangan', 'tipe_barang', 'barangjadi_id', 'barangmentah_id'
+        'volume', 'harga', 'jumlah', 'keterangan', 'tipe_barang', 'barangjadi_id', 'barangmentah_id', 'pembelian_id'
     ];
+
+    protected $with = ['barang_jadi', 'barang_mentah'];
 
     public function barang_jadi()
     {
@@ -24,5 +26,11 @@ class PermintaanBarang extends Model
     {
         return $this->belongsTo(BarangMentah::class, 'barangmentah_id', 'id');
     }
+
+    public function pembeliandetail()
+    {
+        return $this->belongsTo(PembelianDetail::class, 'id', 'permintaan_id');
+    }
+
 
 }

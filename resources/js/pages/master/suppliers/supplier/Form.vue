@@ -44,8 +44,8 @@
             </div>
             <div class="mb-8">
               <label for="code" class="form-label required"> NPWP : </label>
-              <input type="text" name="npwp" id="npwp" placeholder="NPWP"
-                class="form-control" oninput="this.value = this.value.replace(/\D/g, '')" v-mask="'99.999.999.9-999.999'" v-model="form.npwp" />
+              <input name="npwp" id="npwp" placeholder="NPWP"
+                class="form-control" v-mask="'##.###.###.#-###.###'" :maxlength="16" v-model="form.npwp" />
             </div>
             <div class="mb-8">
               <label for="code" class="form-label required"> NPPKP : </label>
@@ -109,6 +109,8 @@
   import { useQuery, useMutation } from "vue-query";
   import axios from "@/libs/axios";
   import { useQueryClient } from "vue-query";
+  import VueMask from 'v-mask'
+  
   
   export default {
     props: {
@@ -117,7 +119,7 @@
         default: null,
       },
     },
-
+    
     data() {
       return {
         code: null,
