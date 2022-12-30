@@ -40,7 +40,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\JenisAssetController;
 use App\Http\Controllers\SalesOrderController;
-use App\Http\Controllers\SalesOrderDetailController;
 use App\Http\Controllers\StokKeluarController;
 use App\Http\Controllers\StokMasukController;
 use App\Http\Controllers\KonfirmasiOrderController;
@@ -50,7 +49,6 @@ use App\Http\Controllers\PembelianInternalController;
 use App\Http\Controllers\PermintaanBarangController;
 use App\Http\Controllers\PermintaanInternalController;
 use App\Http\Controllers\ReturBarangController;
-use App\Models\SalesOrderDetail;
 
 /*
 |--------------------------------------------------------------------------
@@ -381,8 +379,8 @@ Route::prefix('v1')->group(function () {
                 Route::post('{uuid}/update', [AssetJurnalController::class, 'update']);
                 Route::delete('{uuid}/destroy', [AssetJurnalController::class, 'destroy']);
             }
-            );
-            Route::prefix('penyusutan')->group(function () {
+        );
+        Route::prefix('penyusutan')->group(function () {
                 Route::get('show', [PenyusutanController::class, 'get']);
                 Route::post('paginate', [PenyusutanController::class, 'paginate']);
                 Route::post('store', [PenyusutanController::class, 'store']);
@@ -391,7 +389,7 @@ Route::prefix('v1')->group(function () {
                 Route::post('{uuid}/update', [PenyusutanController::class, 'update']);
                 Route::delete('{uuid}/destroy', [PenyusutanController::class, 'destroy']);
             }
-            );
+        );
             Route::prefix('salesorder')->group(function () {
                 Route::get('get', [SalesOrderController::class, 'get']);
                 Route::post('paginate', [SalesOrderController::class, 'paginate']);
@@ -445,15 +443,6 @@ Route::prefix('v1')->group(function () {
                 Route::get('{uuid}/edit', [StokMasukController::class, 'edit']);
                 Route::post('{uuid}/update', [StokMasukController::class, 'update']);
                 Route::delete('{uuid}/destroy', [StokMasukController::class, 'destroy']);
-            }
-            );
-            Route::prefix('salesorderdetail')->group(function () {
-                Route::get('get', [SalesOrderDetailController::class, 'get']);
-                Route::post('paginate', [SalesOrderDetailController::class, 'paginate']);
-                Route::post('store', [SalesOrderDetailController::class, 'store']);
-                Route::get('{uuid}/edit', [SalesOrderDetailController::class, 'edit']);
-                Route::post('{uuid}/update', [SalesOrderDetailController::class, 'update']);
-                Route::delete('{uuid}/destroy', [SalesOrderDetailController::class, 'destroy']);
             }
             );
 
@@ -524,6 +513,15 @@ Route::prefix('v1')->group(function () {
                 Route::get('{uuid}/edit', [PermintaanInternalController::class, 'edit']);
                 Route::post('{uuid}/update', [PermintaanInternalController::class, 'update']);
                 Route::delete('{uuid}/destroy', [PermintaanInternalController::class, 'destroy']);
+            });
+
+            Route::prefix('returbarang')->group(function () {
+                Route::get('get', [ReturBarangController::class, 'get']);
+                Route::post('paginate', [ReturBarangController::class, 'paginate']);
+                Route::post('store', [ReturBarangController::class, 'store']);
+                Route::get('{uuid}/edit', [ReturBarangController::class, 'edit']);
+                Route::post('{uuid}/update', [ReturBarangController::class, 'update']);
+                Route::delete('{uuid}/destroy', [ReturBarangController::class, 'destroy']);
             });
 
             Route::prefix('konfirmasipimpinan')->group(function () {

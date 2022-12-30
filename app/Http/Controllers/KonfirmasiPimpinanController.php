@@ -19,7 +19,7 @@ class KonfirmasiPimpinanController extends Controller
 
             if ($status == 'success') {                
                 DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-                $courses = SalesOrder::with(['supplier', 'profile', 'detail', 'user'])->where('acc_pimpinan', 'Y')->where(function ($q) use ($request) {
+                $courses = SalesOrderDetail::with(['salesorder'])->where('acc_pimpinan', 'Y')->where(function ($q) use ($request) {
                     $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
                 })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
             } else {

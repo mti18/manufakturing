@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\RestApi;
+use App\Models\ReturBarang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\SalesOrder;
@@ -10,6 +11,7 @@ use App\Models\SalesOrderDetail;
 use App\Models\SatuanChild;
 use App\Models\SatuanJadiChild;
 use App\Models\User;
+use Exception;
 use PDF;
 
 
@@ -23,26 +25,7 @@ class SalesOrderController extends Controller
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = SalesOrder::with(['supplier', 'profile', 'diketahuioleh', 'detail', 'user'])->where(function ($q) use ($request) {
                 $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
-                $q->orwhere('profile_id', 'LIKE', '%' . $request->search . '%');
-                $q->orWhere('supplier_id', 'LIKE', '%' . $request->search . '%');
             })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
-
-
-            // $courses->map(function ($a)
-            // {
-            //     if($a->status=='draft'){
-            //         $a->status='<span class="label label-danger label-pill label-inline mr-2">Draft</span>';
-            //     }
-            //     elseif ($a->status=='process') {
-            //         $a->status='<span class="label label-danger label-pill label-inline mr-2">Process</span>';
-            //     }
-            //     elseif ($a->staus=='ready') {
-            //         $a->status='<span class="label label-danger label-pill label-inline mr-2">Ready</span>';
-            //     }
-            //     else {
-            //         $a->status='<span class="label label-danger label-pill label-inline mr-2">Success</span>';
-            //     }
-            // });
 
             return response()->json($courses);
             
@@ -50,6 +33,7 @@ class SalesOrderController extends Controller
             return abort(404);
         }
     }
+
     
 
 
@@ -78,9 +62,11 @@ class SalesOrderController extends Controller
             ]);
 
             // $data['status'] = '1';
-            // $data['pembayaran'] = ($request->tempo == '0') ? 'yes' : 'no';
+            
+            if ($data['jenis_pembayaran'] == 'Free') {
+                $data['pembayaran'] = 'yes';
+            }
 
-            // $user = User::find(auth()->user()->id);
             $data['user_id'] = auth()->user()->id;
 
             $data = SalesOrder::create($data);
@@ -112,20 +98,7 @@ class SalesOrderController extends Controller
                 $data['tipe_diskon'] = "persen";
             } else {
                 $data['tipe_diskon'] = "rupiah";
-            }
-
-            // if ($data['barangjadi_id'] != null) {
-            //     $data->child = $data->barang_jadi->barangsatuanjadi->child;
-    
-            //     $satuanjadi = SatuanJadiChild::where('barangsatuanjadi_id', $data->barang_jadi->barangsatuanjadi_id)->orderBy('nilai')->first()->id;
-            //     $data->satuan = $satuanjadi;
-            // } else {
-            //     $data->child = $data->barang_mentah->barangsatuan->child;
-    
-            //     $satuanmentah = SatuanChild::where('barangsatuan_id', $data->barang_mentah->barangsatuan_id)->id;
-            //     $data->satuan = $satuanmentah;
-            // }
-            
+            }            
 
             return response()->json($data);
         } else {
@@ -195,13 +168,11 @@ class SalesOrderController extends Controller
                     $jumlah = (double)str_replace(',', '.', $jumlah);
                     $item['jumlah'] = $jumlah;
 
-                    // $child = SatuanChild::find($data['satuan']);
-                    // if ($data['volume'] > ) {
-                    //     $volume = $data['volume'];
-                    //     $volume = $volume * $child->nilai;
-                    //     $data['volume'] = $volume;
-                    // }
-    
+                    $child = SatuanChild::find($item['satuan']);
+                    $volume = $item['volume'];
+                    $volume = $volume * $child->nilai;
+                    $item['volume'] = $volume;
+        
                         SalesOrderDetail::create([
                             'volume' => $item['volume'],
                             'barangmentah_id' => $item['barangmentah_id'],
@@ -281,6 +252,25 @@ class SalesOrderController extends Controller
             
         }
         return str_pad('1',4,"0",STR_PAD_LEFT);
+    }
+
+    public function pembayaran($uuid)
+    {
+        if (request()->wantsJson() && request()->ajax()) {
+            $data = SalesOrder::findByUuid($uuid)->first();
+            if ($data['pembayaran' != 'yes']) {
+                // if () {
+                    $data['pembayaran' == 'yes'];
+                    SalesOrder::findByUuid($uuid)->update($data);
+                // }
+            } else {
+                return response()->json(['message' => 'Pembayaran sudah terselesaikan'], 400);
+            }
+
+            return response()->json(['message' => 'Berhasil di Selesaikan']);
+        } else {
+            return abort(404);
+        }
     }
 
     public function generatepdf1($uuid)
