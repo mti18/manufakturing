@@ -16,15 +16,15 @@ class ReturBarangController extends Controller
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = ReturBarang::where(function ($q) use ($request) {
-                // $q->where('nm_kategori', 'LIKE', '%' . $request->search . '%');
-            })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
+                // $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
+            })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
             return response()->json($courses);
+            
         } else {
             return abort(404);
         }
     }
-
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([

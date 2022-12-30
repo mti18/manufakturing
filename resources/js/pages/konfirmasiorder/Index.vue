@@ -10,7 +10,17 @@
       <div class="card-body">
         <mti-paginate
           id="table-konfirmasiorder"
-          url="/salesorder/paginate"
+          url="/konfirmasiorder/paginate"
+          :columns="columns"
+        ></mti-paginate>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 3rem" v-if="!openDetail">
+      <div class="card-body">
+        <mti-paginate
+          id="table-konfirmasiorderdone"
+          url="/konfirmasiorder/paginate"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -36,15 +46,8 @@ export default {
     const openDetail = ref(false);
 
     const columns = [
-      columnHelper.accessor("nomor", {
-        header: "#",
-        style: {
-          width: "25px",
-        },
-        cell: (cell) => cell.getValue(),
-      }),
-      columnHelper.accessor("nomor", {
-        header: "Nomor Pemesanan",
+      columnHelper.accessor("no_pemesanan", {
+        header: "No Pemesanan",
         cell: (cell) => cell.getValue(),
       }),
       columnHelper.accessor("profile.nama", {
@@ -55,7 +58,7 @@ export default {
         header: "Nama Pemesan",
         cell: (cell) => cell.getValue(),
       }),
-      columnHelper.accessor("diketahui_oleh.name", {
+      columnHelper.accessor("user.name", {
         header: "User",
         cell: (cell) => cell.getValue(),
       }),
