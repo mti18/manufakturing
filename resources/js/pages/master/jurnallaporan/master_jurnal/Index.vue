@@ -1,6 +1,6 @@
 <template>
     <section>
-      <Filters v-if="openFilters" />
+      <Filters v-if="openFilters " />
       <template v-else>
         <Form v-if="openForm" :selected="selected" />
         <Detail ref="detail" v-if="openDetail" :selected="selected" />
@@ -12,10 +12,13 @@
                   <i class="fas fa-angle-left"></i>
                   BACK
                 </button>
-                <button v-if="!openForm" type="button" class="tambah btn btn-primary btn-sm ms-auto" @click="openForm = true">
-                  <i class="las la-plus"></i>
-                  Tambah Master
-                </button>
+                <div v-if="!openForm">
+                  <button v-if="!status" type="button" class="tambah btn btn-primary btn-sm ms-auto" @click="openForm = true">
+                    <i class="las la-plus"></i>
+                    
+                    Tambah Master
+                  </button>
+                </div>
                
               </div>
             </div>
@@ -47,6 +50,7 @@
     },
     data(){
       return{
+    
         formRequest: {
           bulan: '',
           tahun: '',
@@ -59,6 +63,7 @@
       const openForm = ref(false);
       const openDetail = ref(false);
       const openFilters = ref(true);
+      const status = ref(false);
       
      
       const { delete: deletemasterjurnal } = useDelete({
@@ -98,25 +103,35 @@
         
         columnHelper.accessor("uuid", {
           header: "Aksi",
-          cell: (cell) => openForm.value ? null : h('div', { class: 'd-flex gap-2' }, [
-              h('button', { class: 'btn btn-sm btn-icon btn-warning', onClick: () => {
+          cell: (cell) => {
+            if (openForm.value) return null;
+
+            const buttons = [];
+
+            if (!status.value) {
+              buttons.push(h('button', { class: 'btn btn-sm btn-icon btn-warning', onClick: () => {
                 KTUtil.scrollTop();
                 selected.value = cell.getValue();
                 openForm.value = true;
+                status.value = true;
               }}, h('i', { class: 'la la-pencil fs-2' })), 
               h('button', { class: 'btn btn-sm btn-icon btn-danger', onClick: () => {
                 deletemasterjurnal(`/masterjurnal/${cell.getValue()}/destroy`);
-              }}, h('i', { class: 'la la-trash fs-2' })),
-              h('button', { class: 'btn btn-sm btn-icon btn-primary', onClick: () => {
+                status.value = true;
+              }}, h('i', { class: 'la la-trash fs-2' })))
+            }
+            buttons.push(h('button', { class: 'btn btn-sm btn-icon btn-primary', onClick: () => {
                 KTUtil.scrollTop();
                 selected.value = cell.getValue();
                 openDetail.value = true;
-              }}, h('i', { class: 'las la-eye fs-2' }))
-            ]),
+              }}, h('i', { class: 'las la-eye fs-2' })));
+            return h('div', { class: 'd-flex gap-2' }, buttons);
+          }
         }),
       ]
   
       return {
+        status,
         openDetail,
         selected,
         openForm,
@@ -129,7 +144,7 @@
       checkTambah(){
       var app = this;
       app.axios.get('masterjurnal/checkTambah/'+ app.formRequest.tahun).then((res) => {
-        if(_.isEmpty(res.data)){
+        if(res.data.status){
           app.status = true;
         } else {
         

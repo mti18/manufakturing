@@ -30,12 +30,12 @@
               <div class="mb-8">
                 <label class="form-label required"> Alamat : </label>
                 <input type="text" name="alamat" id="alamat"
-                  class="form-control" autoComplete="off" disabled v-model="form.profiles_alamat" />
+                  class="form-control" autoComplete="off" disabled v-model="profile_so.alamat" />
               </div>
               <div class="mb-8">
                 <label class="form-label required"> NPWP : </label>
                 <input type="text" name="npwp" id="npwp"
-                  class="form-control" autoComplete="off" disabled v-model="form.profiles_npwp" />
+                  class="form-control" autoComplete="off" disabled :value="profile_so.npwp || '-'" />
               </div>
             </div>
           </div>
@@ -52,17 +52,17 @@
               <div class="mb-8">
                 <label class="form-label required"> Alamat : </label>
                 <input type="text" name="no_surat" id="no_surat"
-                  class="form-control" autoComplete="off" disabled v-model="form.suppliers_alamat" />
+                  class="form-control" autoComplete="off" disabled v-if="!!supplier_so" v-model="supplier_so.alamat" />
               </div>
               <div class="mb-8">
                 <label class="form-label required"> NPWP : </label>
                 <input type="text" name="no_surat" id="no_surat"
-                  class="form-control" autoComplete="off" disabled v-model="form.suppliers_npwp" />
+                  class="form-control" autoComplete="off" disabled v-if="!!supplier_so" :value="supplier_so.npwp || '-'" />
               </div>
               <div class="mb-8">
                 <label class="form-label required"> NPPKP : </label>
                 <input type="text" name="no_surat" id="no_surat"
-                  class="form-control" autoComplete="off" disabled v-model="form.suppliers_nppkp" />
+                  class="form-control" autoComplete="off" disabled v-if="!!supplier_so" :value="supplier_so.nppkp || '-'" />
               </div>
             </div>
           </div>
@@ -202,9 +202,7 @@
                 <th rowspan="2" class="ps-13 pe-13" width="200px">Nama Barang</th>
                 <th colspan="2">Qty</th>
                 <th rowspan="2">Harga</th>
-                <th rowspan="2">Diskon</th>
                 <th rowspan="2">Jumlah</th>
-                <th rowspan="2">Keterangan</th>
                 <th rowspan="2" class="pe-4 ps-3">Aksi</th>
               </tr>
               <tr class="fw-bold fs-6 text-gray-800 border">
@@ -220,8 +218,9 @@
                     :id="'permintaan_id' + index"
                     class="form-control ms-2"
                     required
+                    @change="getSatuanJadi(index, $event)"
                     autoComplete="off"
-                    v-model="permintaan_id"
+                    v-model="item.permintaan_id"
                   >
                     <option disabled value="">Pilih barang jadi</option>
                     <option
@@ -251,7 +250,6 @@
                     placeholder="Volume"
                     required
                     autoComplete="off"
-                    @input="hitungnilaijadi($event, index)"
                     v-model="item.volume"
                   />
                 </td>
@@ -262,7 +260,6 @@
                     :id="'nm_satuan_jadi' + index"
                     placeholder="Pilih"
                     v-model="item.satuan"
-                    @change="hitungnilaijadi($event, index)"
                     required
                   >
                     <option value="" disabled>Pilih</option>
@@ -283,19 +280,6 @@
                     type="text"
                     name="harga"
                     v-bind="config"
-                    @input.prevent="hitungjumlahjadi($event, index)"
-                    required
-                  ></money3>
-                </td>
-                <td>
-                  <money3
-                    v-model="item.diskon"
-                    id="diskon"
-                    class="form-control"
-                    type="text"
-                    name="diskon"
-                    v-bind="config"
-                    @input.prevent="hitungjumlahjadi($event, index)"
                     required
                   ></money3>
                 </td>
@@ -307,21 +291,9 @@
                     type="text"
                     name="jumlah"
                     v-bind="config"
-                    @change="getTotal()"
-                    disabled
+                    
                     required
                   ></money3>
-                </td>
-                <td>
-                  <textarea
-                    type="text"
-                    name="keterangan"
-                    id="keterangan"
-                    class="form-control"
-                    placeholder="Keterangan"
-                    autoComplete="off"
-                    v-model="item.keterangan"
-                  />
                 </td>
                 <td class="pe-6 ps-1">
                   <a href="javascript:void(0)">
@@ -341,8 +313,9 @@
                     :id="'permintaan_id' + index"
                     class="form-control ms-2"
                     required
+                    @change="getSatuanMentah(index, $event)"
                     autoComplete="off"
-                    v-model="permintaan_id"
+                    v-model="item.permintaan_id"
                   >
                     <option disabled value="">Pilih barang mentah</option>
                     <option
@@ -401,19 +374,6 @@
                     class="form-control"
                     type="text"
                     name="harga"
-                    @input="hitungbarangmentah(index)"
-                    v-bind="config"
-                    required
-                  ></money3>
-                </td>
-                <td>
-                  <money3
-                    v-model="item.diskon"
-                    id="diskon"
-                    class="form-control"
-                    type="text"
-                    name="diskon"
-                    @input="hitungbarangmentah(index)"
                     v-bind="config"
                     required
                   ></money3>
@@ -426,21 +386,9 @@
                     type="text"
                     name="jumlah"
                     v-bind="config"
-                    @change="getTotal()"
                     disabled
                     required
                   ></money3>
-                </td>
-                <td>
-                  <textarea
-                    type="text"
-                    name="keterangan"
-                    id="keterangan"
-                    class="form-control"
-                    placeholder="Keterangan"
-                    autoComplete="off"
-                    v-model="item.keterangan"
-                  />
                 </td>
                 <td class="pe-6 ps-1">
                   <a href="javascript:void(0)" class="d-inline-block">
@@ -649,6 +597,8 @@
       return {
         nomor: null,
 
+        profile_so: {},
+        supplier_so: {},
         config: {
           prefix: "",
           suffix: "",
@@ -677,14 +627,15 @@
       const { data: pembelian = {details: [], barangjadi: [], barangmentah: []}, refetch } = useQuery(
         ["pembelian", selected, "edit"],
         () => {
-          // setTimeout(() => KTApp.block("#form-pembelian"), 100);
+          setTimeout(() => KTApp.block("#form-pembelian"), 10);
           return axios.get(`/pembelian/${selected.value}/edit`).then((res) => res.data);
         },
         {
           enabled: !!selected.value,
           cacheTime: 0,
-          onSuccess: ({data}) => {
-              const datas = {...data.data};
+          onSuccess: (data) => {
+            KTApp.unblock('#form-pembelian')
+            const datas = {...data};
               if (datas.barangjadi.length) {
                 datas.barangjadi.push();
               }
@@ -692,7 +643,6 @@
                 datas.barangmentah.push();
               }
               form.value = datas;
-      
             },
           onError: error => console.log(error),
         }
@@ -779,66 +729,98 @@
         this.form.barangmentah.push({});
       },
 
-      hapusPermimntaanBarangJadi(index) {
+      hapusPermintaanBarangJadi(index) {
         this.form.barangjadi.splice(index, 1);
       },
 
       hapusPermintaanBarangMentah(index) {
         this.form.barangmentah.splice(index, 1);
       },
-      // getSatuanMentah(index, satuan_id) {
-      //   setTimeout(() => {
-      //     var app = this;
-      //     var i = app.barangmentahs.findIndex((cat) => cat.id == satuan_id);
 
-      //     satuan_id = app.barangmentahs[i]?.barangsatuan_id;
+      getSatuanMentah(index, satuan_id) {
+        setTimeout(() => {
+          var app = this;
+          var i = app.barangmentahs.findIndex((cat) => cat.id == satuan_id);
 
-      //     var app = this;
-      //     axios.get(`barangsatuan/${satuan_id}/child`).then((res) => {
-      //       app.form.barangmentah[index].satuanmentah = res.data.data;
-      //     });
-      //   }, 100);
-      // },
+          satuan_id = app.permintaanbarangmentahs[i]?.barang_mentah.barangsatuan_id;
 
-      // getSatuanJadi(index, satuan_id) {
-      //   setTimeout(() => {
-      //     var app = this;
-      //     var i = app.barangjadis.findIndex((cat) => cat.id == satuan_id);
+          var app = this;
+          axios.get(`barangsatuan/${satuan_id}/child`).then((res) => {
+            app.form.barangmentah[index].satuanmentah = res.data.data;
+          });
+        }, 100);
+      },
 
-      //     satuan_id = app.barangjadis[i]?.barangsatuanjadi_id;
+      getSatuanJadi(index, satuan_id) {
+        setTimeout(() => {
+          var app = this;
+          var i = app.barangjadis.findIndex((cat) => cat.id == satuan_id);
 
-      //     var app = this;
-      //     axios.get(`barangsatuanjadi/${satuan_id}/child`).then((res) => {
-      //       app.form.barangjadi[index].satuanjadi = res.data.data;
-      //     });
-      //   }, 100);
-      // },
+          satuan_id = app.permintaanbarangjadis[i]?.barang_jadi.barangsatuanjadi_id;
 
+          var app = this;
+          axios.get(`barangsatuanjadi/${satuan_id}/child`).then((res) => {
+            app.form.barangjadi[index].satuanjadi = res.data.data;
+          });
+        }, 100);
+      },
+
+      getHargaBJ(index) {
+        setTimeout(() => {
+          var app = this;
+
+          app.form.barangjadi[index].harga = app.permintaanbarangjadis[index].harga;
+        }, 100);
+      },
+
+      getHargaBM(index) {
+        setTimeout(() => {
+          var app = this;
+
+          app.form.barangmentah[index].harga = app.permintaanbarangmentahs[index].harga;
+        }, 100);
+      },
+      
+      getVolume(index) {
+        setTimeout(() => {
+          var app = this;
+
+          app.form.barangjadi[index].harga = app.permintaanbarangjadis[index].volume;
+        }, 100);
+      },
+      
       perusahaan(e){
-        var app=this;
-        var index = app.profiles.findIndex((cat) => cat.id==e);
-        app.form.profiles_alamat = app.profiles[index].alamat;
-        app.form.profiles_npwp = app.profiles[index].npwp;
+        var app = this;
+        if (!app.profiles) return;
 
-        if (app.form.profiles_npwp == null) {
-          app.form.profiles_npwp = "-";
+        var index = app.profiles.findIndex((cat) => cat.id == e);
+
+        app.profile_so = app.profiles[index];
+        
+        if (app.profile_so.npwp  == null) {
+          app.profile_so.npwp = '-';
         }
+        
+
       },
 
       supplier(e){
-        var app=this;
-        var index = app.suppliers.findIndex((cat) => cat.id==e);
-        app.form.suppliers_alamat = app.suppliers[index].alamat;
-        app.form.suppliers_npwp = app.suppliers[index].npwp;
-        app.form.suppliers_nppkp = app.suppliers[index].nppkp;
+        var app = this;
+      if (!app.suppliers) return;
 
-        if (app.form.suppliers_nppkp == null) {
-          app.form.suppliers_nppkp = "-";
-        }
+      var index = app.suppliers.findIndex((cat) => cat.id == e);
 
-        if (app.form.suppliers_npwp == null) {
-          app.form.suppliers_npwp = "-";
-        }
+      var data = app.suppliers[index];
+
+      if (data.nppkp == null) {
+        data.nppkp = "-";
+      }
+
+      if (data.npwp == null) {
+        data.npwp = "-";
+      }
+      app.supplier_so = data;
+
       },
       
       onUpdateFiles(files) {

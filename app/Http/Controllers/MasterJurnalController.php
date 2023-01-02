@@ -244,7 +244,7 @@ class MasterJurnalController extends Controller
     }
     public function checkTambah($tahun)
     {
-        $data = MasterJurnal::where('tanggal', $tahun)->first();
+        $data = MasterJurnal::whereYear('tanggal', $tahun)->first();
 
         return response()->json($data);
     }

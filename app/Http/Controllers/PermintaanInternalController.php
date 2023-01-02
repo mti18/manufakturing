@@ -57,13 +57,24 @@ class PermintaanInternalController extends Controller
                 'tipe_barang' => 'required', 
                 'barangjadi_id'  => 'nullable',
                 'barangmentah_id'  => 'nullable', 
-                'volume'  => 'required||numeric', 
-                'harga'  => 'required||numeric', 
-                'jumlah'  => 'required||numeric', 
-                'keterangan'  => 'string||nullable'
+                'volume'  => 'required|numeric', 
+                'harga'  => 'required', 
+                'jumlah'  => 'required', 
+                'keterangan'  => 'string|nullable'
             ]);
             $data['tipe'] = 'internal';
             $data['tanggal'] = Carbon::now()->format('Y-m-d');
+
+            $harga = $data['harga'];
+            $jumlah = $data['jumlah'];
+
+            $harga = str_replace('.', '', $harga);
+            $harga = (double)str_replace(',', '.', $harga);
+            $data['harga'] = $harga;
+            $jumlah = str_replace('.', '', $jumlah);
+            $jumlah = (double)str_replace(',', '.', $jumlah);
+            $data['jumlah'] = $jumlah;
+
             PermintaanBarang::create($data);
 
             return response()->json(['message' => 'Permintaan Internal berhasil diperbarui']);
@@ -116,10 +127,10 @@ class PermintaanInternalController extends Controller
                 'tipe_barang' => 'required', 
                 'barangjadi_id'  => 'nullable',
                 'barangmentah_id'  => 'nullable',
-                'volume'  => 'required||numeric', 
-                'harga'  => 'required||numeric', 
-                'jumlah'  => 'required||numeric', 
-                'keterangan'  => 'string||ullable'
+                'volume'  => 'required|numeric', 
+                'harga'  => 'required', 
+                'jumlah'  => 'required', 
+                'keterangan'  => 'string|ullable'
             ]);
             $data['tipe'] = 'internal';
             PermintaanBarang::where('uuid', $uuid)->update($data);

@@ -124,7 +124,7 @@
                   >
                     <div class="me-3">
                       <img
-                        :src="item.file"
+                        :src="`/${item.file}`"
                         class="w-50px ms-n1 me-1"
                         :alt="item.file"
                       />
@@ -145,7 +145,7 @@
                     <span class="text-gray-400 fw-bold"
                       >Nama Bukti:
                       <a
-                        :href="item.bukti_masters"
+                        :href="`/${item.file}`"
                         target="_blank"
                         class="text-gray-800 text-hover-primary fw-bold"
                         >{{ item.file }}</a
@@ -184,6 +184,7 @@
       const form = ref({
         jurnal_item: selected ? [] : [{}]
       });
+      
   
       const { data: masterjurnal } = useQuery(
         ["masterjurnal", selected, "detail"],

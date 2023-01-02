@@ -13,7 +13,7 @@ class AssetJurnal extends Model
 
     use Uuid;
     protected $fillable = [
-        'uuid', 'nm_asset', 'number', 'price', 'golongan_id', 'asset_group_id', 'kredit_id', 'penyusutan_id', 'beban_id', 'akun_id','masterjurnal_id',
+        'uuid', 'nm_asset', 'number', 'price', 'golongan_id', 'asset_group_id', 'kredit_id', 'penyusutan_id', 'beban_id', 'akun_id','masterjurnal_id','type'
     ];
 
     public function Golongan()

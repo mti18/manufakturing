@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Pembelian;
 use Carbon\Carbon;
 use App\Helpers\AppHelper;
+use App\Models\PembelianDetail;
+use App\Models\SatuanJadiChild;
+use PDF;
 
 class PembelianController extends Controller
 {
@@ -16,7 +19,9 @@ class PembelianController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = Pembelian::with('supplier', 'diketahui_oleh', 'profile')->where(function ($q) use ($request) {
+            $courses = Pembelian::with('supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 
+            'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahui_oleh', 'details',
+             'barangjadi', 'barangmentah', 'permintaan', 'barang_jadi', 'barang_mentah')->where(function ($q) use ($request) {
                 $q->where('supplier_id', 'LIKE', '%' . $request->search . '%');
                 $q->orWhere('account_id', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
@@ -110,6 +115,7 @@ class PembelianController extends Controller
             $jml_penjualan = $data['jml_penjualan'];
             $diskon = $data['diskon'];
             $uangmuka = $data['uangmuka'];
+            $pajak = $data['pajak'];
             $netto = $data['netto'];
 
             $jml_penjualan = str_replace('.', '', $jml_penjualan);
@@ -121,23 +127,82 @@ class PembelianController extends Controller
             $uangmuka = str_replace('.', '', $uangmuka);
             $uangmuka = (double)str_replace(',', '.', $uangmuka);
             $data['uangmuka'] = $uangmuka;
+            $pajak = str_replace('.', '', $pajak);
+            $pajak = (double)str_replace(',', '.', $pajak);
+            $data['pajak'] = $pajak;
             $netto = str_replace('.', '', $netto);
             $netto = (double)str_replace(',', '.', $netto);
             $data['netto'] = $netto;
 
-            $data = Pembelian::where('uuid', $uuid)->update($data);
-            
+            $pembelian = Pembelian::where('uuid', $uuid)->first();
+            $data = $request->only(['profile_id', 'supplier_id', 'nomor', 'no_surat', 'tgl_permintaan', 'bukti_permintaan',
+                'no_surat_pembelian', 'diketahui_oleh', 'tgl_po', 'jenis_pembayaran', 'no_po_pembelian', 'account_id',
+                'no_surat_jalan', 'tempo', 'keterangan', 'jml_penjualan', 'diskon', 'uangmuka', 'pajak', 'ppn', 'netto'
+            ]);
             // $data = Pembelian::with(['details'])->where('id', $data->id)->first();
+            if ($pembelian->update($data)) {
+                PembelianDetail::where('pembelian_id', $pembelian->id)->delete();
+
+                foreach ($request->detail['barangmentah'] as $item) {
+                    $harga = $item['harga'];
+                    $jumlah = $item['jumlah'];
+
+                    $harga = str_replace('.', '', $harga);
+                    $harga = (double)str_replace(',', '.', $harga);
+                    $item['harga'] = $harga;
+                    $jumlah = str_replace('.', '', $jumlah);
+                    $jumlah = (double)str_replace(',', '.', $jumlah);
+                    $item['jumlah'] = $jumlah;
+
+                    // $child = SatuanChild::find($data['satuan']);
+                    // if ($data['volume'] > ) {
+                    //     $volume = $data['volume'];
+                    //     $volume = $volume * $child->nilai;
+                    //     $data['volume'] = $volume;
+                    // }
+    
+                        PembelianDetail::create([
+                            'permintaan_id' => $item['permintaan_id'],
+                            'harga' => $item['harga'],
+                            'jumlah' => $item['jumlah'],
+                            'pembelian_id' => $pembelian->id,
+    
+                        ]);
+                }
+
+                foreach ($request->detail['barangjadi'] as $item) {
+                    $harga = $item['harga'];
+                    $jumlah = $item['jumlah'];
+                    
+                    $harga = str_replace('.', '', $harga);
+                    $harga = (double)str_replace(',', '.', $harga);
+                    $item['harga'] = $harga;
+                    $jumlah = str_replace('.', '', $jumlah);
+                    $jumlah = (double)str_replace(',', '.', $jumlah);
+                    $item['jumlah'] = $jumlah;
+
+                    $child = SatuanJadiChild::find($item['satuan']);
+                    $volume = $item['volume'] * $child->nilai;
+                    $item['volume'] = $volume;
+
+                        PembelianDetail::create([
+                            'permintaan_id' => $item['permintaan_id'],
+                            'harga' => $item['harga'],
+                            'jumlah' => $item['jumlah'],
+                            'pembelian_id' => $pembelian->id,
+    
+                        ]);
+                }
 
             return response()->json(['message' => 'Data pembelian berhasil diperbarui', 'data' => $data]);
         } else {
             return abort(404);
         }
     }
-
+}
+    
     public function gettahun() {
         if (request()->wantsJson()) {
-            $data = Pembelian::all();
             $tahun = Carbon::now()->format('Y');
             return $tahun;
         } else {
@@ -194,8 +259,21 @@ class PembelianController extends Controller
 
     public function getnomorbyid($id)
     {
-        $data = Pembelian::findByUuid($id)->nomor;
+        $data = Pembelian::findByUuid($id)->no_surat;
         $exp = explode("-",$data);
         return $exp[1];
+    }
+
+
+
+    public function generatepdf($uuid)
+    {
+        $data = Pembelian::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 
+            'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahui_oleh', 'details',
+             'barangjadi', 'barangmentah', 'permintaan', 'barang_jadi', 'barang_mentah'
+        ])->where('uuid', $uuid)->first();
+        $no_surat = $data['no_surat'];
+        $pdf = PDF::loadview('laporan.pembelian.Index', ['data' => $data]);
+        return $pdf->download('Pembelian - ' . $no_surat);
     }
 }

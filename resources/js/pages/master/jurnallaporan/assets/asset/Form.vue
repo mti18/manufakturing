@@ -157,7 +157,7 @@
         <div class="col-4">
             <div class="mb-8">
               <label for="input-number" class="form-label required "> Tanggal : </label>
-              <datepicker name="number" id="input-number" placeholder="Number"
+              <datepicker name="number" id="input-number" placeholder="Tanggal"
               class="form-control" required autoComplete="off" :options="monthOptions" @change="changeTanggal" />
             </div>
           </div>

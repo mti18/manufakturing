@@ -197,10 +197,10 @@ class AssetJurnalController extends Controller
         }
     }
 
-    public function delete($uuid)
+    public function destroy($uuid)
     {
         if (request()->wantsJson() && request()->ajax()) {
-            $asset = AssetJurnal::with(['MasterJurnal', 'MasterJurnal.jurnal_item', "Penyusutan"])->where('uuid', $uuid)->first();
+            $asset = AssetJurnal::with(['MasterJurnal', "MasterJurnal.jurnal_item", 'Penyusutan'])->where('uuid', $uuid)->first();
 
             if (!$asset) {
                 return response()->json([
@@ -215,11 +215,11 @@ class AssetJurnalController extends Controller
             }
 
             if (count($asset->Penyusutan) > 0) {
-                foreach ($asset->Penyusutan as $item) {
-                    foreach ($item->MasterJurnal->jurnal_item as $citem) {
+                foreach ($asset->Penyusutan as $kitem) {
+                    foreach ($kitem->MasterJurnal->jurnal_item as $citem) {
                         $citem->delete();
                     }
-                    $item->Jurnal->delete();
+                    $kitem->MasterJurnal->delete();
                     $item->delete();
                 }
             }

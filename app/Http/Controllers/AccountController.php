@@ -170,10 +170,40 @@ class AccountController extends Controller
     }
     public function getdata()
     {
-
         $data = Account::where('parent_id', null)->with('nodes')->get();
         return RestApi::success($data);
     }
+
+    public function getHutang()
+    {
+        if (request()->wantsJson()) {
+            $data = Account::doesntHave('nodes')->where('account_header', 'hutang')->orderBy('kode_account')->get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function getPiutang()
+    {
+        if (request()->wantsJson()) {
+            $data = Account::doesntHave('nodes')->where('account_header', 'piutang')->orderBy('kode_account')->get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function getBank()
+    {
+        if (request()->wantsJson()) {
+            $data = Account::doesntHave('nodes')->where('account_header', 'bank')->orderBy('kode_account')->get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
+
     public function send(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = $request->validate([

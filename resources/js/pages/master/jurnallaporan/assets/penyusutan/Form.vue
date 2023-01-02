@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <form class="card mb-12" id="form-penyusutan" @submit.prevent="onSubmit">
       <div class="card-header">
         <div class="card-title w-100">
@@ -162,4 +162,4 @@
   
   <style>
   </style>
-  
+   -->
