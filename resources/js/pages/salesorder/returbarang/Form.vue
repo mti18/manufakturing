@@ -159,7 +159,6 @@ export default {
       this.submit(data, {
         onSuccess: (data) => {
           toastr.success(data.message);
-          // vm.$parent.openRetur = false;
           vm.$parent.selected = undefined;
           vm.queryClient.invalidateQueries(["/salesorder/paginate"], {
             exact: true,

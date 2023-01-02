@@ -27,6 +27,8 @@ class SalesOrderController extends Controller
                 $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
             })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
+            
+
             return response()->json($courses);
             
         } else {
@@ -34,7 +36,11 @@ class SalesOrderController extends Controller
         }
     }
 
-    
+    public function getDetail($id)
+    {
+        $data = SalesOrderDetail::where('salesorder_id', $id)->get();
+        return RestApi::success($data);
+    }
 
 
     public function store(Request $request) {
@@ -93,6 +99,15 @@ class SalesOrderController extends Controller
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
             $data = SalesOrder::with(['supplier', 'profile', 'diketahuioleh', 'detail'])->where('uuid', $uuid)->first();
+            
+            // $data->barangjadi->map(function ($a){
+            //         $a->barangjadi_id = $a->barangjadi->id;
+            // });
+            
+            // $data->barangmentah->map(function ($a){
+            //         $a->barangjadi_id = $a->barangjadi->id;
+            // });
+
             $diskon = $data['diskon'];
             if ($diskon <= 100) {
                 $data['tipe_diskon'] = "persen";

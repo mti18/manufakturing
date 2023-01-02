@@ -17,17 +17,15 @@ class KonfirmasiPimpinanController extends Controller
             $per = (($request->per) ? $request->per : 10);
             $page = (($request->page) ? $request->page - 1 : 0);
 
+            DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             if ($status == 'success') {                
-                DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-                $courses = SalesOrderDetail::with(['salesorder'])->where('acc_pimpinan', 'Y')->where(function ($q) use ($request) {
+                $courses = SalesOrder::with(['supplier', 'profile', 'detail', 'user'])->where('acc_pimpinan', 'Y')->where(function ($q) use ($request) {
                     $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
                 })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
             } else {
-                DB::statement(DB::raw('set @nomor=0+' . $page * $per));
                 $courses = SalesOrder::with(['supplier', 'profile', 'detail', 'user'])->where('acc_pimpinan', 'N')->where(function ($q) use ($request) {
                     $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
                 })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
-                
             }
 
             
@@ -38,11 +36,6 @@ class KonfirmasiPimpinanController extends Controller
             return abort(404);
         }
     }
-
-    // public function detailOrder($uuid)
-    // {
-        
-    // }
 
     public function generatepdforder($uuid)
     {
@@ -75,7 +68,7 @@ class KonfirmasiPimpinanController extends Controller
                         
                     ]);
                     
-                    
+        
                     DB::commit();
                     return response()->json(['message' => 'Berhasil di Konfirmasi']);
                 } catch(Exception $e) {
@@ -120,8 +113,8 @@ class KonfirmasiPimpinanController extends Controller
                     'status' => false,
                     'message' => 'Oops, Terjadi kesalahan!'
                 ], 404);
-            }        
-            
+            }
+
             DB::beginTransaction();
 
             try{

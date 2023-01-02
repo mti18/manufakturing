@@ -396,6 +396,7 @@ Route::prefix('v1')->group(function () {
             Route::prefix('salesorder')->group(function () {
                 Route::get('get', [SalesOrderController::class, 'get']);
                 Route::post('paginate', [SalesOrderController::class, 'paginate']);
+                Route::get('{id}/getDetail', [SalesOrderController::class, 'getDetail']);
                 Route::post('store', [SalesOrderController::class, 'store']);
                 Route::get('{uuid}/generatepdf1', [SalesOrderController::class, 'generatepdf1']);
                 Route::get('{uuid}/generatepdf2', [SalesOrderController::class, 'generatepdf2']);
@@ -486,7 +487,8 @@ Route::prefix('v1')->group(function () {
             );
 
             Route::prefix('konfirmasiorder')->group(function () {
-                Route::post('paginate', [KonfirmasiOrderController::class, 'paginate']);
+                Route::post('paginate', [KonfirmasiOrderController::class, 'paginateOrder']);
+                Route::post('paginatedetail', [KonfirmasiOrderController::class, 'paginateOrderDetail']);
             });
             Route::prefix('pembelian')->group(function () {
                 Route::get('get', [PembelianController::class, 'get']);
