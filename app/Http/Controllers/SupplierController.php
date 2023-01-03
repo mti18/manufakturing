@@ -77,6 +77,14 @@ class SupplierController extends Controller
             return abort(404);
         }
     }
+    public function show() {
+        if (request()->wantsJson()) {
+            $data = Supplier::get();
+            return response()->json($data);
+        } else {
+            return abort(404);
+        }
+    }
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {

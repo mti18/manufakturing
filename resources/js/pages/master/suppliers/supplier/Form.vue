@@ -109,7 +109,7 @@
   import { useQuery, useMutation } from "vue-query";
   import axios from "@/libs/axios";
   import { useQueryClient } from "vue-query";
-  import VueMask from 'v-mask'
+  import VueMask from 'v-mask';
   
   
   export default {

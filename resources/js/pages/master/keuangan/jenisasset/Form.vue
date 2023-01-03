@@ -28,9 +28,9 @@
               <select2
               class="form-control"
               name="account_id"
-              placeholder="Pilih Account"
               id="account"
               v-model="form.account_id"
+              placeholder="Pilih Account"
               required
             > 
               <option value="" disabled>Pilih Account</option>

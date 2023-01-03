@@ -93,7 +93,7 @@ class StokMasukController extends Controller
                 $barang_masuk = $data['barang_masuk'];
 
                 $barang_masuk = $barang_masuk * $child->nilai;
-                
+
                 $data['barang_masuk'] = $barang_masuk;
             } elseif ($tipe_barang == "barang_jadi") {
                 $child = SatuanJadiChild::find($data['satuan_jadi']);
