@@ -105,7 +105,7 @@
             app.formRequest.bulan,
             app.formRequest.tahun
           );
-          app.$parent.checkTambah();
+             app.$parent.checkTambah();
   
         }
       },

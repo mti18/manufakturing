@@ -41,18 +41,19 @@ class SalesOrder extends Model
     }
 
 
-
-    public function barangjadi() 
-    {
-        return $this->belongsToMany(BarangJadi::class,'sales_order_details', 'salesorder_id', 'barangjadi_id');
-    }
-    public function barangmentah() 
-    {
-        return $this->belongsToMany(BarangJadi::class,'sales_order_details', 'salesorder_id', 'barangmentah_id');
-    }
-
     public function detail()
     {
         return $this->hasMany(SalesOrderDetail::class, 'salesorder_id',  'id');
+    }
+
+    public function barangjadi() 
+    {
+        // return $this->belongsToMany(BarangJadi::class,'sales_order_details', 'salesorder_id', 'barangjadi_id');
+        return $this->detail()->where('barangjadi_id', '!=', null);
+    }
+    public function barangmentah() 
+    {
+        // return $this->belongsToMany(BarangMentah::class,'sales_order_details', 'salesorder_id', 'barangmentah_id');
+        return $this->detail()->where('barangmentah_id', '!=', null);
     }
 }

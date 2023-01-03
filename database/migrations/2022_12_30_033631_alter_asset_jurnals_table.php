@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('sales_order_details', function (Blueprint $table) {
-            $table->enum('status', [0, 1, 2, 3, 4, 5, 6])->default(0);
+        Schema::table('asset_jurnals', function (Blueprint $table) {
+            $table->enum('type', ['yes', 'no'])->default('no');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('sales_order_details', function (Blueprint $table) {
-            $table->dropColumn('status');
+        Schema::table('asset_jurnals', function (Blueprint $table) {
+            $table->dropColumn('type');
         });
     }
 };

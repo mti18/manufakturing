@@ -35,6 +35,7 @@
       const queryClient = useQueryClient();
       const selected = ref();
       const openForm = ref(false);
+      const data = ref(false)
 
       const { mutate: susutkan } = useMutation((data) => axios.post('/penyusutan/susutkan', data).then(res => res.data), {
         onMutate: () => {
@@ -46,6 +47,7 @@
         },
         onSettled: () => {
           KTApp.unblock("#table-position");
+          queryClient.invalidateQueries(["/penyusutan/paginate"])
         }
       });
   
@@ -74,13 +76,25 @@
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("id", {
-          header: "Aksi",
-          cell: (cell) => openForm.value ? null : h('div', { class: 'd-flex gap-2' }, [
-              h('button', { class: 'btn btn-sm btn-icon btn-primary', onClick: () => {
+          header: "Penyusutan",
+          cell: (cell) => {
+            if (openForm.value) return null;
+
+            const buttons = [];
+
+            if (!cell.row.original.penyusutan_first?.id) {
+              buttons.push(h('button', { class: 'btn btn-sm btn-icon btn-primary', onClick: () => {
                 KTUtil.scrollTop();
+                selected.value = cell.getValue();
                 susutkan({ id: cell.getValue() });
-              }}, h('i', { class: 'la la-eye fs-2' }))
-            ]),
+              }}, h('i', { class: 'la la-eye fs-2' })));
+            } else {
+            buttons.push(h('button', { class: 'btn btn-sm btn-icon btn-success', onClick: () => {
+                KTUtil.scrollTop();
+              }}, h('i', { class: 'la la-check-circle fs-2' })));
+            }
+            return h('div', { class: 'd-flex gap-2' }, buttons);
+        }
         }),
       ]
   
