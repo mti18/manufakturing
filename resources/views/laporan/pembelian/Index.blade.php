@@ -165,7 +165,6 @@
 					</div>
 				</td>
 				<td class="col-title" width="150" style="vertical-align: top; text-align: right;">
-					<div>Tanggal : {{ $data->tgl_permintaan }}</div>
 				</td>
 			</tr>
 			<tr>
@@ -177,6 +176,9 @@
 					<div class="profile-telepon">
 						<div>Telp : {{ $data->profile->telepon }} </div>
 					</div>
+				</td>
+				<td width="300" style="vertical-align: top; text-align: right;">
+					<div>Tanggal : {{ $data->tgl_permintaan }}</div>
 				</td>
 			</tr>
 		</table>
@@ -197,11 +199,12 @@
 							<td>{{ $data->supplier->telepon}}</td>
 						</tr>
 						<tr>
-							<td>Alamat</td>
-							<td>:</td>
-							<td>
+							<td rowspan="2">Alamat</td>
+							<td rowspan="2">:</td>
+							<td rowspan="2">
 								<span>{{ $data->supplier->alamat }}, Kec.</span>
-								<span>{{ $data->supplier->kecamatan->nm_kecamatan }}, {{ $data->supplier->kota->nm_kab_kota }} </span>
+								<span>{{ $data->supplier->kecamatan->nm_kecamatan }}, </span>
+								<span> Kota {{ $data->supplier->kota->nm_kab_kota }} </span>
 							</td>
 						</tr>
 					</table>
@@ -220,11 +223,13 @@
 							<td>{{ $data->bukti_permintaan }} </td>
 						</tr>
 						<tr>
-							<td>Alamat Pengiriman</td>
-							<td>:</td>
-							<td>
+							<td rowspan="2">Alamat Pengiriman</td>
+							<td rowspan="2">:</td>
+							<td rowspan="2">
 								<span>{{ $data->profile->alamat }}, Kec.</span>
-								<span>{{ $data->profile->kecamatan->nm_kecamatan }}, {{ $data->profile->kota->nm_kab_kota }} </span>
+								<span>{{ $data->profile->kecamatan->nm_kecamatan }}, Kel. </span>
+								<span> {{ $data->profile->kelurahan->nm_kelurahan }},</span>
+								<span> Kota {{ $data->profile->kota->nm_kab_kota }} </span>
 							</td>
 						</tr>
 					</table>
@@ -250,23 +255,88 @@
 				@foreach($data->details as $datas)
 					<?php $urut++; ?>
 				<tr>
-					@if($datas->permintaan_id != null)
+					@if($datas->permintaan->tipe_barang=="barang_jadi")
 						<td class="dts-1 nomor">{{ $urut }}</td>
 						<td class="dts-2 barang"> {{ $datas->permintaan->barang_jadi->nm_barang_jadi}}</td>
-						<td class="dts-3">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
-						<td class="dts-4">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
+						<td class="dts-3"> {{ $datas->permintaan->volume}}</td>
+						<td class="dts-4"> Buah</td>
+						<td class="dts-5">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
 						<td class="dts-6">Rp. {{ number_format("$datas->jumlah",2,",",".") }}</td>
 					@else
 						<td class="dts-1 nomor">{{ $urut }}</td>
-					<td class="dts-2 barang"> {{ $datas->barangmentah->nm_barangmentah }} ({{ $datas->barangmentah->kd_barang_mentah }})</td>
-
+						<td class="dts-2 barang"> {{ $datas->permintaan->barang_mentah->nm_barangmentah }}</td>
+						<td class="dts-3"> {{ $datas->permintaan->volume}}</td>
+						<td class="dts-4"> Buah</td>
 						<td class="dts-4">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
 						<td class="dts-6">Rp. {{ number_format("$datas->jumlah",2,",",".") }}</td>
 					@endif
 				</tr>
                 @endforeach
 			</tbody>
-		</table>	
+		</table>
+		<table border="1" class="table-data" width="120%" style="padding-top: 0px; page-break-inside: avoid;">
+			<tbody>
+				<tr>
+					<td class="no-border dts-1"></td>
+					<td class="no-border dts-2"></td>
+					<td class="no-border dts-3"></td>
+					<td class="no-border dts-4"></td>
+					<td class="no-border dts-5"style="border-top: 1px solid black; margin-bottom: 3px"></td>
+					<td class="no-border dts-6"style="border-top: 1px solid black; margin-bottom: 3px"></td>
+					<td class="no-border dts-7"></td>
+				</tr>
+				<tr>
+					<th class="no-border bold" style="border-right: 1px solid black;" colspan="4" rowspan="6">Note : {{ $data->keterangan }}</th>
+					<th class="bold">Jumlah Penjualan</th>
+					<td>Rp. {{ number_format("$data->jml_penjualan",2,",",".") }}</td>
+					<td class="no-border" style="border-left: 1px solid black;"></td>
+				</tr>
+				<tr>
+					<th class="bold">Diskon</th>
+					@if($data->diskon <= 100)
+						<td>{{ $data->diskon }}%</td>
+					@else
+						<td>Rp. {{ number_format("$data->diskon",2,",",".") }}</td>
+					@endif
+					<td class="no-border" style="border-left: 1px solid black;"></td>
+				</tr>
+				<tr>
+					<th class="bold">Uang Muka</th>
+					<td>Rp. {{ number_format("$data->uangmuka",2,",",".") }}</td>
+					<td class="no-border" style="border-left: 1px solid black;"></td>
+				</tr>
+				<tr>
+					<th class="bold">Dasar Pengenaan Pajak</th>
+					<td>{{ $data->pajak }}%</td>
+					<td class="no-border" style="border-left: 1px solid black;"></td>
+				</tr>
+				<tr>
+					<th class="bold">PPN</th>
+					<td>{{ $data->ppn }}%</td>
+					<td class="no-border" style="border-left: 1px solid black;"></td>
+				</tr>
+				<tr>
+					<th class="bold">Netto</th>
+					<td>Rp. {{ number_format("$data->netto",2,",",".") }}</td>
+					<td class="no-border" style="border-left: 1px solid black;"></td>
+				</tr>
+			</tbody>
+		</table>
+		<table border="1" style="margin-top: 15px;" class="table-ttd">
+			<tr>
+				<th class="title-ttd">Dibuat Oleh</th>
+				<th class="title-ttd">Mengtahui</th>
+				<th class="title-ttd">Disetujui</th>	
+			</tr>
+			<tr>
+				<td style="height: 60px;"><img src="" width="90px" height="70px" style="margin-left: 5px;" ></td>
+				<td style="height: 60px;"><img src="{{ (($data->acc_pimpinan != 'N')?public_path($data->profile->ttd):'') }}" width="90px" height="70px" style="margin-left: 5px;" ></td>
+			</tr>
+			<tr>
+				<td style="border-top: 1px solid white; text-align: center;">{{ $data->diketahuioleh->name }}</td>
+				<td style="border-top: 1px solid white; text-align: center;">{{ $data->profile->pimpinan }}</td>
+			</tr>
+		</table>
 	</div>
 </body>
 </html>

@@ -20,7 +20,7 @@ class Pembelian extends Model
 
     protected $with = ['details', 'barangjadi', 'barangmentah'];
 
-    public function diketahui_oleh()
+    public function diketahuioleh()
     {
         return $this->belongsTo(User::class, 'diketahui_oleh', 'id');
     }
