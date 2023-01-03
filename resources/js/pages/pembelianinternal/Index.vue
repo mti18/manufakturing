@@ -70,7 +70,7 @@
           header: "Bukti Permintaan",
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("diketahui_oleh.name", {
+        columnHelper.accessor("diketahuioleh.name", {
           header: "User",
           cell: (cell) => cell.getValue(),
         }),

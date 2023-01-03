@@ -18,7 +18,7 @@ class PembelianInternalController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = Pembelian::with('supplier', 'diketahui_oleh')->where('tipe', '2')->where(function ($q) use ($request) {
+            $courses = Pembelian::with('supplier', 'diketahuioleh')->where('tipe', '2')->where(function ($q) use ($request) {
                 $q->where('supplier_id', 'LIKE', '%' . $request->search . '%');
                 $q->orWhere('account_id', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
@@ -54,7 +54,9 @@ class PembelianInternalController extends Controller
                 'ppn'  => 'nullable||numeric', 
                 'netto' => 'nullable||numeric',
             ]);
-            $data['tipe'] = '2'; // (1) Pembelian // (2) Pembelian Internal
+            $request->merge([
+                'tipe' => '2' // (1) Pembelian // (2) Pembelian Internal
+            ]);
             $data = Pembelian::create($request->all());
             $data = Pembelian::where('id', $data->id)->first();
             // $data = Pembelian::with(['details'])->where('id', $data->id)->first();
@@ -109,6 +111,8 @@ class PembelianInternalController extends Controller
                 'netto' => 'nullable|numeric',
             ]);
 
+            $data['tipe'] = '2';
+
             $jml_penjualan = $data['jml_penjualan'];
             $diskon = $data['diskon'];
             $uangmuka = $data['uangmuka'];
@@ -134,7 +138,7 @@ class PembelianInternalController extends Controller
             $pembelian = Pembelian::where('uuid', $uuid)->first();
             $data = $request->only(['profile_id', 'supplier_id', 'nomor', 'no_surat', 'tgl_permintaan', 'bukti_permintaan',
                 'no_surat_pembelian', 'diketahui_oleh', 'tgl_po', 'jenis_pembayaran', 'no_po_pembelian', 'account_id',
-                'no_surat_jalan', 'tempo', 'keterangan', 'jml_penjualan', 'diskon', 'uangmuka', 'pajak', 'ppn', 'netto'
+                'no_surat_jalan', 'tempo', 'keterangan', 'jml_penjualan', 'diskon', 'uangmuka', 'pajak', 'ppn', 'netto', 'tipe'
             ]);
             // $data = Pembelian::with(['details'])->where('id', $data->id)->first();
             if ($pembelian->update($data)) {
@@ -209,7 +213,7 @@ class PembelianInternalController extends Controller
 
     public function getbulan() {
         if (request()->wantsJson()) {
-            $bulan= Carbon::now()->format('m');
+            $bulan= Carbon::now()->format('n');
             $bulanromawi = AppHelper::BulanToRomawi($bulan);
             return $bulanromawi;
         } else {

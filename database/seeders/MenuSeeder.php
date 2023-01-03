@@ -34,9 +34,6 @@ class MenuSeeder extends Seeder
                 // ['id' => 8, 'name' => 'Pembelian Internal', 'url' => '/pembelianinternal', 'route' => 'dashboard.pembelianinternal', 'component' => 'pembelianinternal/Index', 'icon' => 'fas fa-shopping-basket fs-2'],
                 // ['id' => 9, 'name' => 'Pembayaran', 'url' => '/pembayaran', 'route' => 'dashboard.pembayaran', 'component' => 'pembayaran/Index', 'icon' => 'fas fa-money-bill-wave fs-2'],
                 ['id' => 10, 'name' => 'Master', 'route' => 'dashboard.master', 'icon' => 'las fa-database fs-2', 'children' => [
-                    ['id' => 11, 'name' => 'User', 'url' => '/master/user', 'route' => 'dashboard.master.user', 'icon' => 'las la-user fs-2', 'component' => 'master/user/Index'],
-                    ['id' => 12, 'name' => 'User Grup', 'url' => '/master/user-group', 'route' => 'dashboard.master.user-group', 'icon' => 'las la-users fs-2', 'component' => 'master/user-group/Index'],
-                    ['id' => 13, 'name' => 'Menu', 'url' => '/master/menu', 'route' => 'dashboard.master.menu', 'icon' => 'fas fa-grip-horizontal fs-2', 'component' => 'master/menu/Index'],
                     ['id' => 14, 'name' => 'Jabatan', 'url' => '/master/jabatan', 'route' => 'dashboard.master.jabatan', 'icon' => 'las la-user-tie fs-2', 'component' => 'master/jabatan/Index'],
                     ['id' => 15, 'name' => 'Setting', 'route' => 'dashboard.master.setting', 'icon' => 'las fa-cog fs-2', 'children' => [
                         ['id' => 16, 'name' => 'Website', 'url' => '/master/setting/website', 'route' => 'dashboard.master.setting.website', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/user/Index'],
@@ -74,6 +71,9 @@ class MenuSeeder extends Seeder
                     ]],
                 ]],
                 ['id' => 42, 'name' => 'Setting', 'route' => 'dashboard.setting', 'icon' => 'fas fa-hdd fs-2', 'children' => [
+                    ['id' => 11, 'name' => 'User', 'url' => '/master/user', 'route' => 'dashboard.master.user', 'icon' => 'las la-user fs-2', 'component' => 'master/user/Index'],
+                    ['id' => 12, 'name' => 'User Grup', 'url' => '/master/user-group', 'route' => 'dashboard.master.user-group', 'icon' => 'las la-users fs-2', 'component' => 'master/user-group/Index'],
+                    ['id' => 13, 'name' => 'Menu', 'url' => '/master/menu', 'route' => 'dashboard.master.menu', 'icon' => 'fas fa-grip-horizontal fs-2', 'component' => 'master/menu/Index'],
                     ['id' => 43, 'name' => 'Config', 'route' => 'dashboard.setting.config', 'icon' => 'las fa-cog fs-3', 'children' => [
                         ['id' => 44, 'name' => 'Profile', 'url' => '/setting/config/profile', 'route' => 'dashboard.setting.config.profile', 'icon' => 'fas fa-circle fa-xs', 'component' => 'setting/config/profile/Index'],
                         ],

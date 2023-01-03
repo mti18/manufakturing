@@ -21,14 +21,14 @@
             <div class="mb-8">
               <label for="name" class="form-label required"> Perusahaan: </label>
               <input type="text" name="nama" id="nama" placeholder="Nama"
-                class="form-control" required autoComplete="off" v-model="form.nama" />
+                class="form-control" required autoComplete="off" v-model="form.profile_id" />
             </div>
           </div>
           <div class="col-6">
             <div class="mb-8">
               <label for="name" class="form-label required"> Supplier: </label>
               <input type="text" name="nama" id="nama" placeholder="Nama"
-                class="form-control" required autoComplete="off" v-model="form.nama" />
+                class="form-control" required autoComplete="off" v-model="form.supplier_id" />
             </div>
           </div>
         </div>
@@ -37,12 +37,12 @@
             <div class="mb-8">
               <label for="name" class="form-label required"> Tanggal: </label>
               <input type="text" name="nama" id="nama" placeholder="Nama"
-                class="form-control" required autoComplete="off" v-model="form.nama" />
+                class="form-control" required autoComplete="off" v-model="form.tanggal" />
             </div>
             <div class="mb-8">
               <label for="name" class="form-label required"> Account: </label>
               <input type="text" name="nama" id="nama" placeholder="Nama"
-                class="form-control" required autoComplete="off" v-model="form.nama" />
+                class="form-control" required autoComplete="off" v-model="form.account_id" />
             </div>
             <div class="mb-8">
               <label for="name" class="form-label required"> Total: </label>
@@ -59,17 +59,17 @@
             <div class="mb-8">
               <label for="name" class="form-label required"> Jenis Pembayaran: </label>
               <input type="text" name="nama" id="nama" placeholder="Nama"
-                class="form-control" required autoComplete="off" v-model="form.nama" />
+                class="form-control" required autoComplete="off" v-model="form.jenis_pembayaran" />
             </div>
             <div class="mb-8">
               <label for="name" class="form-label required"> Account: </label>
               <input type="text" name="nama" id="nama" placeholder="Nama"
-                class="form-control" required autoComplete="off" v-model="form.nama" />
+                class="form-control" required autoComplete="off" v-model="form.accbiaya_id" />
             </div>
             <div class="mb-8">
               <label for="name" class="form-label required"> Uang Muka: </label>
               <input type="text" name="nama" id="nama" placeholder="Nama"
-                class="form-control" required autoComplete="off" v-model="form.nama" />
+                class="form-control" required autoComplete="off" v-model="form.uangmuka" />
             </div>
             <div class="mb-8">
               <label for="name" class="form-label required"> Sisa belum dibayar: </label>
@@ -83,13 +83,13 @@
               <div class="input-group">
                 <div class="input-group-prepend"><span class="input-group-text">Rp</span></div> 
                   <input type="text" name="diskon" id="diskon" v-bind="config"
-                    class="form-control" required autoComplete="off" v-model="form.diskon" />
+                    class="form-control" required autoComplete="off" v-model="form.bayar" />
               </div>
             </div>
             <div class="mb-8">
               <label for="name" class="form-label required"> Keterangan: </label>
               <textarea name="diskon" id="diskon" v-bind="config"
-                class="form-control" required autoComplete="off" v-model="form.diskon" />
+                class="form-control" required autoComplete="off" v-model="form.keterangans" />
             </div>
           </div>
           <div class="col-12">
@@ -118,6 +118,13 @@
         type: String,
         default: null,
       }
+    },
+    data() {
+      return {
+        tahuns: [],
+        supplier_id: this.$parent.selected,
+        profile_id: this.$parent.selected
+      };
     },
     setup({ selected }) {
       const queryClient = useQueryClient();

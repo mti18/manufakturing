@@ -23,6 +23,19 @@
           url="/salesorder/paginate"
           :columns="columnsSO"
         ></mti-paginate>
+        <div class="collapse" id="detail">
+          <div class="card card-body">
+            <table>
+              <tr v-for="item in detail">
+                <td>Barang</td>
+                <td>{{ item.volume }}</td>
+                <td>Rp. {{ item.harga }}</td>
+                <td>{{ item.diskon }}</td>
+                <td>Rp. {{ item.jumlah }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -47,6 +60,8 @@
 import { ref, h } from "vue";
 import { useQueryClient } from "vue-query";
 import { createColumnHelper } from "@tanstack/vue-table";
+import axios from "@/libs/axios";
+
 const columnHelper = createColumnHelper();
 
 import Form from "./Form.vue";
@@ -61,6 +76,7 @@ export default {
   setup() {
     const queryClient = useQueryClient();
     const selected = ref();
+    const detail = ref();
     const openForm = ref(false);
     const openRetur = ref(false);
 
@@ -154,6 +170,7 @@ export default {
           if (openForm.value) return null;
           const status = cell.row.original.status;
           const pembayaran = cell.row.original.pembayaran;
+          const id = cell.row.original.id;
 
           const buttons = [];
           if (status === "draft") {
@@ -193,6 +210,12 @@ export default {
                   "data-bs-target": "#detail",
                   "aria-expanded": "false",
                   "aria-controls": "detail",
+                  onClick: () =>
+                    axios.get(`salesorder/` + id + `/getDetail`).then((res) => {
+                      console.log(res.data.data);
+
+                      detail.value = res.data.data;
+                    }),
                 },
                 h("i", {
                   class: "la la-eye text-primary rotate-90 fs-2",
@@ -329,15 +352,33 @@ export default {
       openForm,
       openRetur,
       columnsSO,
+      detail,
       columnsRB,
     };
+  },
+
+  methods: {
+    // getDetail() {
+    //   setTimeout(() => {
+    //     var app = this;
+    //     var app = app.form.account_id;
+    //     axios
+    //       .get(`masterjurnal/child`)
+    //       .then((res) => {
+    //         app.child = res.data;
+    //       })
+    //       .catch((err) => {
+    //         toastr.error("sesuatu error terjadi", "gagal");
+    //       });
+    //   }, 500);
+    // },
   },
 };
 </script>
 
-<style>
-/* #main #btn-arrow:checked {
-  transform: rotate(-90deg);
-  transition: 1s;
-} */
+<style scoped>
+table tr td {
+  border: 1px solid rgb(200, 200, 200);
+  padding: 10px;
+}
 </style>

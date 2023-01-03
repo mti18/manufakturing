@@ -1116,7 +1116,6 @@ export default {
 
     tipediskon() {
       var app = this;
-
       app.form.diskon = 0;
     },
 

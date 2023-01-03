@@ -20,11 +20,12 @@ class PembelianController extends Controller
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = Pembelian::with('supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 
-            'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahui_oleh', 'details',
+            'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'details',
              'barangjadi', 'barangmentah', 'permintaan', 'barang_jadi', 'barang_mentah')->where(function ($q) use ($request) {
                 $q->where('supplier_id', 'LIKE', '%' . $request->search . '%');
                 $q->orWhere('account_id', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
+
 
             return response()->json($courses);
         } else {
@@ -57,7 +58,9 @@ class PembelianController extends Controller
                 'ppn'  => 'nullable||numeric', 
                 'netto' => 'nullable||numeric',
             ]);
-            $data['tipe'] = '1'; // (1) Pembelian // (2) Pembelian Internal
+            $request->merge([
+                'tipe' => '1' // (1) Pembelian // (2) Pembelian Internal
+            ]);
             $data = Pembelian::create($request->all());
             $data = Pembelian::where('id', $data->id)->first();
             // $data = Pembelian::with(['details'])->where('id', $data->id)->first();
@@ -112,6 +115,8 @@ class PembelianController extends Controller
                 'netto' => 'nullable|numeric',
             ]);
 
+            $data['tipe'] = '1';
+
             $jml_penjualan = $data['jml_penjualan'];
             $diskon = $data['diskon'];
             $uangmuka = $data['uangmuka'];
@@ -137,7 +142,7 @@ class PembelianController extends Controller
             $pembelian = Pembelian::where('uuid', $uuid)->first();
             $data = $request->only(['profile_id', 'supplier_id', 'nomor', 'no_surat', 'tgl_permintaan', 'bukti_permintaan',
                 'no_surat_pembelian', 'diketahui_oleh', 'tgl_po', 'jenis_pembayaran', 'no_po_pembelian', 'account_id',
-                'no_surat_jalan', 'tempo', 'keterangan', 'jml_penjualan', 'diskon', 'uangmuka', 'pajak', 'ppn', 'netto'
+                'no_surat_jalan', 'tempo', 'keterangan', 'jml_penjualan', 'diskon', 'uangmuka', 'pajak', 'ppn', 'netto', 'tipe'
             ]);
             // $data = Pembelian::with(['details'])->where('id', $data->id)->first();
             if ($pembelian->update($data)) {
@@ -212,7 +217,7 @@ class PembelianController extends Controller
 
     public function getbulan() {
         if (request()->wantsJson()) {
-            $bulan= Carbon::now()->format('m');
+            $bulan= Carbon::now()->format('n');
             $bulanromawi = AppHelper::BulanToRomawi($bulan);
             return $bulanromawi;
         } else {
@@ -269,7 +274,7 @@ class PembelianController extends Controller
     public function generatepdf($uuid)
     {
         $data = Pembelian::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 
-            'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahui_oleh', 'details',
+            'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'details',
              'barangjadi', 'barangmentah', 'permintaan', 'barang_jadi', 'barang_mentah'
         ])->where('uuid', $uuid)->first();
         $no_surat = $data['no_surat'];
