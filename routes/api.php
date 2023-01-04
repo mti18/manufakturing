@@ -8,6 +8,7 @@ use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\BulanController;
 use App\Http\Controllers\GolonganController;
 use App\Http\Controllers\JurnalController;
+use App\Http\Controllers\LaporanStockBarangController;
 use App\Http\Controllers\MasterJurnalController;
 use App\Http\Controllers\NeracaSaldoController;
 use App\Http\Controllers\PenyusutanController;
@@ -189,6 +190,7 @@ Route::prefix('v1')->group(function () {
 
             Route::prefix('supplier')->group(function () {
                 Route::get('get', [SupplierController::class, 'get']);
+                Route::get('show', [SupplierController::class, 'show']);
                 Route::post('paginate', [SupplierController::class, 'paginate']);
                 Route::post('store', [SupplierController::class, 'store']);
                 Route::get('getcode', [SupplierController::class, 'getcode']);
@@ -250,6 +252,7 @@ Route::prefix('v1')->group(function () {
 
             Route::prefix('profile')->group(function () {
                 Route::get('get', [ProfileController::class, 'get']);
+                Route::get('show', [ProfileController::class, 'show']);
                 Route::post('paginate', [ProfileController::class, 'paginate']);
                 Route::post('store', [ProfileController::class, 'store']);
                 Route::get('{uuid}/edit', [ProfileController::class, 'edit']);
@@ -452,11 +455,16 @@ Route::prefix('v1')->group(function () {
                 Route::get('showbank', [AccountController::class, 'showBank']);
                 Route::post('laporan/{tahun}', [JurnalController::class, 'ReportLaporan']); 
                
+               
             }
             );
             Route::prefix('worksheet')->group(function () {
                 Route::post('worksheet/{tahun}', [JurnalController::class, 'ReportWorksheet']);
                 Route::post('check', [ReportJurnalController::class, 'check']);
+            }
+            );
+            Route::prefix('laporanstock')->group(function () {
+                Route::post('indexStockJadi/{bulan}/{tahun}', [LaporanStockBarangController::class, 'indexStockJadi']); 
             }
             );
             Route::prefix('jurnal')->group(function () {
