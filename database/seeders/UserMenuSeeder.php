@@ -88,6 +88,7 @@ class UserMenuSeeder extends Seeder
             ['user_group_id' => 1, 'menu_id' => 62],
             ['user_group_id' => 1, 'menu_id' => 63],
             ['user_group_id' => 1, 'menu_id' => 64],
+            ['user_group_id' => 1, 'menu_id' => 65],
         ];
 
         foreach($usermenus as $usermenu){

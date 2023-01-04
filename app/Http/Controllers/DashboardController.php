@@ -14,10 +14,10 @@ class DashboardController extends Controller
         if (request()->wantsJson()) {
             $menus = Menu::with(['children' => function ($q) {
                 $q->where('shown', true);
-                $q->whereRelation('user_groups', 'user_groups.id', '=', auth()->user()->id);
+                $q->whereRelation('user_groups', 'user_groups.id', '=', auth()->user()->user_group_id);
             }])->where('parent_id', 0)->where(function ($q) {
                 $q->where('level', 'LIKE', '%' . request()->user()->level . '%');
-            })->where('shown', 1)->whereRelation('user_groups', 'user_groups.id', '=', auth()->user()->id)->orderBy('id')->get();
+            })->where('shown', 1)->whereRelation('user_groups', 'user_groups.id', '=', auth()->user()->user_group_id)->orderBy('id')->get();
 
             return response()->json($menus);
         } else {
