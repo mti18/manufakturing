@@ -28,6 +28,9 @@ class SalesOrderController extends Controller
             })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
             
+            $courses->map(function($a){
+
+            });
 
             return response()->json($courses);
             
@@ -98,15 +101,26 @@ class SalesOrderController extends Controller
 
     public function edit($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $data = SalesOrder::with(['supplier', 'profile', 'diketahuioleh', 'detail'])->where('uuid', $uuid)->first();
+            $data = SalesOrder::with(['supplier', 'profile', 'diketahuioleh', 'barangjadi', 'barangmentah', 'detail.barangjadi.barangsatuanjadi', 'detail.barangmentah.barangsatuan'])->where('uuid', $uuid)->first();
             
-            // $data->barangjadi->map(function ($a){
-            //         $a->barangjadi_id = $a->barangjadi->id;
-            // });
-            
-            // $data->barangmentah->map(function ($a){
-            //         $a->barangjadi_id = $a->barangjadi->id;
-            // });
+            $data->barangjadi->map(function($a){
+
+                // foreach($a as $item){
+                //         $item->barangjadi->barangsatuanjadi->child[0];
+                //     }
+                
+            });
+
+            // return $data->detail;
+
+            // $child = $data->detail->barangjadi->barangsatuanjadi->child;
+            // $satuanjadi = $child->orderBy('nilai')->first()->id;
+            // $data->barangjadi->satuan = $satuanjadi;
+
+            // $data->child = $data->detail->barangmentah->barangsatuan->child;
+            // $satuanmentah = SatuanJadiChild::where('barangsatuanmentah_id', $data->barangmentah->barangsatuan_id)->orderBy('nilai')->first()->id;
+            // $data->barangmentah->satuan = $satuanmentah;
+
 
             $diskon = $data['diskon'];
             if ($diskon <= 100) {

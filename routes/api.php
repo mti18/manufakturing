@@ -40,6 +40,7 @@ use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\JenisAssetController;
+use App\Http\Controllers\KonfirmasiController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\StokKeluarController;
 use App\Http\Controllers\StokMasukController;
@@ -488,8 +489,8 @@ Route::prefix('v1')->group(function () {
             );
 
             Route::prefix('konfirmasiorder')->group(function () {
-                Route::post('paginate', [KonfirmasiOrderController::class, 'paginateOrder']);
-                Route::post('paginatedetail', [KonfirmasiOrderController::class, 'paginateOrderDetail']);
+                Route::post('paginate/{status}', [KonfirmasiController::class, 'paginateOrder']);
+                Route::post('{$id}paginateDetail', [KonfirmasiController::class, 'paginateOrderDetail']);
             });
             Route::prefix('pembelian')->group(function () {
                 Route::get('get', [PembelianController::class, 'get']);
@@ -518,7 +519,8 @@ Route::prefix('v1')->group(function () {
                 Route::get('getbulan', [PembelianInternalController::class, 'getbulan']);
             });
 
-        
+            
+
             Route::prefix('permintaan')->group(function () {
                 Route::get('get', [PermintaanBarangController::class, 'get']);
                 Route::get('getBJ', [PermintaanBarangController::class, 'getBJ']);
@@ -529,6 +531,8 @@ Route::prefix('v1')->group(function () {
                 Route::post('{uuid}/update', [PermintaanBarangController::class, 'update']);
                 Route::delete('{uuid}/destroy', [PermintaanBarangController::class, 'destroy']);
             });
+
+
 
             Route::prefix('permintaaninternal')->group(function () {
                 Route::get('get', [PermintaanInternalController::class, 'get']);

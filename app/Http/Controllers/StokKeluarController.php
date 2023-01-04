@@ -155,12 +155,12 @@ class StokKeluarController extends Controller
             $tipe_barang = $data['tipe_barang'];
             if ($tipe_barang == "barang_jadi") {
                 $data->child = $data->barang_jadi->barangsatuanjadi->child;
-    
+
                 $satuanjadi = SatuanJadiChild::where('barangsatuanjadi_id', $data->barang_jadi->barangsatuanjadi_id)->orderBy('nilai')->first()->id;
                 $data->satuan_jadi = $satuanjadi;
             } else {
                 $data->child = $data->barang_mentah->barangsatuan->child;
-    
+
                 $satuanmentah = SatuanChild::where('barangsatuan_id', $data->barang_mentah->barangsatuan_id)->orderBy('nilai')->first()->id;
                 $data->satuan_mentah = $satuanmentah;
             }
