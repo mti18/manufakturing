@@ -9,8 +9,8 @@
       </div>
       <div class="card-body">
         <mti-paginate
-          id="table-konfirmasiorder"
-          url="/konfirmasiorder/paginate"
+          id="table-konfirmasiorderprocess"
+          url="/konfirmasiorder/paginate/process"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -20,7 +20,7 @@
       <div class="card-body">
         <mti-paginate
           id="table-konfirmasiorderdone"
-          url="/konfirmasiorder/paginate"
+          url="/konfirmasiorder/paginate/success"
           :columns="columns"
         ></mti-paginate>
       </div>
@@ -34,6 +34,8 @@ import { useQueryClient } from "vue-query";
 import { createColumnHelper } from "@tanstack/vue-table";
 const columnHelper = createColumnHelper();
 
+import { useDownloadPdf } from "@/libs/hooks";
+
 import Detail from "./Detail.vue";
 
 export default {
@@ -44,6 +46,8 @@ export default {
     const queryClient = useQueryClient();
     const selected = ref();
     const openDetail = ref(false);
+
+    const { download: downloadPdf } = useDownloadPdf();
 
     const columns = [
       columnHelper.accessor("no_pemesanan", {
@@ -64,28 +68,42 @@ export default {
       }),
       columnHelper.accessor("uuid", {
         header: "Aksi",
-        cell: (cell) =>
-          h("div", { class: "d-flex gap-2" }, [
-            h(
-              "button",
-              {
-                class: "btn btn-sm btn-icon btn-success",
-              },
-              h("i", { class: "la fa-file-pdf fs-2" })
-            ),
-            h(
-              "button",
-              {
-                class: "btn btn-sm btn-icon btn-primary",
-                onClick: () => {
-                  selected.value = cell.getValue();
-                  openDetail.value = true;
-                  return;
+        cell: (cell) => {
+          if (openDetail.value) return null;
+          const id = cell.row.original.id;
+
+          const buttons = [];
+          buttons.push(
+            h("div", { class: "d-flex gap-2" }, [
+              h(
+                "button",
+                {
+                  class: "btn btn-sm btn-icon btn-secondary",
+                  onClick: () =>
+                    downloadPdf(
+                      `/konfirmasipimpinan/order/${cell.getValue()}/generatepdforder`,
+                      "GET"
+                    ),
                 },
-              },
-              h("i", { class: "la la-eye fs-2" })
-            ),
-          ]),
+                h("i", { class: "la la-file-pdf fs-2" })
+              ),
+              h(
+                "button",
+                {
+                  class: "btn btn-sm btn-icon btn-primary",
+                  onClick: () => {
+                    KTUtil.scrollTop();
+                    selected.value = cell.getValue();
+                    openDetail.value = true;
+                  },
+                },
+                h("i", { class: "la la-eye fs-2" })
+              ),
+            ])
+          );
+
+          return h("div", { class: "d-inlineblock gap-2" }, buttons);
+        },
       }),
     ];
 

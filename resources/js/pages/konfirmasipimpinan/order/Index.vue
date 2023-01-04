@@ -9,7 +9,6 @@
       <div class="card-body">
         <mti-paginate
           id="table-orderprocess"
-          ref="n"
           url="konfirmasipimpinan/order/paginate/process"
           :columns="columnsProcess"
         ></mti-paginate>
@@ -20,7 +19,6 @@
       <div class="card-body">
         <mti-paginate
           id="table-ordersuccess"
-          ref="y"
           url="konfirmasipimpinan/order/paginate/success"
           :columns="columnsSuccess"
         ></mti-paginate>

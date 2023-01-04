@@ -12,13 +12,17 @@ class Pembayaran extends Model
     use HasFactory;
     use Uuid;
 
+    protected $fillable = ['uuid', 'salesorder_id', 'pembelian_id', 'account_id', 'accbiaya_id', 'tanggal', 
+        'jenis_pembayaran', 'bayar', 'keterangan'
+    ];
+
     public function profile()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
     public function supplier()
     {
-        return $this->belongsTo(Supplier::class);
+        return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
     }
     public function account()
     {

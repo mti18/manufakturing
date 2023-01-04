@@ -47,7 +47,7 @@
       </div>
       <div class="card-body">
         <mti-paginate
-          id="table-salesorder"
+          id="table-returbarang"
           url="/returbarang/paginate"
           :columns="columnsRB"
         ></mti-paginate>
@@ -79,6 +79,8 @@ export default {
     const detail = ref();
     const openForm = ref(false);
     const openRetur = ref(false);
+    const paginate = document.getElementsByClassName("card");
+    console.log(paginate);
 
     const { delete: deletesalesorder } = useDelete({
       onSuccess: () => {
