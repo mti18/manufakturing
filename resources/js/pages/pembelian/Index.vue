@@ -6,7 +6,7 @@
         <div class="card-header">
           <div class="card-title w-100">
             <h1>Pembelian</h1>
-            <button v-if="!openForm" type="button" class="btn btn-primary btn-sm ms-auto me-5" @click="openDetail = true" >
+            <button v-if="!openDetail" type="button" class="btn btn-primary btn-sm ms-auto me-5" @click="openDetail = true" >
               <i class="las la-eye" style="margin-left: 0;"></i>
               Detail
             </button>

@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\BulanController;
 use App\Http\Controllers\GolonganController;
+use App\Http\Controllers\HutangPiutangController;
 use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\LaporanStockBarangController;
 use App\Http\Controllers\MasterJurnalController;
@@ -462,8 +463,14 @@ Route::prefix('v1')->group(function () {
                 Route::post('check', [ReportJurnalController::class, 'check']);
             }
             );
+            Route::prefix('hutangpiutang')->group(function () {
+                Route::post('/{uuid}/paginate', [HutangPiutangController::class, 'paginate']);
+               
+            }
+            );
             Route::prefix('laporanstock')->group(function () {
                 Route::post('indexStockJadi/{bulan}/{tahun}', [LaporanStockBarangController::class, 'indexStockJadi']); 
+                Route::post('indexStockMentah/{bulan}/{tahun}', [LaporanStockBarangController::class, 'indexStockMentah']); 
             }
             );
             Route::prefix('jurnal')->group(function () {

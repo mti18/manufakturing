@@ -24,14 +24,29 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <button></button>
+                      <table class="table table-hover ">
+                      
+                        <tbody>
+                          <tr  >
+                            <td>
+                              <h5 class="text-dark text-hover-primary">
+                              
+                              </h5>
+                            </td>
+                            <td></td>
+                            <td>Rp. {{ }}</td>
+                            <td>Rp. {{  }}</td>
+                          </tr>
+                          
+                        </tbody>
+                      </table>
                     </div>
                 </div>
               </div>
             </div>
             <div class="card-body">
               <mti-paginate id="table-laporan" 
-              :url="`/laporanstock/indexStockJadi/${formRequest.bulan}/${formRequest.tahun}`"
+              :url="`/laporanstock/indexStockMentah/${formRequest.bulan}/${formRequest.tahun}`"
               :columns="columns"
              ></mti-paginate>
             </div>
@@ -57,7 +72,7 @@
       return{
         stokkeluar: '',
         stokmasuk: '',
-        barangjadi: '',
+        barangmentah: '',
         account: [],
         formRequest: {
           bulan: '',
@@ -68,6 +83,7 @@
     setup() {
       const queryClient = useQueryClient();
       const selected = ref();
+      // const  form = ref();
       const openFilters = ref(true);
   
       const columns = [
@@ -78,15 +94,15 @@
           },
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("nm_barang_jadi", {
+        columnHelper.accessor("nm_barangmentah", {
           header: "Nama Barang",
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("kd_barang_jadi", {
+        columnHelper.accessor("kd_barang_mentah", {
           header: "Kode Barang",
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("barangjadigudangs.nm_gudang", {
+        columnHelper.accessor("barangmentahgudangs.nm_gudang", {
           header: "Gudang",
           cell: (cell) => cell.getValue(),
         }),
@@ -166,10 +182,10 @@
         toastr.error('sesuatu error terjadi', 'error');
       })
     },
-     getBarangJadi(){
+     getBarangMentah(){
         var app = this;
-        app.axios.get('barangjadi/get').then((res) => {
-        app.barangjadi = res.data.data
+        app.axios.get('barangmentah/get').then((res) => {
+        app.barangmentah = res.data.data
       }).catch((err) => {
         toastr.error('sesuatu error terjadi', 'error');
       })
@@ -180,7 +196,7 @@
     var app = this;
     app.getStokMasuk();
     app.getStokKeluar();
-    app.getBarangJadi();
+    app.getBarangMentah();
   },
   }
   </script>

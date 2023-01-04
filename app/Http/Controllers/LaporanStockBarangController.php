@@ -102,7 +102,7 @@ class LaporanStockBarangController extends Controller
                     $query->select('id', 'nm_satuan');
                 }])->select('id', 'nm_barang', 'satuan_id');
             }])->where('barang_id', $barang->id)
-            ->whereBetween('created_at', [$dari.' 00:00', $sampai.' 23:59'])->get();
+            ->whereMonth('tanggal_masuk', $bulan)->whereYear('tanggal_masuk', $tahun)->get();
 
             $barangMasuk->map(function($a){
                 $a->type = 'Barang Masuk';
