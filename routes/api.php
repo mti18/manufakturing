@@ -45,6 +45,7 @@ use App\Http\Controllers\StokKeluarController;
 use App\Http\Controllers\StokMasukController;
 use App\Http\Controllers\KonfirmasiOrderController;
 use App\Http\Controllers\KonfirmasiPimpinanController;
+use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PembelianInternalController;
 use App\Http\Controllers\PermintaanBarangController;
@@ -542,12 +543,12 @@ Route::prefix('v1')->group(function () {
             });
 
             Route::prefix('pembayaran')->group(function () {
-                Route::get('get', [PermintaanInternalController::class, 'get']);
-                Route::post('paginate', [PermintaanInternalController::class, 'paginate']);
-                Route::post('store', [PermintaanInternalController::class, 'store']);
-                Route::get('{uuid}/edit', [PermintaanInternalController::class, 'edit']);
-                Route::post('{uuid}/update', [PermintaanInternalController::class, 'update']);
-                Route::delete('{uuid}/destroy', [PermintaanInternalController::class, 'destroy']);
+                Route::get('get', [PembayaranController::class, 'get']);
+                Route::post('paginate', [PembayaranController::class, 'paginate']);
+                Route::post('store', [PembayaranController::class, 'store']);
+                Route::get('{uuid}/edit', [PembayaranController::class, 'edit']);
+                Route::post('{uuid}/update', [PembayaranController::class, 'update']);
+                Route::delete('{uuid}/destroy', [PembayaranController::class, 'destroy']);
             });
 
             Route::prefix('returbarang')->group(function () {

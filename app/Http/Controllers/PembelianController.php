@@ -51,12 +51,12 @@ class PembelianController extends Controller
                 'no_surat_jalan' => 'required|string',
                 'tempo' => 'required|numeric',
                 'keterangan' => 'string|nullable',
-                'jml_penjualan' => 'nullable||numeric',
-                'diskon'  => 'nullable||numeric', 
-                'uangmuka' => 'nullable||numeric', 
-                'pajak'  => 'nullable||numeric', 
-                'ppn'  => 'nullable||numeric', 
-                'netto' => 'nullable||numeric',
+                'jml_penjualan' => 'nullable|numeric',
+                'diskon'  => 'nullable|numeric', 
+                'uangmuka' => 'nullable|numeric', 
+                'pajak'  => 'nullable|numeric', 
+                'ppn'  => 'nullable|numeric', 
+                'netto' => 'nullable|numeric',
             ]);
             $request->merge([
                 'tipe' => '1' // (1) Pembelian // (2) Pembelian Internal
