@@ -110,6 +110,7 @@
                 placeholder="Volume"
                 class="form-control"
                 required
+                @input="hitungjumlah()"
                 autoComplete="off"
                 v-model="form.volume"
               />
@@ -126,8 +127,9 @@
                 class="form-control"
                 v-bind="config"
                 required
+                @input="hitungjumlah()"
                 autoComplete="off"
-                v-model="form.harga"
+                v-model.number="form.harga"
               />
             </div>
           </div>
@@ -143,7 +145,7 @@
                 v-bind="config"
                 required
                 autoComplete="off"
-                v-model="form.jumlah"
+                v-model.number="form.jumlah"
               />
             </div>
           </div>
@@ -314,6 +316,14 @@
               toastr.error("sesuatu error terjadi", "gagal");
             });
         }, 500);
+      },
+
+      hitungjumlah() {
+        var app = this;
+
+        var volume = app.form.volume;
+        var harga = app.form.harga;
+        app.form.jumlah = volume * harga;
       },
 
       onUpdateFiles(files) {

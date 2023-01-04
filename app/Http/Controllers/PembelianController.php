@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Helpers\AppHelper;
 use App\Models\PembelianDetail;
 use App\Models\SatuanJadiChild;
+use App\Models\User;
 use PDF;
 
 class PembelianController extends Controller
@@ -21,7 +22,7 @@ class PembelianController extends Controller
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
             $courses = Pembelian::with('supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 
             'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'details',
-             'barangjadi', 'barangmentah', 'permintaan', 'barang_jadi', 'barang_mentah')->where(function ($q) use ($request) {
+             'barangjadi', 'barangmentah', 'permintaan', 'barang_jadi', 'barang_mentah','user')->where(function ($q) use ($request) {
                 $q->where('supplier_id', 'LIKE', '%' . $request->search . '%');
                 $q->orWhere('account_id', 'LIKE', '%' . $request->search . '%');
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
@@ -58,9 +59,12 @@ class PembelianController extends Controller
                 'ppn'  => 'nullable|numeric', 
                 'netto' => 'nullable|numeric',
             ]);
+            
             $request->merge([
                 'tipe' => '1' // (1) Pembelian // (2) Pembelian Internal
             ]);
+            $data['user_id'] = auth()->user()->id;
+
             $data = Pembelian::create($request->all());
             $data = Pembelian::where('id', $data->id)->first();
             // $data = Pembelian::with(['details'])->where('id', $data->id)->first();
@@ -273,12 +277,13 @@ class PembelianController extends Controller
 
     public function generatepdf($uuid)
     {
+        $user = User::find(auth()->user()->id);
         $data = Pembelian::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 
             'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'diketahuioleh', 'details',
-             'barangjadi', 'barangmentah', 'permintaan', 'barang_jadi', 'barang_mentah'
+             'barangjadi', 'barangmentah', 'permintaan', 'barang_jadi', 'barang_mentah', 'user'
         ])->where('uuid', $uuid)->first();
         $no_surat = $data['no_surat'];
-        $pdf = PDF::loadview('laporan.pembelian.Index', ['data' => $data]);
+        $pdf = PDF::loadview('laporan.pembelian.Index', ['data' => $data, 'user' => $user]);
         return $pdf->download('Pembelian - ' . $no_surat);
     }
 }
