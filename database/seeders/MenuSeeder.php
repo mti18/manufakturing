@@ -31,8 +31,9 @@ class MenuSeeder extends Seeder
                 ['id' => 5, 'name' => 'Konfirmasi Order', 'url' => '/konfirmasiorder', 'route' => 'dashboard.konfirmasiorder', 'component' => 'konfirmasiorder/Index', 'icon' => 'fas fa-clipboard-check fs-2'],
                 ['id' => 6, 'name' => 'Pembelian', 'url' => '/pembelian', 'route' => 'dashboard.pembelian', 'component' => 'pembelian/Index', 'icon' => 'fas fa-shopping-bag fs-2'],
                 ['id' => 7, 'name' => 'Permintaan', 'url' => '/permintaan', 'route' => 'dashboard.permintaan', 'component' => 'permintaan/Index', 'icon' => 'fas fa-shopping-basket fs-2'],
-                // ['id' => 8, 'name' => 'Pembelian Internal', 'url' => '/pembelianinternal', 'route' => 'dashboard.pembelianinternal', 'component' => 'pembelianinternal/Index', 'icon' => 'fas fa-shopping-basket fs-2'],
-                // ['id' => 9, 'name' => 'Pembayaran', 'url' => '/pembayaran', 'route' => 'dashboard.pembayaran', 'component' => 'pembayaran/Index', 'icon' => 'fas fa-money-bill-wave fs-2'],
+                ['id' => 8, 'name' => 'Pembelian Internal', 'url' => '/pembelianinternal', 'route' => 'dashboard.pembelianinternal', 'component' => 'pembelianinternal/Index', 'icon' => 'fas fa-shopping-basket fs-2'],
+                ['id' => 65, 'name' => 'Hutang Piutang', 'url' => '/hutangpiutang', 'route' => 'dashboard.hutangpiutang', 'component' => 'hutangpiutang/Index', 'icon' => 'fas fa-money-bill-wave fs-2'],
+                ['id' => 9, 'name' => 'Pembayaran', 'url' => '/pembayaran', 'route' => 'dashboard.pembayaran', 'component' => 'pembayaran/Index', 'icon' => 'fas fa-money-bill-wave fs-2'],
                 ['id' => 10, 'name' => 'Master', 'route' => 'dashboard.master', 'icon' => 'las fa-database fs-2', 'children' => [
                     ['id' => 14, 'name' => 'Jabatan', 'url' => '/master/jabatan', 'route' => 'dashboard.master.jabatan', 'icon' => 'las la-user-tie fs-2', 'component' => 'master/jabatan/Index'],
                     ['id' => 15, 'name' => 'Setting', 'route' => 'dashboard.master.setting', 'icon' => 'las fa-cog fs-2', 'children' => [
@@ -81,14 +82,33 @@ class MenuSeeder extends Seeder
                 ],
                 ],
                 ['id' => 45, 'name' => 'Jurnal Laporan', 'route' => 'dashboard.master.jurnallaporan', 'icon' => 'fas fa-book fs-2', 'children' => [
-                        ['id' => 46, 'name' => 'Master Jurnal', 'url' => '/master/jurnallaporan/masterjurnal', 'route' => 'dashboard.master.jurnallaporan.masterjurnal', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/master_jurnal/Index'],
-                        ['id' => 47, 'name' => 'Buku Besar', 'url' => '/master/jurnallaporan/bukubesar', 'route' => 'dashboard.master.jurnallaporan.bukubesar', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/bukubesar/Index'],
-                        ['id' => 48, 'name' => 'Neraca Saldo', 'url' => '/master/jurnallaporan/neracasaldo', 'route' => 'dashboard.master.jurnallaporan.neracasaldo', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/neracasaldo/Index'],
-                        ['id' => 49, 'name' => 'Jurnal', 'url' => '/master/jurnallaporan/jurnal', 'route' => 'dashboard.master.jurnallaporan.jurnal', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/jurnal/Index'],
+                    ['id' => 46, 'name' => 'Keuangan', 'route' => 'dashboard.master.jurnallaporan.keuangan', 'icon' => 'fas fa-circle fa-xs', 'children' => [
+                        ['id' => 47, 'name' => 'Laporan', 'url' => '/master/jurnallaporan/keuangan/laporan', 'route' => 'dashboard.master.jurnallaporan.keuangan.laporan', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/laporan/Index'],
+                        ['id' => 48, 'name' => 'Master Jurnal', 'url' => '/master/jurnallaporan/masterjurnal', 'route' => 'dashboard.master.jurnallaporan.masterjurnal', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/master_jurnal/Index'],
+                        ['id' => 49, 'name' => 'Buku Besar', 'url' => '/master/jurnallaporan/bukubesar', 'route' => 'dashboard.master.jurnallaporan.bukubesar', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/bukubesar/Index'],
+                        ['id' => 50, 'name' => 'Neraca Saldo', 'url' => '/master/jurnallaporan/neracasaldo', 'route' => 'dashboard.master.jurnallaporan.neracasaldo', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/neracasaldo/Index'],
+                        ['id' => 51, 'name' => 'Jurnal', 'url' => '/master/jurnallaporan/jurnal', 'route' => 'dashboard.master.jurnallaporan.jurnal', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/jurnal/Index'],
+                        ['id' => 52, 'name' => 'Assets', 'route' => 'dashboard.master.jurnallaporan.keuangan.assets', 'icon' => 'fas fa-circle fa-xs', 'children' => [
+                            ['id' => 53, 'name' => 'Golongan', 'url' => '/master/jurnallaporan/keuangan/assets/golongan', 'route' => 'dashboard.master.jurnallaporan.keuangan.assets.golongan', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/assets/golongan/Index'],
+                            ['id' => 54, 'name' => 'Asset Jurnal', 'url' => '/master/jurnallaporan/keuangan/assets/asset', 'route' => 'dashboard.master.jurnallaporan.keuangan.assets.asset', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/assets/asset/Index'],
+                            ['id' => 55, 'name' => 'Asset Group', 'url' => '/master/jurnallaporan/keuangan/assets/assetgroup', 'route' => 'dashboard.master.jurnallaporan.keuangan.assets.assetgroup.', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/assets/asset_group/Index'],
+                            ['id' => 56, 'name' => 'Penyusuran', 'url' => '/master/jurnallaporan/keuangan/assets/penyusutan', 'route' => 'dashboard.master.jurnallaporan.keuangan.assets.penyusutan.', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/assets/penyusutan/Index'],
+                            ]],
+                        ['id' => 57, 'name' => 'WorkSheet', 'url' => '/master/jurnallaporan/keuangan/worksheet', 'route' => 'dashboard.master.jurnallaporan.keuangan.worksheet', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/worksheet/Index'],
+                    ]],
+                    ['id' => 58, 'name' => 'Pembelian', 'route' => 'dashboard.master.jurnallaporan.pembelian', 'icon' => 'fas fa-circle fa-xs', 'children' => [
+                            ['id' => 59, 'name' => 'Laporan', 'url' => '/master/jurnallaporan/pembelian/laporan', 'route' => 'dashboard.master.jurnallaporan.pembelian.laporan', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/pembelian/Index'],
+                        ],
+                    ],
+                    ['id' => 60, 'name' => 'Stok Barang', 'route' => 'dashboard.master.jurnallaporan.stokbarang', 'icon' => 'fas fa-circle fa-xs', 'children' => [
+                            ['id' => 61, 'name' => 'Laporan Barang Jadi', 'url' => '/master/jurnallaporan/stokbarang/laporanbarangjadi', 'route' => 'dashboard.master.jurnallaporan.stokbarang.laporanbarangjadi', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/stokbarang/stockjadi/Index'],
+                            ['id' => 62, 'name' => 'Laporan Barang Mentah', 'url' => '/master/jurnallaporan/stokbarang/laporanbarangmentah', 'route' => 'dashboard.master.jurnallaporan.stokbarang.laporanbarangmentah', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/stokbarang/stockmentah/Index'],
+                        ],
+                    ],
                     ],
                 ],
-                ['id' => 50, 'name' => 'Konfirmasi Pimpinan', 'route' => 'dashboard.konfirmasipimpinan', 'icon' => 'fas fa-crown fs-2', 'children' => [
-                        ['id' => 51, 'name' => 'Order (SO)', 'url' => '/master/konfirmasipimpinan/order', 'route' => 'dashboard.konfirmasipimpinan.order', 'icon' => 'fas fa-circle fa-xs', 'component' => 'konfirmasipimpinan/order/Index'],
+                ['id' => 63, 'name' => 'Konfirmasi Pimpinan', 'route' => 'dashboard.konfirmasipimpinan', 'icon' => 'fas fa-crown fs-2', 'children' => [
+                        ['id' => 64, 'name' => 'Order (SO)', 'url' => '/master/konfirmasipimpinan/order', 'route' => 'dashboard.konfirmasipimpinan.order', 'icon' => 'fas fa-circle fa-xs', 'component' => 'konfirmasipimpinan/order/Index'],
                     ],
                 ],
             ]]

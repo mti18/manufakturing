@@ -3,12 +3,12 @@
       <div class="card-header">
         <div class="card-title w-100">
           <h3>
-            {{ pembelian?.uuid ? `Edit Jabatan : ${pembelian.name}` : "Tambah Jabatan"  }}
+            {{ pembelian?.uuid ? `Edit Details : ${pembelian.name}` : " Tambah Details"  }}
           </h3>
           <button
             type="button"
             class="btn btn-light-danger btn-sm ms-auto"
-            @click="($parent.openForm = false, $parent.selected = undefined)"
+            @click="($parent.openDetail = false, $parent.selected = undefined)"
           >
             <i class="las la-times-circle"></i>
             Batal

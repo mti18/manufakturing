@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\BulanController;
 use App\Http\Controllers\GolonganController;
+use App\Http\Controllers\HutangPiutangController;
 use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\LaporanStockBarangController;
 use App\Http\Controllers\MasterJurnalController;
@@ -41,6 +42,7 @@ use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\JenisAssetController;
+use App\Http\Controllers\KonfirmasiController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\StokKeluarController;
 use App\Http\Controllers\StokMasukController;
@@ -463,8 +465,14 @@ Route::prefix('v1')->group(function () {
                 Route::post('check', [ReportJurnalController::class, 'check']);
             }
             );
+            Route::prefix('hutangpiutang')->group(function () {
+                Route::post('/{uuid}/paginate', [HutangPiutangController::class, 'paginate']);
+               
+            }
+            );
             Route::prefix('laporanstock')->group(function () {
                 Route::post('indexStockJadi/{bulan}/{tahun}', [LaporanStockBarangController::class, 'indexStockJadi']); 
+                Route::post('indexStockMentah/{bulan}/{tahun}', [LaporanStockBarangController::class, 'indexStockMentah']); 
             }
             );
             Route::prefix('jurnal')->group(function () {
@@ -497,8 +505,8 @@ Route::prefix('v1')->group(function () {
             );
 
             Route::prefix('konfirmasiorder')->group(function () {
-                Route::post('paginate', [KonfirmasiOrderController::class, 'paginateOrder']);
-                Route::post('paginatedetail', [KonfirmasiOrderController::class, 'paginateOrderDetail']);
+                Route::post('paginate/{status}', [KonfirmasiController::class, 'paginateOrder']);
+                Route::post('{$id}paginateDetail', [KonfirmasiController::class, 'paginateOrderDetail']);
             });
             Route::prefix('pembelian')->group(function () {
                 Route::get('get', [PembelianController::class, 'get']);
@@ -527,7 +535,8 @@ Route::prefix('v1')->group(function () {
                 Route::get('getbulan', [PembelianInternalController::class, 'getbulan']);
             });
 
-        
+            
+
             Route::prefix('permintaan')->group(function () {
                 Route::get('get', [PermintaanBarangController::class, 'get']);
                 Route::get('getBJ', [PermintaanBarangController::class, 'getBJ']);
@@ -538,6 +547,8 @@ Route::prefix('v1')->group(function () {
                 Route::post('{uuid}/update', [PermintaanBarangController::class, 'update']);
                 Route::delete('{uuid}/destroy', [PermintaanBarangController::class, 'destroy']);
             });
+
+
 
             Route::prefix('permintaaninternal')->group(function () {
                 Route::get('get', [PermintaanInternalController::class, 'get']);

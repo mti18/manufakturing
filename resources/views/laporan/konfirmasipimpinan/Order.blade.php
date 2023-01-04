@@ -1,5 +1,5 @@
 <html>
-	<title>Sales Order</title>
+	<title>Konfirmasi Sales Order</title>
 <head>
 	<style>
 		@page { margin: 0.7cm 0.9cm;}
@@ -153,7 +153,7 @@
 					<div class="profile-nama">{{ $data->profile->nama }}</div>
 				</td>
 				<td class="col-title" width="200">
-					<div class="pdf-title" style="margin-top: -10px">SALES ORDER</div>
+					<div class="pdf-title" style="margin-top: -10px">KONFIRMASI SALES ORDER</div>
 					<div class="pdf-desc" align="center" style="padding-left: 60px">
 						<table>
 							<tr>
@@ -328,7 +328,7 @@
 			</tr>
 			<tr>
 				<td style="height: 80px;"><img src="" width="90px" height="80px" style="margin-left: 5px;" ></td>
-				<td style="height: 80px;"><img src="{{ public_path($data->profile->ttd) }}" width="90px" height="80px" style="margin-left: 5px;" ></td>
+				<td style="height: 80px;"><img src="{{ (($data->acc_pimpinan != 'N')?public_path($data->profile->ttd):'') }}"  width="90px" height="80px" style="margin-left: 5px;" ></td>
 			</tr>
 			<tr>
 				<td style="border-top: 1px solid white; text-align: center;">{{ $data->user->name }}</td>

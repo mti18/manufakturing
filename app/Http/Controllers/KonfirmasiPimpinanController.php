@@ -18,15 +18,27 @@ class KonfirmasiPimpinanController extends Controller
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            if ($status == 'success') {                
-                $courses = SalesOrder::with(['supplier', 'profile', 'detail', 'user'])->where('acc_pimpinan', 'Y')->where(function ($q) use ($request) {
-                    $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
-                })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
-            } else {
-                $courses = SalesOrder::with(['supplier', 'profile', 'detail', 'user'])->where('acc_pimpinan', 'N')->where(function ($q) use ($request) {
-                    $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
-                })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
+
+            if ($status == 'process') {
+                $status = 'N';
+                $not = SalesOrderDetail::whereIn('status', ['0'])->pluck('salesorder_id')->toArray();
+                $yes = SalesOrderDetail::whereIn('status', ['1', '2', '3', '4', '5', '6'])->pluck('salesorder_id')->toArray();
+                SalesOrderDetail::whereIn('status', ['1', '2', '3', '4', '5', '6'])
+                ->whereNotIn('salesorder_id', $not)->pluck('salesorder_id')->toArray();
+                
+            }else{
+                $status = 'Y';
+
+                $yes = SalesOrder::where('acc_pimpinan', 'Y')->pluck('id')->toArray();
             }
+
+
+            $courses = SalesOrder::with(['supplier', 'profile', 'detail', 'user'])->where('id', $yes)->where('acc_pimpinan', $status)->where(function ($q) use ($request) {
+                $q->where('no_pemesanan', 'LIKE', '%' . $request->search . '%');
+            })->orderBy('id', 'desc')->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
+            
+            
+        
 
             
 
@@ -41,8 +53,8 @@ class KonfirmasiPimpinanController extends Controller
     {
         $data = SalesOrder::with(['supplier', 'supplier.provinsi', 'supplier.kota', 'supplier.kecamatan', 'profile', 'profile.provinsi', 'profile.kecamatan', 'profile.kelurahan', 'profile.kota', 'detail', 'user'])->where('uuid', $uuid)->first();
         $no_pemesanan = $data['no_pemesanan'];
-        $pdf = PDF::loadview('laporan.konfirmasi.Index', ['data' => $data]);
-        return $pdf->download('Konfirmasi Order - ' . $no_pemesanan);
+        $pdf = PDF::loadview('laporan.konfirmasipimpinan.Order', ['data' => $data]);
+        return $pdf->download('Konfirmasi Sales Order - ' . $no_pemesanan);
 
     }
 

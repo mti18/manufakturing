@@ -401,7 +401,6 @@
         <table class="table border">
           <thead>
             <tr class="fw-bold fs-6 text-gray-800 border align-middle">
-              <!-- <th rowspan="2">Tipe Barang</th>-->
               <th rowspan="2" class="ps-13 pe-13" width="200px">Nama Barang</th>
               <th colspan="2">Qty</th>
               <th rowspan="2">Harga</th>

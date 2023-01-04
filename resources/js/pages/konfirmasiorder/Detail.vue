@@ -3,7 +3,7 @@
     <div class="card" v-if="!openDetail">
       <div class="card-header">
         <div class="card-title w-100">
-          <h1>Konfirmasi Order</h1>
+          <h1>Detail Order</h1>
           <button
             type="button"
             class="btn btn-light-danger btn-sm ms-auto"
@@ -78,13 +78,14 @@ export default {
       }),
       columnHelper.accessor("status", {
         header: "Status",
-        cell: (cell) => cell.getValue()=='0' ?
-          h('div', { class: 'd-flex gap-2' }, [
-            h('span', { class: 'badge badge-warning' }, 'Pending')
-          ])    
-          : h('div', { class: 'd-flex gap-2 ms-4' }, [
-              h('span', { class: 'success' }, 'Accept'),
-          ]),
+        cell: (cell) =>
+          cell.getValue() == "0"
+            ? h("div", { class: "d-flex gap-2" }, [
+                h("span", { class: "badge badge-warning" }, "Pending"),
+              ])
+            : h("div", { class: "d-flex gap-2 ms-4" }, [
+                h("span", { class: "success" }, "Accept"),
+              ]),
       }),
       columnHelper.accessor("uuid", {
         header: "Aksi",
@@ -107,7 +108,6 @@ export default {
           ]),
       }),
     ];
-    
 
     return {
       selected,
@@ -116,9 +116,7 @@ export default {
     };
   },
 
-  method: {
-
-  }
+  method: {},
 };
 </script>
 
