@@ -51,7 +51,7 @@
   const columnHelper = createColumnHelper();
   
   import Form from "./components/FormPembelian.vue";
-  import UtangPiutang from "./components/UtangPiutang.vue";
+  import UtangPiutang from "./components/Piutang.vue";
   import { useDelete } from "@/libs/hooks";
   
   export default {

@@ -7,7 +7,7 @@
           <h1>Assets</h1>
           <button v-if="!openForm" type="button" class="btn btn-primary btn-sm ms-auto me-5" @click="openDetail = true" >
               <i class="las la-eye" style="margin-left: 0;"></i>
-              Detail</button>
+              {{($parent.selected)}}</button>
           <button
             type="button"
             class="btn btn-light-danger btn-sm"
