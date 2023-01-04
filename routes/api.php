@@ -466,7 +466,10 @@ Route::prefix('v1')->group(function () {
             }
             );
             Route::prefix('hutangpiutang')->group(function () {
-                Route::post('/{uuid}/paginate', [HutangPiutangController::class, 'paginate']);
+                Route::post('/{uuid}/paginateHutang', [HutangPiutangController::class, 'paginateHutang']);
+                Route::get('getHutang', [AccountController::class, 'getHutang']);
+                Route::post('store', [HutangPiutangController::class, 'store']);
+                Route::get('/{uuid}/editHutang', [HutangPiutangController::class, 'editHutang']);
                
             }
             );

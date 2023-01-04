@@ -29,7 +29,7 @@
               <select2 name="profile_id" id="profile"
                 class="form-control" disabled  autoComplete="off" v-model="profile_id" >
                 <option value="" disabled></option>
-                <option v-for="profile in profiles" :value="profile.id" :key="profile.uuid">{{ profile.nama }}</option>
+                <option v-for="profile in profiles" :value="profile.id" :key="profile.uuid"> {{ profile.nama }} </option>
               </select2>
             </div>
           </div>

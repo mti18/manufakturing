@@ -37,7 +37,6 @@ return new class extends Migration
               
             $table->integer('tempo')->default(0);
             $table->date('tanggal');
-            $table->string('bukti')->nullable();
             $table->decimal('jumlah', 13, 2);
             $table->enum('type', ['Hutang', 'Piutang'])->default('Utang');
             $table->string('keterangan')->nullable();

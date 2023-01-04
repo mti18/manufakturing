@@ -20,8 +20,18 @@
           <div class="col-6" >
             <div class="mb-8">
               <label for="profile_id" class="form-label required"> Profile : </label>
-              <input type="text" name="profile_id" id="profile" placeholder="Nama"
-                class="form-control" required autoComplete="off" v-model="form.profile_id" />
+              <select2 
+                name="profile_id" 
+                id="profile"
+                class="form-control"  
+                v-model="form.profile_id" >
+                <option value="" disabled>Pilih Profile</option>
+                <option v-for="profile in profiles" 
+
+                :value="profile.id" 
+                :key="profile.uuid"
+                > {{ profile.nama }} </option>
+              </select2>
             </div>
           </div>
             <div class="col-6">
@@ -48,48 +58,81 @@
           </div>
           
             <div class="row">
-            <div class="col-6">
+            <div class="col-4">
           <div class="mb-8">
-            <label for="name" class="form-label required"> Masa </label>
+            <label for="" class="form-label required ">
+              Tanggal :
+            </label>
+           
+            <input
+            
+              name="tanggal"
+              id="kt_datepicker_1"
+              placeholder="Pilih Tanggal"
+              class="form-control "
+              required
+              v-model="form.tanggal"
+            />
+           
+          </div>
+        </div>
+          <div class="col-4">
+          <div class="mb-8">
+            <label for="code" class="form-label required">
+              Jatuh Tempo :
+            </label>
             <div class="input-group">
               <input
                 type="number"
-                name="masa"
-                id="masa"
                 min="0"
-                placeholder="Masa"
+                name="tempo"
+                id="tempo"
+                placeholder="Hari"
                 class="form-control"
                 required
                 autoComplete="off"
-                v-model="form.masa"
+                v-model="form.tempo"
               />
               <div class="input-group-append">
-                <span class="input-group-text">Tahun</span>
+                <span class="input-group-text">Hari</span>
               </div>
             </div>
           </div>
         </div>
-          <div class="col-6">
-          <div class="mb-8">
-            <label for="code" class="form-label required">
-              Rate Penyusutan :
-            </label>
-            <div class="input-group">
-              <input
-                type="text"
-                name="tarif"
-                id="tarif"
-                placeholder="Tarif Penyusutan"
-                class="form-control"
-                required
-                autoComplete="off"
-                v-model="form.rate"
-              />
-              <div class="input-group-append">
-                <span class="input-group-text">%</span>
-              </div>
+        <div class="col-4">
+          <div class="mb-8 ">
+                <label for="" class="form-label required">
+                        Jumlah :
+                      </label>
+                      <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text"> Rp </span></div> 
+                         <Money3 v-model="form.jumlah" class="form-control" type="text" id="jumlah" name="jumlah" v-bind="config" required ></Money3>
+                    </div>
+                  </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+            <div class="mb-8">
+              <label for="keterangan" class="form-label required "> Keterangan : </label>
+              <textarea type="text" name="keterangan" id="keterangan" placeholder="Keterangan"
+              class="form-control" required autoComplete="off" v-model="form.keterangan" />
             </div>
           </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <label for="upload" class="form-label required">
+            Upload Bukti :
+          </label>
+          <file-upload
+            :files="fileUpload"
+            :allow-multiple="true"
+            v-on:updatefiles="onUpdateFilesUpload"
+            labelIdle='Drag & Drop your files or <span class ="filepond-label-action">Browse</span>'
+            required
+            :accepted-file-types="['image/*', 'application/pdf' ,'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ]"></file-upload>
+  
         </div>
       </div>
           </div>
@@ -104,6 +147,8 @@
   </template>
   
   <script>
+   import { Money3, Money3Component } from 'v-money3'
+  import { Money3Directive } from 'v-money3';
   import { ref } from "vue";
   import { useQuery, useMutation } from "vue-query";
   import axios from "@/libs/axios";
@@ -111,85 +156,118 @@
   
   export default {
     props: {
-      selected: {
-        type: String,
-        default: null,
-      }
+        selected: {
+            components: { money3: Money3Component },
+            directives: { money3: Money3Directive },
+            type: String,
+            default: null,
+        }
+    },
+    data() {
+        return {
+          Hutang: '',
+            config: {
+                prefix: "",
+                suffix: "",
+                thousands: ".",
+                decimal: ",",
+                precision: 2,
+                disableNegative: false,
+                disabled: false,
+                min: null,
+                max: null,
+                allowBlank: false,
+                minimumNumberOfCharacters: 0,
+            },
+        };
     },
     setup({ selected }) {
-      const queryClient = useQueryClient();
-      const form = ref({});
+        const queryClient = useQueryClient();
+        const form = ref({});
+        const fileUpload = ref([]);
 
-      const { data: account } = useQuery(["accounts"], () =>
-      axios.get("/masterjurnal/child").then((res) => res.data)
-    );
-  
-      const { data: golongan } = useQuery(
-        ["golongan", selected, "edit"],
-        () => {
-          setTimeout(() => KTApp.block("#form-golongan"), 100);
-          return axios.get(`/golongan/${selected}/edit`).then((res) => res.data);
-        },
-        {
-          enabled: !!selected,
-          cacheTime: 0,
-          onSuccess: data => form.value = data,
-          onSettled: () => KTApp.unblock("#form-golongan"),
-        }
-      );
-  
-      const { mutate: submit } = useMutation((data) => axios.post(selected ? `/golongan/${selected}/update` : '/golongan/store', data).then(res => res.data), {
-        onMutate: () => {
-          KTApp.block("#form-golongan");
-        },
-        onError: (error) => {
-          toastr.error(error.response.data.message);
-        },
-        onSettled: () => {
-          KTApp.unblock("#form-golongan");
-        }
-      });
-  
-      return {
-        account,
-        golongan,
-        submit,
-        form,
-        queryClient
-      }
+        
+        const { data: account } = useQuery(["accounts"], () =>
+         axios.get("/hutangpiutang/getHutang").then((res) => res.data
+         ));
+        const { data: profiles } = useQuery(["profiles"], () => 
+          axios.get("/profile/get").then((res) => res.data
+        ));
+        const { data: hutang} = useQuery(["hutang", selected, "edit"], () => {
+            setTimeout(() => KTApp.block("#form-hutang"), 100);
+            return axios.get(`/hutangpiutang/${selected}/editHutang`).then((res) => res.data);
+        }, {
+            enabled: !!selected,
+            cacheTime: 0,
+            onSuccess: data => {form.value = data,
+            fileUpload.value = data.file_bukti_hutang
+            },
+            onSettled: () => KTApp.unblock("#form-hutang"),
+        });
+        const { mutate: submit } = useMutation((data) => axios.post(selected ? `//${selected}/update` : "/hutangpiutang/store", data).then(res => res.data), {
+            onMutate: () => {
+                KTApp.block("#form-hutang");
+            },
+            onError: (error) => {
+                toastr.error(error.response.data.message);
+            },
+            onSettled: () => {
+                KTApp.unblock("#form-hutang");
+            }
+        });
+        return {
+          fileUpload,
+            profiles,
+            account,
+            hutang,
+            submit,
+            form,
+            queryClient
+        };
     },
     methods: {
-      onUpdateFiles(files) {
-        this.file = files;
+        onUpdateFiles(files) {
+            this.file = files;
+        },
+        onUpdateFilesUpload(filesUpload) {
+        this.fileUpload = filesUpload;
       },
-      onSubmit() {
-        const vm = this;
-        const data = new FormData(document.getElementById("form-golongan"));
-        this.submit(data, {
-          onSuccess: (data) => {
-            toastr.success(data.message);
-            vm.$parent.openForm = false;
-            vm.$parent.selected = undefined;
-            vm.queryClient.invalidateQueries(["/golongan/paginate"], { exact: true });
-          }
-        });
-      },
-      getAccount() {
-      setTimeout(() => {
-        var app = this;
-        var app = app.form.account_id;
-        axios
-          .get(`masterjurnal/child`)
-          .then((res) => {
-            app.child= res.data;
-          })
-          .catch((err) => {
-            toastr.error("sesuatu error terjadi", "gagal");
-          });
-      }, 500);
+        onSubmit() {
+            const vm = this;
+            const data = new FormData(document.getElementById("form-hutang"));
+             this.fileUpload.forEach(bukti => data.append("bukti[]", bukti.file));
+            this.submit(data, {
+                onSuccess: (data) => {
+                    toastr.success(data.message);
+                    vm.$parent.openForm = false;
+                    vm.$parent.selected = undefined;
+                    vm.queryClient.invalidateQueries(["/hutangpiutang/{uuid}/paginate"], { exact: true });
+                }
+            });
+        },
+        loadDate() {
+            $("#kt_datepicker_1").flatpickr();
+        },
+        getAccount() {
+            setTimeout(() => {
+                var app = this;
+                var app = app.form.account_id;
+                axios
+                    .get(`hutangpiutang/getHutang`)
+                    .then((res) => {
+                    app.Hutang = res.data;
+                })
+                    .catch((err) => {
+                    toastr.error("sesuatu error terjadi", "gagal");
+                });
+            }, 500);
+        },
     },
-    }
-  };
+    mounted() {
+        this.loadDate();
+    },
+    components: { Money3 }
+};
   </script>
   
   <style>

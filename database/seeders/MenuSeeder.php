@@ -32,7 +32,7 @@ class MenuSeeder extends Seeder
                 ['id' => 6, 'name' => 'Pembelian', 'url' => '/pembelian', 'route' => 'dashboard.pembelian', 'component' => 'pembelian/Index', 'icon' => 'fas fa-shopping-bag fs-2'],
                 ['id' => 7, 'name' => 'Permintaan', 'url' => '/permintaan', 'route' => 'dashboard.permintaan', 'component' => 'permintaan/Index', 'icon' => 'fas fa-shopping-basket fs-2'],
                 ['id' => 8, 'name' => 'Pembelian Internal', 'url' => '/pembelianinternal', 'route' => 'dashboard.pembelianinternal', 'component' => 'pembelianinternal/Index', 'icon' => 'fas fa-shopping-basket fs-2'],
-                ['id' => 65, 'name' => 'Hutang Piutang', 'url' => '/hutangpiutang', 'route' => 'dashboard.hutangpiutang', 'component' => 'hutangpiutang/Index', 'icon' => 'fas fa-money-bill-wave fs-2'],
+                ['id' => 65, 'name' => 'Hutang Piutang', 'url' => '/hutangpiutang', 'route' => 'dashboard.hutangpiutang', 'component' => 'hutangpiutang/Index', 'icon' => 'fas fa-money-check-alt fs-2'],
                 ['id' => 9, 'name' => 'Pembayaran', 'url' => '/pembayaran', 'route' => 'dashboard.pembayaran', 'component' => 'pembayaran/Index', 'icon' => 'fas fa-money-bill-wave fs-2'],
                 ['id' => 10, 'name' => 'Master', 'route' => 'dashboard.master', 'icon' => 'las fa-database fs-2', 'children' => [
                     ['id' => 14, 'name' => 'Jabatan', 'url' => '/master/jabatan', 'route' => 'dashboard.master.jabatan', 'icon' => 'las la-user-tie fs-2', 'component' => 'master/jabatan/Index'],
@@ -101,8 +101,8 @@ class MenuSeeder extends Seeder
                         ],
                     ],
                     ['id' => 60, 'name' => 'Stok Barang', 'route' => 'dashboard.master.jurnallaporan.stokbarang', 'icon' => 'fas fa-circle fa-xs', 'children' => [
-                            ['id' => 61, 'name' => 'Laporan Barang Jadi', 'url' => '/master/jurnallaporan/stokbarang/laporanbarangjadi', 'route' => 'dashboard.master.jurnallaporan.stokbarang.laporanbarangjadi', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/stokbarang/stockjadi/Index'],
-                            ['id' => 62, 'name' => 'Laporan Barang Mentah', 'url' => '/master/jurnallaporan/stokbarang/laporanbarangmentah', 'route' => 'dashboard.master.jurnallaporan.stokbarang.laporanbarangmentah', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/stokbarang/stockmentah/Index'],
+                            ['id' => 61, 'name' => 'Laporan Barang Jadi', 'url' => '/master/jurnallaporan/stokbarang/laporanbarangjadi', 'route' => 'dashboard.master.jurnallaporan.stokbarang.laporanbarangjadi', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/stockbarang/stockjadi/Index'],
+                            ['id' => 62, 'name' => 'Laporan Barang Mentah', 'url' => '/master/jurnallaporan/stokbarang/laporanbarangmentah', 'route' => 'dashboard.master.jurnallaporan.stokbarang.laporanbarangmentah', 'icon' => 'fas fa-circle fa-xs', 'component' => 'master/jurnallaporan/stockbarang/stockmentah/Index'],
                         ],
                     ],
                     ],

@@ -12,7 +12,7 @@
           </div>
         </div>
         <div class="card-body">
-          <mti-paginate id="table-position" url="hutangpiutang/{uuid}/paginate" :columns="columns"></mti-paginate>
+          <mti-paginate id="table-position" url="hutangpiutang/{uuid}/paginateHutang" :columns="columns"></mti-paginate>
         </div>
       </div>
     </section>
@@ -37,7 +37,7 @@
       
       const { delete: deleteHutang } = useDelete({
         onSuccess: () => {
-          queryClient.invalidateQueries(["/hutangpiutang/{uuid}/paginate"]);
+          queryClient.invalidateQueries(["/hutangpiutang/{uuid}/paginateHutang"]);
         }
       })
   
@@ -49,20 +49,24 @@
           },
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("nm_golongan", {
-          header: "Nama",
+        columnHelper.accessor("profile.nama", {
+          header: "Nama Profile",
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("metode_penyusutan", {
-          header: "Metode",
+        columnHelper.accessor("account.nm_account", {
+          header: "Nama Account",
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("masa", {
-          header: "Masa",
+        columnHelper.accessor("tanggal", {
+          header: "Tanggal",
           cell: (cell) => cell.getValue(),
         }),
-        columnHelper.accessor("rate", {
-          header: "Rate",
+        columnHelper.accessor("jumlah", {
+          header: "Jumlah",
+          cell: (cell) => cell.getValue(),
+        }),
+        columnHelper.accessor("tempo", {
+          header: "Tempo",
           cell: (cell) => cell.getValue(),
         }),
         columnHelper.accessor("uuid", {
@@ -74,7 +78,7 @@
                 openForm.value = true;
               }}, h('i', { class: 'la la-pencil fs-2' })), 
               h('button', { class: 'btn btn-sm btn-icon btn-danger', onClick: () => {
-                deleteGolongan(`/golongan/${cell.getValue()}/destroy`);
+                deleteGolongan(`/hutang/${cell.getValue()}/destroy`);
               }}, h('i', { class: 'la la-trash fs-2' }))
             ]),
         }),

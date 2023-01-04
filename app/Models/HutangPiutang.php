@@ -12,9 +12,9 @@ class HutangPiutang extends Model
     use  Uuid;
 
     protected $fillable = [
-    	'uuid', 'profile_id', 'account_id', 'tanggal', 'bukti', 'jumlah', 'type', 'keterangan', 'tempo', 'salesorder_id', 'pembelian_id'
+    	'uuid', 'profile_id', 'account_id', 'tanggal', 'jumlah', 'type', 'keterangan', 'tempo', 'salesorder_id', 'pembelian_id'
     ];
-
+    protected $appends = ['file_bukti_hutang'];
     public function account()
     {
         return $this->belongsTo(Account::class, 'account_id', 'id');
@@ -34,5 +34,16 @@ class HutangPiutang extends Model
     {
         return $this->belongsTo(Pembelian::class, 'pembelian_id', 'id');
     }
+    public function BuktiHutang()
+    {
+        return $this->hasMany(BuktiHutang::class, "hutangpiutang_id", "id");
+    }
+    public function getFileBuktiHutangAttribute() {
+        $files = [];
+        foreach ($this->BuktiHutang as $bukti) {
+            $files[] = asset($bukti->bukti);
+        }
 
+        return $files;
+    }
 }

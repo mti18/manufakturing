@@ -22,11 +22,51 @@
                 </button>
               </div>
               <div class="modal-body">
-                <div class="mb-8">
-                  <label for="nm_account" class="form-label required">Name</label>
-                  <input type="text" name="nm_account" id="nm_account" placeholder="Add"
-                    class="form-control" required autoComplete="off"  v-model="formRequest.nm_account" />
+                <div>
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="mb-8">
+                        <label for="nm_account" class="form-label required"> Account : </label>
+                        <input type="text" name="nm_account" id="nm_account" placeholder="Account"
+                        class="form-control" required autoComplete="off" v-model="formRequest.nm_account" />
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="mb-8">
+                        <label  for="account_type" class="form-label required">Account Type</label>
+                    <select2 class="form-control" name="account_type"
+                    placeholder="Pilih" v-model="formRequest.account_type">
+                    <option value="rill">Rill</option>
+                    <option value="nominal">Nominal</option>
+                  </select2>
+                </div>
+              </div>
             </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="mb-6">
+                    <label  for="Type" class="form-label required">Type</label>
+                    <select2 class="form-control" name="type"
+                    placeholder="Pilih" v-model="formRequest.type">
+                    <option value="debit">Debit</option>
+                            <option value="kredit">Kredit</option>
+                      </select2>
+                    </div>
+                  </div>
+                      <div class="col-6">
+                        <div class="mb-6">
+                          <label  for="account_header" class="form-label required">Account Header</label>
+                          <select2 class="form-control" name="account_header"
+                          placeholder="Pilih" v-model="formRequest.account_header">
+                          <option value="pajak">Pajak</option>
+                          <option value="bank">Bank</option>
+                          <option value="hutang">Hutang</option>
+                          <option value="piutang">Piutang</option>
+                        </select2>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -71,7 +111,9 @@
     data: function () {
       return {
         treeDisplayData: [],
-        formRequest: {},
+        formRequest: {
+
+        },
         type: 'create'
       };
     },
@@ -250,12 +292,7 @@
       },
       addNodeFunction: function (node) {
         this.formRequest = {
-          nm_account : null,
-                    parent_id : node.id,
-                    account_type: node.account_type, 
-                    account_header: node.account_header, 
-                    type: node.type, 
-                    disabled: false
+         
         };
         // this.formRequest.parent_id = node.id
         this.type = 'create';
