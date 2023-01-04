@@ -14,7 +14,7 @@ class Pembelian extends Model
     protected $fillable = ['uuid', 'salesorder_id', 'profile_id', 'supplier_id', 'no_surat', 'tgl_permintaan', 'bukti_permintaan', 
         'no_surat_pembelian', 'diketahui_oleh', 'tgl_po', 'jenis_pembayaran', 'no_po_pembelian', 'account_id', 'no_surat_jalan',
         'tempo', 'keterangan', 'jml_penjualan', 'diskon', 'uangmuka', 'pajak', 'ppn', 'netto', 'nomor', 'tipe', 'acc_pimpinan',
-        'permintaan_id'
+        'permintaan_id', 'user_id'
     ];
     protected $hidden = ['updated_at'];
 
@@ -35,6 +35,10 @@ class Pembelian extends Model
     public function account()
     {
         return $this->belongsTo(Account::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function barangjadi() 

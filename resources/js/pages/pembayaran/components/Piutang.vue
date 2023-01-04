@@ -37,13 +37,15 @@
             </select2>
           </div>
         </div>
-        <div class="col-12">
-          <div class="mb-8">
-            <label for="name" class="form-label required"> Account: </label>
-            <input type="text" name="nama" id="nama" placeholder="Nama"
-              class="form-control" required autoComplete="off" v-model="form.account_id" />
-          </div>
+        <div class="mb-8">
+          <label for="name" class="form-label required"> Account: </label>
+          <select2 name="account_id" id="account_id"
+            class="form-control" autoComplete="off" v-model="form.account_id" >
+            <option value="" disabled>Pilih</option>
+            <option v-for="account in accounts" :value="account.id">{{ account.nm_account }}</option>
+          </select2>
         </div>
+
         <div class="col-12">
           <button type="submit" class="btn btn-primary btn-sm ms-auto mt-8 d-block">
             <i class="las la-save"></i>

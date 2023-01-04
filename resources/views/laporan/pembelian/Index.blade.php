@@ -259,14 +259,14 @@
 						<td class="dts-1 nomor">{{ $urut }}</td>
 						<td class="dts-2 barang"> {{ $datas->permintaan->barang_jadi->nm_barang_jadi}}</td>
 						<td class="dts-3"> {{ $datas->permintaan->volume}}</td>
-						<td class="dts-4"> Buah</td>
+						<td class="dts-4"> {{ $datas->permintaan->barang_jadi->barangsatuanjadi->nm_satuan_jadi}}</td>
 						<td class="dts-5">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
 						<td class="dts-6">Rp. {{ number_format("$datas->jumlah",2,",",".") }}</td>
 					@else
 						<td class="dts-1 nomor">{{ $urut }}</td>
 						<td class="dts-2 barang"> {{ $datas->permintaan->barang_mentah->nm_barangmentah }}</td>
 						<td class="dts-3"> {{ $datas->permintaan->volume}}</td>
-						<td class="dts-4"> Buah</td>
+						<td class="dts-4"> {{ $datas->permintaan->barang_mentah->barangsatuan->nm_satuan_children }}</td>
 						<td class="dts-4">Rp. {{ number_format("$datas->harga",2,",",".") }}</td>
 						<td class="dts-6">Rp. {{ number_format("$datas->jumlah",2,",",".") }}</td>
 					@endif

@@ -218,7 +218,7 @@
                     :id="'permintaan_id' + index"
                     class="form-control ms-2"
                     required
-                    @change="getSatuanJadi(index, $event)"
+                    @change="getSatuanJadi(index, $event), getHargaBJ(index), getVolumeBJ(index), getJumlahBJ(index)" 
                     autoComplete="off"
                     v-model="item.permintaan_id"
                   >
@@ -313,7 +313,7 @@
                     :id="'permintaan_id' + index"
                     class="form-control ms-2"
                     required
-                    @change="getSatuanMentah(index, $event)"
+                    @change="getSatuanMentah(index, $event), getHargaBM(index), getVolumeBM(index), getJumlahBM(index)"
                     autoComplete="off"
                     v-model="item.permintaan_id"
                   >
@@ -740,9 +740,8 @@
       getSatuanMentah(index, satuan_id) {
         setTimeout(() => {
           var app = this;
-          var i = app.barangmentahs.findIndex((cat) => cat.id == satuan_id);
 
-          satuan_id = app.permintaanbarangmentahs[i]?.barang_mentah.barangsatuan_id;
+          satuan_id = app.permintaanbarangmentahs[index].barang_mentah.barangsatuan_id;
 
           var app = this;
           axios.get(`barangsatuan/${satuan_id}/child`).then((res) => {
@@ -781,13 +780,58 @@
         }, 100);
       },
       
-      getVolume(index) {
+      getVolumeBJ(index) {
         setTimeout(() => {
           var app = this;
 
-          app.form.barangjadi[index].harga = app.permintaanbarangjadis[index].volume;
+          app.form.barangjadi[index].volume = app.permintaanbarangjadis[index].volume;
         }, 100);
       },
+
+      getVolumeBM(index) {
+        setTimeout(() => {
+          var app = this;
+
+          app.form.barangmentah[index].volume = app.permintaanbarangmentahs[index].volume;
+        }, 100);
+      },
+      
+      getJumlahBJ(index) {
+        setTimeout(() => {
+          var app = this;
+
+          app.form.barangjadi[index].jumlah = app.permintaanbarangjadis[index].jumlah;
+        }, 100);
+      },
+
+      getJumlahBM(index) {
+        setTimeout(() => {
+          var app = this;
+
+          app.form.barangmentah[index].jumlah = app.permintaanbarangmentahs[index].jumlah;
+        }, 100);
+      },
+
+      getTotal() {
+        var app = this;
+        var jumlah = 0;
+
+        if (app.form.jenis_pembayaran == "Free") {
+          app.form.total = 0;
+        } else {
+          for (let i = 0; i < app.form.barangmentah.length; i++) {
+            jumlah += app.form.barangmentah[i].jumlah;
+          }
+
+          for (let i = 0; i < app.form.barangjadi.length; i++) {
+            jumlah += app.form.barangjadi[i].jumlah;
+          }
+
+          // console.log(jumlah);
+          app.form.total = jumlah;
+        }
+      },
+
       
       perusahaan(e){
         var app = this;
